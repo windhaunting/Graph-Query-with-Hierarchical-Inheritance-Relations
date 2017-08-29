@@ -28,7 +28,14 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
     
-   // val file = "hdfs://localhost:8070/testEdgeListFile2")
+  
+    
+    
+  }
+  
+  //product database execution -- main entry
+  def executeProductDatabase(args: Array[String]) = {
+     // val file = "hdfs://localhost:8070/testEdgeListFile2")
    //val file = "hdfs://192.168.0.52:8070/testEdgeListFile2"
     //val inputfilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/Data/testInput/teshierarchicalAdjacencyList"
     
@@ -136,9 +143,27 @@ object QueryMain {
       
     }
     */
+   
+  }
+  
+  
+  //execute product data
+  
+  def executeDblpData(args: Array[String]) = {
     
     
   }
+
+    
+  //dblp data base execute --main entry
+  def executeDblpData(args: Array[String]) = {
+    
+    
+    
+  }
+  
+  
+  
   
   
 }
