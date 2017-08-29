@@ -154,7 +154,7 @@ object QueryMain {
     val inputNodeInfoFile = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
         
     //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readAdjcencyListFile(sc, inputEdgeListfilePath)
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, "\t")
 
     
   }

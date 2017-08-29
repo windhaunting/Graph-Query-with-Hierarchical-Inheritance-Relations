@@ -26,19 +26,20 @@ object graphInputCommon {
   }
   //
   
-  def readEdgeListFile(sc: SparkContext, inputFilePath: String) ={
+  //read edge list delimiter '\t'
+  def readEdgeListFile(sc: SparkContext, inputFilePath: String, delimiter: String) ={
     
       
     val file = sc.textFile(inputFilePath);
 
     // create edge RDD of type RDD[(VertexId, VertexId)]
-    val origRdd = file.map(line => line.split(" "))
+    val origRdd = file.map(line => line.split(delimiter))
       .map(line => (line(0), line(1), line(2)))
         
 
-    val edgesRDD: RDD[Edge[Double]] = origRdd.map{
+    val edgesRDD: RDD[Edge[toString]] = origRdd.map{
       case (a, b, w) =>
-        Edge(MurmurHash.stringHash(a.toString), MurmurHash.stringHash(b.toString), w.toDouble)}
+        Edge(MurmurHash.stringHash(a.toString), MurmurHash.stringHash(b.toString), w.toString)}
 
     
     val vertMapRdd1 = origRdd.map{
@@ -71,7 +72,6 @@ object graphInputCommon {
   
   }
   
-  
   //read the node info into RDD;  read node info into RDD structure
   def readNodeInfoName(sc: SparkContext, inputFileNodeInfoPath: String)= {
       val file = sc.textFile(inputFileNodeInfoPath)
@@ -79,7 +79,6 @@ object graphInputCommon {
       .map(line => (line(0).toLong, (line(1), line(2), line(3))))         //nodeId, nodename, nodeTypeId, nodeTypeName
       
       //nodeInfoRdd.take(5).foreach(println)
-
       nodeInfoRdd
     
   }
