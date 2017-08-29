@@ -13,8 +13,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Random.shuffle
 
 
-
-//get query graph automatically here
+//get different query graph automatically here
 object inputQueryRead {
 
   

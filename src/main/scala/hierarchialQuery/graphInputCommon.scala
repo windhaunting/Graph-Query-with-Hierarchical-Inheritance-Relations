@@ -59,16 +59,16 @@ object graphInputCommon {
       case(id, att) => (id.toLong, att)
     }
     
-    val graph = Graph.apply(verticesRDD, edgesRDD)
+    val hierGraph = Graph.apply(verticesRDD, edgesRDD)
     
-    //vertMapRdd.collect.foreach(println)
-    
-    //println("sssp.vertices.collect.mkString  ")
+    //vertMapRdd.take(5).foreach(println)
 
-    // you can see your graph 
-    //graph.vertices.collect.foreach(println)
-   // graph.edges.collect.foreach(println)
-  //  graph.triplets.collect.foreach(println)
+    //you can see your graph 
+    hierGraph.vertices.take(5).foreach(println)
+    hierGraph.edges.take(5).foreach(println)
+    //hierGraph.triplets.take(5).foreach(println)
+  hierGraph
+  
   }
   
   
@@ -170,7 +170,6 @@ object graphInputCommon {
     val vRDD: RDD[(VertexId, Int)] = origRdd.map{
       case (nd, typeId, adj) => (nd, typeId)                      //(nodeId, nodeIdType)
     }
-    
     
    //val nodeInfoRdd = readNodeInfoName(sc, inputFileNodeInfoPath)       //nodeId, nodeName, nodeTypeName
    // val vRDD: RDD[(VertexId, Int)]= vertMapRddTmp.join(nodeInfoRdd).map{

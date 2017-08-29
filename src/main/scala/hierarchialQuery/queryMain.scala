@@ -28,13 +28,13 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
     
-    //executeProductDatabase(args)
-    
+    //executeProductDatabase(args, sc)
+    executeDblpGraphData(args, sc)
     
   }
   
   //product database execution -- main entry
-  def executeProductDatabase(args: Array[String]) = {
+  def executeProductDatabase(args: Array[String], sc: SparkContext) = {
      // val file = "hdfs://localhost:8070/testEdgeListFile2")
    //val file = "hdfs://192.168.0.52:8070/testEdgeListFile2"
     //val inputfilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/Data/testInput/teshierarchicalAdjacencyList"
@@ -148,11 +148,14 @@ object QueryMain {
   
     
   //dblp data base execute --main entry
-  def executeDblpData(args: Array[String]) = {
+  def executeDblpGraphData(args: Array[String], sc: SparkContext) = {
     
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
     val inputNodeInfoFile = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
-    
+        
+    //read edge list to graphX graph
+    val hierGraph = graphInputCommon.readAdjcencyListFile(sc, inputEdgeListfilePath)
+
     
   }
   
