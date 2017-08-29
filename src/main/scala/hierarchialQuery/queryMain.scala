@@ -151,10 +151,10 @@ object QueryMain {
   def executeDblpGraphData(args: Array[String], sc: SparkContext) = {
     
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
-    val inputNodeInfoFile = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
+    val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
         
     //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, "\t")
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
     
   }
