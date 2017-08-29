@@ -28,7 +28,7 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
     
-  
+    //executeProductDatabase(args)
     
     
   }
@@ -146,18 +146,12 @@ object QueryMain {
    
   }
   
-  
-  //execute product data
-  
-  def executeDblpData(args: Array[String]) = {
-    
-    
-  }
-
     
   //dblp data base execute --main entry
   def executeDblpData(args: Array[String]) = {
     
+    val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
+    val inputNodeInfoFile = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
     
     
   }
