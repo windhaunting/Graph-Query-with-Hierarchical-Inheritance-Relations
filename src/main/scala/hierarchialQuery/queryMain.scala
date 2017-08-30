@@ -156,7 +156,6 @@ object QueryMain {
     //read edge list to graphX graph
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
-    
   }
   
   

@@ -34,29 +34,28 @@ object graphInputCommon {
     // create edge RDD of type RDD[(VertexId, VertexId)]             
     val origEdgeRdd = fileEdgeList.map(line => line.split(delimiter))
       .map(line => (line(0), line(1), line(2)))
-        
 
     //edgesRDD:   edge property: int   (hierarchical level)
     val edgesRDD: RDD[Edge[Int]] = origEdgeRdd.map{
       case (a, b, edge) =>
         Edge(a.toLong, b.toLong, funcTransferEdgeToInt(edge))
         
-        //transfer hierarchical level to int
-        def funcTransferEdgeToInt(edge) = {
-          if edge == "same"{
-            0
-          }
-          else if edge == "higher"{
-            1
-          }
-          else{
-            -1
-          }
+          //transfer hierarchical level to int
+          def funcTransferEdgeToInt(edge) = {
+            if edge == "same"{
+              0
+            }
+            else if edge == "higher"{
+              1
+            }
+            else{
+              -1
+            }
         }
     }
 
     //read nodeInfo 
-    val fileNodeInfo = sc.textFile(inputNodeInfoFilePath);
+    val fileNodeInfo = sc.textFile(inputNodeInfoFilePath)
     // create edge RDD of type RDD[(VertexId, VertexId)]             
     val origNodeRdd = fileNodeInfo.map(line => line.split(delimiter))
       .map(line => (line(0), line(1)))
@@ -67,14 +66,13 @@ object graphInputCommon {
         (nodeId, funcGetNodeType(nodeNameType))
       
       def funcGetNodeType(nodeNameType){
-        nodeTypeId = nodeNameType.split("\t")
+        nodeNameType.split("\t")[1].trim.toLowerCase        //return node Type Id
         
       }
-
-     
     }
     
-    // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
+    
+   // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
    // create a graph 
    //   val graph = Graph.fromEdges(edgesRDD, "defaultProperty")
 
@@ -157,7 +155,7 @@ object graphInputCommon {
 
     if(adj contains "same")
     {
-         val beginInd = adj.indexOfSlice("same")
+      val beginInd = adj.indexOfSlice("same")
       val arrayLst = adj.slice(beginInd+6,  adj.length).split(" ")
       var i = 0
       var done = false
