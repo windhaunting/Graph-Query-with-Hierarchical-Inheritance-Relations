@@ -38,20 +38,21 @@ object graphInputCommon {
     //edgesRDD:   edge property: int   (hierarchical level)
     val edgesRDD: RDD[Edge[Int]] = origEdgeRdd.map{
       case (a, b, edge) =>
-        Edge(a.toLong, b.toLong, funcTransferEdgeToInt(edge))
         
           //transfer hierarchical level to int
-          def funcTransferEdgeToInt(edge) = {
-            if edge == "same"{
+          def funcTransferEdgeToInt(edge: String) = {
+            if (edge == "same"){
               0
             }
-            else if edge == "higher"{
+            else if (edge == "higher"){
               1
             }
             else{
               -1
             }
         }
+        Edge(a.toLong, b.toLong, funcTransferEdgeToInt(edge))
+
     }
 
     //read nodeInfo 
@@ -62,13 +63,14 @@ object graphInputCommon {
       
     //read nodeInfo file to get vertexRdd
     val vertMapRdd = origNodeRdd.map{
-      case (nodeNameType, nodeId) =>
-        (nodeId, funcGetNodeType(nodeNameType))
-      
-      def funcGetNodeType(nodeNameType){
-        nodeNameType.split("\t")[1].trim.toLowerCase        //return node Type Id
-        
+      case (nodeNameType, nodeId) =>      
+      def funcGetNodeType(nodeNameType: String){
+        val nodeTypeId = nodeNameType.split("+++")(1).trim.toLowerCase.toInt       //return node Type Id
+        nodeTypeId
       }
+      
+      (nodeId, funcGetNodeType(nodeNameType))
+
     }
     
     
@@ -77,8 +79,8 @@ object graphInputCommon {
    //   val graph = Graph.fromEdges(edgesRDD, "defaultProperty")
 
     //verticesRDD: (nodeId, nodeIdType)
-    val verticesRDD :RDD[(VertexId, String)] = vertMapRdd.map{
-      case(id, att) => (id.toLong, att)                    
+    val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
+      case(id, nodeIdType) => (id.toLong, nodeIdType)                    
     }
     
     val hierGraph = Graph.apply(verticesRDD, edgesRDD)
