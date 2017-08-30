@@ -78,8 +78,8 @@ object graphInputCommon {
       (nodeId.toLong, funcGetNodeType(nodeNameType))
     }
     
-    //verticesRDD.take(115).foreach(println)
-    
+    verticesRDD.take(115).foreach(println)
+    edgesRDD.take(115).foreach(println)
      // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
     //val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
     //  case(id, nodeIdType) => (id.toLong, nodeIdType)                    
@@ -90,7 +90,10 @@ object graphInputCommon {
     
     //vertMapRdd.take(5).foreach(println)
     //you can see your graph 
-    print ("count:" +hierGraph.vertices.count)
+    //print ("count:" +hierGraph.vertices.count)
+    //print ("count checkpoint: ",  hierGraph.vertices.checkpoint())
+    println("node vertices edgecount: ", hierGraph.vertices.count(), hierGraph.edges.count())
+
    // hierGraph.vertices.take(1).foreach(println)
     //hierGraph.edges.take(5).foreach(println)
     //hierGraph.triplets.take(5).foreach(println)
