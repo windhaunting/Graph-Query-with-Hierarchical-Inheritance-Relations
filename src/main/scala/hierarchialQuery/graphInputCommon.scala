@@ -63,17 +63,16 @@ object graphInputCommon {
       
     //read nodeInfo file to get vertexRdd
     val vertMapRdd = origNodeRdd.map{
-      case (nodeNameType, nodeId) =>      
+      case (nodeNameType, nodeId) =>  
       def funcGetNodeType(nodeNameType: String){
-        val nodeTypeId = nodeNameType.split("+++")(1).trim.toLowerCase.toInt       //return node Type Id
+        val nodeTypeId = nodeNameType        //.split("+++")              //(1).trim.toLowerCase.toInt       //return node Type Id
          println("nodeTypeId : " + nodeTypeId)
-        nodeTypeId
+         nodeTypeId
       }
-      
       (nodeId, funcGetNodeType(nodeNameType))
-
     }
-    
+  
+   
    // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
    // create a graph 
    //   val graph = Graph.fromEdges(edgesRDD, "defaultProperty")
