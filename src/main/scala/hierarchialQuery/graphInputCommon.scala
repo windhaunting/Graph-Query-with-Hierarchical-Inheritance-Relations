@@ -70,7 +70,7 @@ object graphInputCommon {
       case (nodeNameType, nodeId) => 
         
       def funcGetNodeType(nodeNameType: String) = {
-        val nodeTypeId = nodeNameType.replace("\"", "").split("\\+\\+\\+")(1).trim.toInt       //return node Type Id; use "\\+++", not "+++" regular expression
+        val nodeTypeId = nodeNameType.replace("\"", "").split("\\+\\+\\+")(1).trim.toInt       //return node Type Id; use "\\+", not "+++" regular expression
          //println("nodeTypeId : " + nodeTypeId)
         
           nodeTypeId
@@ -78,7 +78,7 @@ object graphInputCommon {
       (nodeId.toLong, funcGetNodeType(nodeNameType))
     }
     
-    verticesRDD.take(15).foreach(println)
+    //verticesRDD.take(115).foreach(println)
     
      // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
     //val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
@@ -86,15 +86,15 @@ object graphInputCommon {
    // }
     
      // create a graph 
-    val hierGraph = Graph.apply(verticesRDD, edgesRDD)
+    val hierGraph = Graph(verticesRDD, edgesRDD)
     
     //vertMapRdd.take(5).foreach(println)
-
     //you can see your graph 
-    hierGraph.vertices.take(5).foreach(println)
-    hierGraph.edges.take(5).foreach(println)
+    print ("count:" +hierGraph.vertices.count)
+   // hierGraph.vertices.take(1).foreach(println)
+    //hierGraph.edges.take(5).foreach(println)
     //hierGraph.triplets.take(5).foreach(println)
-  hierGraph
+    hierGraph
   }
   
   //read the node info into RDD;  read node info into RDD structure
