@@ -72,16 +72,16 @@ object graphInputCommon {
       (nodeId, funcGetNodeType(nodeNameType))
     }
   
-   
+    origNodeRdd.take(15).foreach(println)
    // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
-   // create a graph 
-   //   val graph = Graph.fromEdges(edgesRDD, "defaultProperty")
 
     //verticesRDD: (nodeId, nodeIdType)
+    /*
     val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
       case(id, nodeIdType) => (id.toLong, nodeIdType)                    
     }
     
+     // create a graph 
     val hierGraph = Graph.apply(verticesRDD, edgesRDD)
     
     //vertMapRdd.take(5).foreach(println)
@@ -91,7 +91,7 @@ object graphInputCommon {
     hierGraph.edges.take(5).foreach(println)
     //hierGraph.triplets.take(5).foreach(println)
   hierGraph
-  
+  */
   }
   
   //read the node info into RDD;  read node info into RDD structure

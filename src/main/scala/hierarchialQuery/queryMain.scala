@@ -30,6 +30,7 @@ object QueryMain {
     
     //executeProductDatabase(args, sc)
     executeDblpGraphData(args, sc)
+    println("executeDblpGraphData: done")
     
   }
   
