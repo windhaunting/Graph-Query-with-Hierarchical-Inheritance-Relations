@@ -11,8 +11,6 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark._
 import org.apache.spark.graphx._
 
-import org.apache.spark.sql.SparkSession                        //SparkSession used in spark 2.0 and later
-
 //import org.apache.spark.graphx.{Graph, VertexRDD}
 import org.apache.spark.graphx.util.GraphGenerators
 import scala.util.MurmurHash
