@@ -84,10 +84,10 @@ object graphInputCommon {
     //val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
     //  case(id, nodeIdType) => (id.toLong, nodeIdType)                    
    // }
-    verticesRDD.coalesce(1).saveAsTextFile("../testOutput1")        //coalesce into 1 file, it is small data output
-    edgesRDD.coalesce(1).saveAsTextFile("../testOutput2")        //coalesce into 1 file, it is small data output
+    //verticesRDD.coalesce(1).saveAsTextFile("../testOutput1")        //coalesce into 1 file, it is small data output
+    //edgesRDD.coalesce(1).saveAsTextFile("../testOutput2")        //coalesce into 1 file, it is small data output
     
-    //println("node vertices edgecount: ", verticesRDD.count(), edgesRDD.count())
+    println("node vertices edgecount: ", verticesRDD.count(), edgesRDD.count())
      // create a graph 
     val hierGraph = Graph(verticesRDD, edgesRDD)
     
