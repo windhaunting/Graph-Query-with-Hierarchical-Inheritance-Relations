@@ -989,9 +989,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
    // val pathAnswerRdd = answers._2
 
     //topKResultRdd.count()
-    //val nodeInfoRdd =  graphInputCommon.readNodeInfoName(sc, inputFileNodeInfoPath)
-    //join (k,v), (k, w) => k, (v, w)
-    //val resultStarQueryRdd = nodeInfoRdd.join(topKResultRdd)
+    val nodeInfoRdd =  graphInputCommon.readNodeInfoName(sc, inputFileNodeInfoPath)
+    
+    val resultStarQueryRdd = nodeInfoRdd.join(topKResultRdd)    //join (k,v), (k, w) => k, (v, w)
     //print ("385: starQueryExeute resultStarQueryRdd: \n")
     
     //resultStarQueryRdd.collect().foreach(println)
@@ -999,9 +999,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     //print ("422: starQueryExeute pathAnswerRdd: \n")
     //pathAnswerRdd.collect().foreach(println)
     // outputFilePath
-   // resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
+    resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
 
-    topKResultRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
+   // topKResultRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
 
   }
   

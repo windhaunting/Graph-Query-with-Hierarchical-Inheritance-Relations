@@ -96,7 +96,7 @@ object graphInputCommon {
   def readNodeInfoName(sc: SparkContext, inputFileNodeInfoPath: String)= {
       val file = sc.textFile(inputFileNodeInfoPath)
       val nodeInfoRdd :RDD[(VertexId, (String, String, String))] =  file.map(line => line.split("\t"))
-      .map(line => (line(0).toLong, (line(1), line(2), line(3))))         //nodeId, nodename, nodeTypeId, nodeTypeName
+      .map(line => (line(1).toLong, line(0)))         //nodeId, nodename, nodeTypeId, nodeTypeName
       
       //nodeInfoRdd.take(5).foreach(println)
       nodeInfoRdd
