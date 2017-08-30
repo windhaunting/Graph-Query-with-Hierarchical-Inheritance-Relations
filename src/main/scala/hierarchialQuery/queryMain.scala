@@ -45,7 +45,7 @@ object QueryMain {
     val inputAdjacencyListfilePath = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
     val inputNodeInfoFile = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphNodeInfo"
     
-    val outputFileNode = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutNode"
+    //val outputFileNode = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutNode"
     //args [0] is TOPK number
     
     val outputFilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutPath"
@@ -87,7 +87,7 @@ object QueryMain {
     val specificReadLst = List((2020L, 1), (9573L,5))
    //val specificReadLst = List((8987L, 4), (8330L,1))
     // val specificReadLst = List((5817L, 1), (5737L,1))
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, inputNodeInfoFile, outputFileNode, outputFilePath, runTimeoutputFilePath)     //execute star query
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, inputNodeInfoFile,  outputFilePath, runTimeoutputFilePath)     //execute star query
    */
   
 
@@ -164,8 +164,14 @@ object QueryMain {
     val topK = args(0).toInt
     starQuery.TOPK = topK
     
-    val specificReadLst = List((5817L, 1), (5737L,1))
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, inputNodeInfoFile, outputFileNode, outputFilePath, runTimeoutputFilePath)     //execute star query
+    val specificReadLst = List((188470L, 3), (10821L,1))
+    
+    val runTimeFileIndex = args(1)
+    
+    val outputFilePath = "../output/dblpData/starQueryOutput/starOutputFilePath"
+    val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
+
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
   
     
     

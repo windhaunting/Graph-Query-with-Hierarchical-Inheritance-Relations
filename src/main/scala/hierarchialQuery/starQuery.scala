@@ -979,7 +979,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
   
   
   //execute main star query
-  def starQueryExeute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId,Int)], dstTypeId: Int, inputFileNodeInfoPath: String, outputFileNode: String, outputFilePath: String, runTimeoutputFilePath: String) = {
+  def starQueryExeute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId,Int)], dstTypeId: Int, inputFileNodeInfoPath: String, outputFilePath: String, runTimeoutputFilePath: String) = {
     
    // val newGraph = preProcessGraphDeleteEdge(graph, List((40, 58)))      //preprocess for different query
     
@@ -989,20 +989,20 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
    // val pathAnswerRdd = answers._2
 
     //topKResultRdd.count()
-    val nodeInfoRdd =  graphInputCommon.readNodeInfoName(sc, inputFileNodeInfoPath)
+    //val nodeInfoRdd =  graphInputCommon.readNodeInfoName(sc, inputFileNodeInfoPath)
     //join (k,v), (k, w) => k, (v, w)
-    val resultStarQueryRdd = nodeInfoRdd.join(topKResultRdd)
+    //val resultStarQueryRdd = nodeInfoRdd.join(topKResultRdd)
     //print ("385: starQueryExeute resultStarQueryRdd: \n")
     
     //resultStarQueryRdd.collect().foreach(println)
-    resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFileNode)        //coalesce into 1 file, it is small data output
-   
+    //resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFileNode)        //coalesce into 1 file, it is small data output
     //print ("422: starQueryExeute pathAnswerRdd: \n")
     //pathAnswerRdd.collect().foreach(println)
     // outputFilePath
-    resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
+   // resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
 
-    
+    topKResultRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
+
   }
   
    
