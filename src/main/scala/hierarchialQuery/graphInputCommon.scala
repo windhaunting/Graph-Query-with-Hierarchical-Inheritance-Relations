@@ -28,7 +28,7 @@ object graphInputCommon {
   //
   
   //read hierarchical edge list (src_node_id  dst_node_id edge_property);   delimiter '\t'
-  def readEdgeListFile(sc: SparkContext, spark: SparkSession, inputEdgeFilePath: String, inputNodeInfoFilePath: String, delimiter: String) ={
+  def readEdgeListFile(sc: SparkContext, inputEdgeFilePath: String, inputNodeInfoFilePath: String, delimiter: String) ={
     
     //read edge list file
     val fileEdgeList = sc.textFile(inputEdgeFilePath);
@@ -57,11 +57,8 @@ object graphInputCommon {
     }
 
     //read nodeInfo 
-    //val fileNodeInfo = sc.textFile(inputNodeInfoFilePath)
-    val dataFrame = spark.read.format("CSV").option("delimiter", "\t").option("header","true").load(inputNodeInfoFilePath)
+    val fileNodeInfo = sc.textFile(inputNodeInfoFilePath)    
     
-        print ("irisDf.show(5): ", irisDf.show(5))
-    /*
     // create edge RDD of type RDD[(VertexId, VertexId)]             
     val origNodeRdd = fileNodeInfo.map(line => line.split(delimiter))
       .map(line => (line(0), line(1)))
@@ -69,22 +66,21 @@ object graphInputCommon {
     
     //read nodeInfo file to get vertexRdd
     val vertMapRdd = origNodeRdd.map{
-      case (nodeNameType, nodeId) =>  
-      def funcGetNodeType(nodeNameType: String){
-        val nodeTypeId = nodeNameType        //.split("+++")              //(1).trim.toLowerCase.toInt       //return node Type Id
-         println("nodeTypeId : " + nodeTypeId)
-         nodeTypeId
+      case (nodeNameType, nodeId) => 
+        
+      def funcGetNodeType(nodeNameType: String) = {
+        val nodeTypeId = nodeNameType.split("\\+++")(1).trim.toLowerCase.toInt       //return node Type Id; use "\\+++", not "+++" regular expression
+         //println("nodeTypeId : " + nodeTypeId)
+        
+          nodeTypeId
       }
       (nodeId, funcGetNodeType(nodeNameType))
     }
-  
-    origNodeRdd.take(15).foreach(println)
-    */
-   
-   // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
-
+    
+    vertMapRdd.take(15).foreach(println)
+    
+     // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
     //verticesRDD: (nodeId, nodeIdType)
-    /*
     val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
       case(id, nodeIdType) => (id.toLong, nodeIdType)                    
     }
@@ -99,7 +95,6 @@ object graphInputCommon {
     hierGraph.edges.take(5).foreach(println)
     //hierGraph.triplets.take(5).foreach(println)
   hierGraph
-  */
   }
   
   //read the node info into RDD;  read node info into RDD structure
