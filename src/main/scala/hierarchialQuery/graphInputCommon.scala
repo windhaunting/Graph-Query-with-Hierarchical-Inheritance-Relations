@@ -66,13 +66,13 @@ object graphInputCommon {
       case (nodeNameType, nodeId) =>      
       def funcGetNodeType(nodeNameType: String){
         val nodeTypeId = nodeNameType.split("+++")(1).trim.toLowerCase.toInt       //return node Type Id
+         println("nodeTypeId : " + nodeTypeId)
         nodeTypeId
       }
       
       (nodeId, funcGetNodeType(nodeNameType))
 
     }
-    
     
    // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
    // create a graph 
