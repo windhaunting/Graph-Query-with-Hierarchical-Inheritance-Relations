@@ -1148,7 +1148,11 @@ object nonStarQuery {
     while(i < specificNodeIdTwoDimensionLst.size)
     {
         val dstTypeId = dstTypeIdLstBuffer(i)
-        val topKResultRdd = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, null)
+        //val topKResultRdd = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, null)
+         
+        //when return paths
+        val answers = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, null)
+        val topKResultRdd = answers._1
         //topKResultRdd.take(5).foreach(println)
         //print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
         topKStarRstLst  += topKResultRdd
@@ -1159,7 +1163,7 @@ object nonStarQuery {
     
     // val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseTwoQueryNodes(sc, graph, topKStarRstLst, dstTypeIdLst)
     val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds(sc, graph, topKStarRstLst, dstTypeIdLstBuffer)
-     val endTime = System.currentTimeMillis()   
+    val endTime = System.currentTimeMillis()   
     //println("nonStarQueryExecute whole runtime: "+ (endTime-startTime) + " ms") 
     if (runTimeoutputFilePath != null)
     {

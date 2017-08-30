@@ -252,8 +252,14 @@ object starQuery {
 
                while (tmpPathLstBuffer.head != specific)
                {
-                val prevNodeId = graph.vertices.filter(_._1 == tmpPathLstBuffer.head).first()._2._2(specific).parentId
-                 
+                 if {graph.vertices.filter(_._1 == tmpPathLstBuffer.head).count == 0)
+                 {
+                   prevNodeId = -888888
+                 }
+                 else
+                   {
+                   val prevNodeId = graph.vertices.filter(_._1 == tmpPathLstBuffer.head).first()._2._2(specific).parentId
+                   }
                  //print ("262 getPathforAnswers pathLstMap: " +  prevNodeId + " " + tmpPathLstBuffer.head)
 
                  //tmpPathLstBuffer.insert(0, prevNodeId)          //  iterate to add prarent node
@@ -643,10 +649,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     }
 
     //get shortest path for the top K answer:
-   // pathAnswerRdd = getPathforAnswers(sc, topKResultRdd, g)
+    pathAnswerRdd = getPathforAnswers(sc, topKResultRdd, g)
     
-    //(topKResultRdd, pathAnswerRdd)
-    topKResultRdd                         //only return topKResultRdd
+    (topKResultRdd, pathAnswerRdd)
+   // topKResultRdd                         //only return topKResultRdd
   }
  
   
@@ -983,10 +989,11 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     
    // val newGraph = preProcessGraphDeleteEdge(graph, List((40, 58)))      //preprocess for different query
     
-    val topKResultRdd = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, runTimeoutputFilePath)
-    //val answers = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, runTimeoutputFilePath)
-    //val topKResultRdd = answers._1
-   // val pathAnswerRdd = answers._2
+    //val topKResultRdd = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, runTimeoutputFilePath)
+    
+    val answers = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, runTimeoutputFilePath)
+    val topKResultRdd = answers._1
+    val pathAnswerRdd = answers._2
 
     //topKResultRdd.count()
     val nodeInfoRdd =  graphInputCommon.readNodeInfoName(sc, inputFileNodeInfoPath)
@@ -996,8 +1003,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     
     //resultStarQueryRdd.collect().foreach(println)
     //resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFileNode)        //coalesce into 1 file, it is small data output
-    //print ("422: starQueryExeute pathAnswerRdd: \n")
-    //pathAnswerRdd.collect().foreach(println)
+    print ("422: starQueryExeute pathAnswerRdd: \n")
+    pathAnswerRdd.collect().foreach(println)
     // outputFilePath
     resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
 

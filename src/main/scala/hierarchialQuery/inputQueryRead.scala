@@ -69,8 +69,7 @@ object inputQueryRead {
                  //find ";"
                  var innerLst: List[(VertexId, Int)] = Nil
                  val substr = str.split(";")
-                 for (innerSpec<- substr)
-                   {
+                 for (innerSpec<- substr){
                      innerLst =  (innerSpec.split(",")(0).toLong, innerSpec.split(",")(1).toInt)::innerLst
                    }
                  starQueryNodeLst = innerLst::starQueryNodeLst
