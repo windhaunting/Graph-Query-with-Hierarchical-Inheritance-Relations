@@ -64,26 +64,26 @@ object graphInputCommon {
       .map(line => (line(0), line(1)))
       
     
-    //read nodeInfo file to get vertexRdd
-    val vertMapRdd = origNodeRdd.map{
+    //read nodeInfo file to get vertexRdd    verticesRDD: (nodeId, nodeIdType)
+
+    val verticesRDD :RDD[(VertexId, Int)] = origNodeRdd.map{
       case (nodeNameType, nodeId) => 
         
       def funcGetNodeType(nodeNameType: String) = {
-        val nodeTypeId = nodeNameType.split("\\+++")(1).trim.toLowerCase.toInt       //return node Type Id; use "\\+++", not "+++" regular expression
+        val nodeTypeId = nodeNameType.replace("\"", "").split("\\+\\+\\+")(1).trim.toInt       //return node Type Id; use "\\+++", not "+++" regular expression
          //println("nodeTypeId : " + nodeTypeId)
         
           nodeTypeId
       }
-      (nodeId, funcGetNodeType(nodeNameType))
+      (nodeId.toLong, funcGetNodeType(nodeNameType))
     }
     
-    vertMapRdd.take(15).foreach(println)
+    verticesRDD.take(15).foreach(println)
     
      // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
-    //verticesRDD: (nodeId, nodeIdType)
-    val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
-      case(id, nodeIdType) => (id.toLong, nodeIdType)                    
-    }
+    //val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
+    //  case(id, nodeIdType) => (id.toLong, nodeIdType)                    
+   // }
     
      // create a graph 
     val hierGraph = Graph.apply(verticesRDD, edgesRDD)
