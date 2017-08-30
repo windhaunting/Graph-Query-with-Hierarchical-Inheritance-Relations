@@ -154,10 +154,6 @@ object QueryMain {
     
   //dblp data base execute --main entry
   def executeDblpGraphData(args: Array[String], sc: SparkContext) = {
-      val appIdName = "Graph query with hierarhcial relation"
-      val conf = new SparkConf().set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .set("spark.kryoserializer.buffer","24")               // Now it's 24 Mb of buffer by default instead of 0.064 Mb
-      .set("spark.hadoop.validateOutputSpecs", "false")
       
      val spark = SparkSession.builder.appName(appIdName).config(conf).getOrCreate()
 

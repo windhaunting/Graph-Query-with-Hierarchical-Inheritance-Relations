@@ -27,7 +27,7 @@ object graphInputCommon {
   //
   
   //read hierarchical edge list (src_node_id  dst_node_id edge_property);   delimiter '\t'
-  def readEdgeListFile(sc: SparkContext, inputEdgeFilePath: String, inputNodeInfoFilePath: String, delimiter: String) ={
+  def readEdgeListFile(sc: SparkContext, spark: SparkSession, inputEdgeFilePath: String, inputNodeInfoFilePath: String, delimiter: String) ={
     
     //read edge list file
     val fileEdgeList = sc.textFile(inputEdgeFilePath);
@@ -56,11 +56,16 @@ object graphInputCommon {
     }
 
     //read nodeInfo 
-    val fileNodeInfo = sc.textFile(inputNodeInfoFilePath)
+    //val fileNodeInfo = sc.textFile(inputNodeInfoFilePath)
+    val dataFrame = spark.read.format("CSV").option("delimiter", "\t").option("header","true").load(inputNodeInfoFilePath)
+
+    
     // create edge RDD of type RDD[(VertexId, VertexId)]             
     val origNodeRdd = fileNodeInfo.map(line => line.split(delimiter))
       .map(line => (line(0), line(1)))
       
+    print ("irisDf.show(5): ", irisDf.show(5))
+    
     //read nodeInfo file to get vertexRdd
     val vertMapRdd = origNodeRdd.map{
       case (nodeNameType, nodeId) =>  
