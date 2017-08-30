@@ -160,6 +160,15 @@ object QueryMain {
     //read edge list to graphX graph
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
+    val dstTypeId = 1                     //1: people
+    val topK = args(0).toInt
+    starQuery.TOPK = topK
+    
+    val specificReadLst = List((5817L, 1), (5737L,1))
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, inputNodeInfoFile, outputFileNode, outputFilePath, runTimeoutputFilePath)     //execute star query
+  
+    
+    
   }
   
   
