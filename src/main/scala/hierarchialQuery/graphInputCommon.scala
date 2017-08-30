@@ -58,7 +58,6 @@ object graphInputCommon {
     //read nodeInfo 
     //val fileNodeInfo = sc.textFile(inputNodeInfoFilePath)
     val dataFrame = spark.read.format("CSV").option("delimiter", "\t").option("header","true").load(inputNodeInfoFilePath)
-
     
     // create edge RDD of type RDD[(VertexId, VertexId)]             
     val origNodeRdd = fileNodeInfo.map(line => line.split(delimiter))
