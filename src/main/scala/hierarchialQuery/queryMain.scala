@@ -10,6 +10,9 @@ import org.apache.spark.rdd.RDD
 //import org.apache.spark.SparkContext
 import org.apache.spark._
 import org.apache.spark.graphx._
+
+import org.apache.spark.sql.SparkSession                        //SparkSession used in spark 2.0 and later
+
 //import org.apache.spark.graphx.{Graph, VertexRDD}
 import org.apache.spark.graphx.util.GraphGenerators
 import scala.util.MurmurHash
@@ -26,7 +29,7 @@ object QueryMain {
       .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .set("spark.kryoserializer.buffer","24")               // Now it's 24 Mb of buffer by default instead of 0.064 Mb
       .set("spark.hadoop.validateOutputSpecs", "false")
-    val sc = new SparkContext(conf)
+    val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
     //executeProductDatabase(args, sc)
     executeDblpGraphData(args, sc)
@@ -36,6 +39,7 @@ object QueryMain {
   
   //product database execution -- main entry
   def executeProductDatabase(args: Array[String], sc: SparkContext) = {
+    
      // val file = "hdfs://localhost:8070/testEdgeListFile2")
    //val file = "hdfs://192.168.0.52:8070/testEdgeListFile2"
     //val inputfilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/Data/testInput/teshierarchicalAdjacencyList"
@@ -150,12 +154,19 @@ object QueryMain {
     
   //dblp data base execute --main entry
   def executeDblpGraphData(args: Array[String], sc: SparkContext) = {
+      val appIdName = "Graph query with hierarhcial relation"
+      val conf = new SparkConf().set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      .set("spark.kryoserializer.buffer","24")               // Now it's 24 Mb of buffer by default instead of 0.064 Mb
+      .set("spark.hadoop.validateOutputSpecs", "false")
+      
+     val spark = SparkSession.builder.appName(appIdName).config(conf).getOrCreate()
+
     
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
     val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
         
     //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, spark, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
   }
   
