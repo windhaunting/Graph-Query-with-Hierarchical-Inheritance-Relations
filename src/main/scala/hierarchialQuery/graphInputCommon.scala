@@ -77,29 +77,18 @@ object graphInputCommon {
       }
       (nodeId.toLong, funcGetNodeType(nodeNameType))
     }
+   
     
-    verticesRDD.take(115).foreach(println)
-    edgesRDD.take(115).foreach(println)
-     // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
-    //val verticesRDD :RDD[(VertexId, Int)] = vertMapRdd.map{
-    //  case(id, nodeIdType) => (id.toLong, nodeIdType)                    
-   // }
-    //verticesRDD.coalesce(1).saveAsTextFile("../testOutput1")        //coalesce into 1 file, it is small data output
-    //edgesRDD.coalesce(1).saveAsTextFile("../testOutput2")        //coalesce into 1 file, it is small data output
-    
-    println("node vertices edgecount: ", verticesRDD.count(), edgesRDD.count())
-     // create a graph 
+    // create a graph 
     val hierGraph = Graph(verticesRDD, edgesRDD)
     
     //vertMapRdd.take(5).foreach(println)
     //you can see your graph 
-    //print ("count:" +hierGraph.vertices.count)
-    //print ("count checkpoint: ",  hierGraph.vertices.checkpoint())
-   // println("node vertices edgecount2: ", hierGraph.vertices.count(), hierGraph.edges.count())
+    println("node vertices edgecount2: ", hierGraph.vertices.count(), hierGraph.edges.count())
 
-   // hierGraph.vertices.take(1).foreach(println)
+    // hierGraph.vertices.take(5).foreach(println)
     //hierGraph.edges.take(5).foreach(println)
-    //hierGraph.triplets.take(5).foreach(println)
+    hierGraph.triplets.take(5).foreach(println)
     hierGraph
   }
   
