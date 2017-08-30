@@ -67,9 +67,11 @@ object graphInputCommon {
         (nodeId, funcGetNodeType(nodeNameType))
       
       def funcGetNodeType(nodeNameType){
+        nodeTypeId = nodeNameType.split("\t")
         
       }
-       
+
+     
     }
     
     // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
