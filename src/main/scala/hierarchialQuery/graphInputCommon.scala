@@ -11,6 +11,8 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
 import org.apache.spark._
 import org.apache.spark.graphx._
+import org.apache.spark.sql.SparkSession                        //SparkSession used in spark 2.0 and later
+
 import scala.util.MurmurHash
 
 //common function for the project
@@ -59,11 +61,12 @@ object graphInputCommon {
     //val fileNodeInfo = sc.textFile(inputNodeInfoFilePath)
     val dataFrame = spark.read.format("CSV").option("delimiter", "\t").option("header","true").load(inputNodeInfoFilePath)
     
+        print ("irisDf.show(5): ", irisDf.show(5))
+    /*
     // create edge RDD of type RDD[(VertexId, VertexId)]             
     val origNodeRdd = fileNodeInfo.map(line => line.split(delimiter))
       .map(line => (line(0), line(1)))
       
-    print ("irisDf.show(5): ", irisDf.show(5))
     
     //read nodeInfo file to get vertexRdd
     val vertMapRdd = origNodeRdd.map{
@@ -77,6 +80,8 @@ object graphInputCommon {
     }
   
     origNodeRdd.take(15).foreach(println)
+    */
+   
    // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
 
     //verticesRDD: (nodeId, nodeIdType)
