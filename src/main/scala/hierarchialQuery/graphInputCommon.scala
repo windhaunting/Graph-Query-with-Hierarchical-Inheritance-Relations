@@ -29,19 +29,20 @@ object graphInputCommon {
   //read hierarchical edge list (src_node_id  dst_node_id edge_property);   delimiter '\t'
   def readEdgeListFile(sc: SparkContext, inputEdgeFilePath: String, inputNodeInfoFilePath: String, delimiter: String) ={
     
+    //read edge list file
     val fileEdgeList = sc.textFile(inputEdgeFilePath);
     // create edge RDD of type RDD[(VertexId, VertexId)]             
-    val origRdd = fileEdgeList.map(line => line.split(delimiter))
+    val origEdgeRdd = fileEdgeList.map(line => line.split(delimiter))
       .map(line => (line(0), line(1), line(2)))
         
 
     //edgesRDD:   edge property: int   (hierarchical level)
-    val edgesRDD: RDD[Edge[Int]] = origRdd.map{
+    val edgesRDD: RDD[Edge[Int]] = origEdgeRdd.map{
       case (a, b, edge) =>
-        Edge(a.toLong, b.toLong, transferEdgeInt(edge))
+        Edge(a.toLong, b.toLong, funcTransferEdgeToInt(edge))
         
         //transfer hierarchical level to int
-        def transferEdgeToInt(edge) = {
+        def funcTransferEdgeToInt(edge) = {
           if edge == "same"{
             0
           }
@@ -54,20 +55,25 @@ object graphInputCommon {
         }
     }
 
-    
-    val fileEdgeList = sc.textFile(inputNodeInfoFilePath);
+    //read nodeInfo 
+    val fileNodeInfo = sc.textFile(inputNodeInfoFilePath);
     // create edge RDD of type RDD[(VertexId, VertexId)]             
-    val origRdd = inputNodeInfoFilePath.map(line => line.split(delimiter))
-      .map(line => (line(0), line(1), line(2)))
+    val origNodeRdd = fileNodeInfo.map(line => line.split(delimiter))
+      .map(line => (line(0), line(1)))
       
     //read nodeInfo file to get vertexRdd
-    val vertMapRdd = origRdd.map{
-      case (a, b, w) =>
-        (a)
+    val vertMapRdd = origNodeRdd.map{
+      case (nodeNameType, nodeId) =>
+        (nodeId, funcGetNodeType(nodeNameType))
+      
+      def funcGetNodeType(nodeNameType){
+        
+      }
+       
     }
     
-      // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
-    // create a graph 
+    // val vertMapRdd = vertMapRdd1.union(vertMapRdd2).distinct()
+   // create a graph 
    //   val graph = Graph.fromEdges(edgesRDD, "defaultProperty")
 
     //verticesRDD: (nodeId, nodeIdType)
