@@ -20,6 +20,7 @@ import main.scala.hierarchialQuery.visitedColorEnum._
 
 import scala.reflect.ClassTag
 import scala.util.control.Breaks._
+import scala.util.control.Breaks._
 
 import java.io._
 
@@ -257,7 +258,10 @@ object starQuery {
                  if (graph.vertices.filter(_._1 == tmpPathLstBuffer.head).count != 0){
                    val prevNodeId = graph.vertices.filter(_._1 == tmpPathLstBuffer.head).first()._2._2(specific).parentId
                  }
-                 
+                 else{
+                   
+                   break
+                 }
                  //print ("262 getPathforAnswers pathLstMap: " +  prevNodeId + " " + tmpPathLstBuffer.head)
 
                  //tmpPathLstBuffer.insert(0, prevNodeId)          //  iterate to add prarent node
