@@ -254,9 +254,9 @@ object starQuery {
                while (tmpPathLstBuffer.head != specific)
                {
                  
-                 val prevNodeId = -888888
+                 var prevNodeId = -888888
                  if (graph.vertices.filter(_._1 == tmpPathLstBuffer.head).count != 0){
-                   val prevNodeId = graph.vertices.filter(_._1 == tmpPathLstBuffer.head).first()._2._2(specific).parentId
+                   prevNodeId = graph.vertices.filter(_._1 == tmpPathLstBuffer.head).first()._2._2(specific).parentId
                  }
                  else{
                    
