@@ -260,7 +260,8 @@ object starQuery {
                  }
                  else{
                    
-                   break
+                    tmpPathLstBuffer.insert(0, specific)
+
                  }
                  //print ("262 getPathforAnswers pathLstMap: " +  prevNodeId + " " + tmpPathLstBuffer.head)
 
