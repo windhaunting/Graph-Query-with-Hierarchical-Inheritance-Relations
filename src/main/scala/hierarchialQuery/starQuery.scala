@@ -257,17 +257,17 @@ object starQuery {
                  var prevNodeId: Long = -888888
                  if (graph.vertices.filter(_._1 == tmpPathLstBuffer.head).count != 0){
                    prevNodeId = graph.vertices.filter(_._1 == tmpPathLstBuffer.head).first()._2._2(specific).parentId
+                  
+                   tmpPathLstBuffer.insert(0, prevNodeId)          //  iterate to add prarent node
+
                  }
                  else{
                    
                     tmpPathLstBuffer.insert(0, specific)
-
                  }
                  //print ("262 getPathforAnswers pathLstMap: " +  prevNodeId + " " + tmpPathLstBuffer.head)
 
-                 //tmpPathLstBuffer.insert(0, prevNodeId)          //  iterate to add prarent node
-                 tmpPathLstBuffer.insert(0, prevNodeId)
-
+                 
                }
 
            // pathLstMap += (specific->tmpPathLst)  
