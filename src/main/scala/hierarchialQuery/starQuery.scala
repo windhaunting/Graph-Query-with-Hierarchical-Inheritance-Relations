@@ -254,7 +254,7 @@ object starQuery {
                while (tmpPathLstBuffer.head != specific)
                {
                  
-                 var prevNodeId = -888888
+                 var prevNodeId: Long = -888888
                  if (graph.vertices.filter(_._1 == tmpPathLstBuffer.head).count != 0){
                    prevNodeId = graph.vertices.filter(_._1 == tmpPathLstBuffer.head).first()._2._2(specific).parentId
                  }
