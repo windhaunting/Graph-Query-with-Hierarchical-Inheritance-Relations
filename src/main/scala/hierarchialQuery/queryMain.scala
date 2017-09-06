@@ -109,7 +109,7 @@ object QueryMain {
     }
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
     val nonStarQueryTOPK = starQuery.TOPK
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, inputNodeInfoFile, runTimeoutputFilePath)     //execute star query
+    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFile, runTimeoutputFilePath)     //execute star query
     
    
     /*
@@ -163,15 +163,17 @@ object QueryMain {
     val topK = args(0).toInt
     starQuery.TOPK = topK
     
+    val databaseType = 1              //DBLP database
+
     //val specificReadLst = List((188470L, 3), (10821L,1))
-    val specificReadLst = List((188830L, 3), (10821L,1))
-    
+    //val specificReadLst = List((188830L, 3), (10821L,1))
+    val specificReadLst = List((188397, 3), (10821L,1))
+
     
     val runTimeFileIndex = args(1)
     
     val outputFilePath = "../output/dblpData/starQueryOutput/starOutputFilePath"
     val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
-    val databaseType = 1
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
   
   }

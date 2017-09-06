@@ -13,7 +13,7 @@ import org.apache.spark.graphx._
 import collection.immutable.{Map,HashMap}
 import scala.collection.mutable.ListBuffer
 
-import main.scala.hierarchialQuery.nodeTypeEnum._
+import main.scala.hierarchialQuery.nodeTypeProductEnum._
 import main.scala.hierarchialQuery.visitedColorEnum._
 
 import java.io._
@@ -1137,7 +1137,7 @@ object nonStarQuery {
 
   
   //entry to execute non star query 
-  def nonStarQueryExecute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdTwoDimensionLst: List[List[(VertexId,Int)]], dstTypeIdLstBuffer: ListBuffer[Int], nonStarQueryTOPK: Int, inputFileNodeInfoPath: String, runTimeoutputFilePath: String) = {
+  def nonStarQueryExecute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdTwoDimensionLst: List[List[(VertexId,Int)]], dstTypeIdLstBuffer: ListBuffer[Int], nonStarQueryTOPK: Int, databaseType: Int, inputFileNodeInfoPath: String, runTimeoutputFilePath: String) = {
       
     nonStarQuery_TOPK = nonStarQueryTOPK
     
@@ -1151,7 +1151,7 @@ object nonStarQuery {
         //val topKResultRdd = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, null)
          
         //when return paths
-        val answers = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, null)
+        val answers = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, databaseType, null)
         val topKResultRdd = answers._1
         //topKResultRdd.take(5).foreach(println)
         //print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
