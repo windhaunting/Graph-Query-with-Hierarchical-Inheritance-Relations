@@ -35,6 +35,12 @@ object nodeTypeEnum extends Enumeration {
 //PRODUCT.id : get the node enum value ;       0, 1, 2, 3, 4, 5.....
 
 
+//enum type of node types
+object nodeTypeDBLPEnum extends Enumeration {
+        type nodeType = Value
+        val DUMMY, PRODUCT, PAPER, TOPIC, DATE, ARTICLE, BOOK, INCOLLECTION, INPROCEEDING, MASTERSTHESIS, PHDTHESIS, PROCEEDINGS, WWW = Value
+    }
+//PRODUCT.id : get the node enum value ;       0, 1, 2, 3, 4, 5.....
 
 
 //enum type of node VistiedColor      //visited or not.  WHITE : 0 no visited. 

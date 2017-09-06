@@ -15,7 +15,8 @@ import org.apache.spark.graphx._
 import collection.immutable.{Map,HashMap}
 import scala.collection.mutable.ListBuffer
 
-import main.scala.hierarchialQuery.nodeTypeEnum._
+import main.scala.hierarchialQuery.nodeTypeProductEnum._
+import main.scala.hierarchialQuery.nodeTypeDBLPEnum._
 import main.scala.hierarchialQuery.visitedColorEnum._
 
 import scala.reflect.ClassTag
@@ -195,18 +196,28 @@ object starQuery {
 }
 */
   //given the node types, hierarchical inheritance or not (hierarchical or generic relations)
-  def getHierarchicalInheritance(nodeIdType1: Int, nodeIdType2: Int) = {
+  def getHierarchicalInheritance(nodeIdType1: Int, nodeIdType2: Int, databaseType:Int) = {
     //print ("189 getHierarchicalInheritance PRODUCT.id: ", PRODUCT.id +" " + VULNERABILITY.id)
-    if ((nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id) || (nodeIdType1 == VULNERABILITY.id && nodeIdType2 == PRODUCT.id))
-    {
-      true
+    
+    if (databaseType == 0){
+        
+      if ((nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id) || (nodeIdType1 == VULNERABILITY.id && nodeIdType2 == PRODUCT.id))
+      {
+        true
+      }
+      else{
+        false
+      } 
     }
-    else{
-      false
-    } 
+    else if (databaseType == 1){
+      if (nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id)
+      
+    }
+    
   }
   
 
+  
 //get the closeness score from the parameters
   def calculateClosenessScore(spDistance: Long, spNumber: Long, hierLevelDifference: Long) = {
     
