@@ -195,14 +195,12 @@ object starQuery {
   candidateNodesRdd
 }
 */
-  //given the node types, hierarchical inheritance or not (hierarchical or generic relations)
-  def getHierarchicalInheritance(nodeIdType1: Int, nodeIdType2: Int, databaseType:Int) = {
+  //given the node types, hierarchical inheritance or not (hierarchical or generic relations); databaseType: ciso product : 0, dblp : 1
+  def getHierarchicalInheritance(nodeIdType1: Int, nodeIdType2: Int, databaseType: Int) = {
     //print ("189 getHierarchicalInheritance PRODUCT.id: ", PRODUCT.id +" " + VULNERABILITY.id)
     
     if (databaseType == 0){
-        
-      if ((nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id) || (nodeIdType1 == VULNERABILITY.id && nodeIdType2 == PRODUCT.id))
-      {
+      if ((nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id) || (nodeIdType1 == VULNERABILITY.id && nodeIdType2 == PRODUCT.id)){
         true
       }
       else{
@@ -210,10 +208,16 @@ object starQuery {
       } 
     }
     else if (databaseType == 1){
-      if (nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id)
-      
+      if (nodeIdType1 == TOPIC.id || nodeIdType2 == TOPIC.id){
+        true
+      }
+      else{
+        false
+      } 
     }
-    
+    else{
+      false
+    }
   }
   
 
@@ -400,7 +404,7 @@ def setnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, Map[VertexId,
 
 //star query traverse with pruning
 // starQueryGraphbfsTraverseWithBoundPruning
-def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId, Int)], dstTypeId: Int, runTimeoutputFilePath: String) = {
+def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId, Int)], dstTypeId: Int, databaseType: Int, runTimeoutputFilePath: String) = {
      
     val startTime = System.currentTimeMillis()              //System.nanoTime()
 
@@ -448,7 +452,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
             {
               val specificNodeId = specificNodeIdType._1
               val specNodeIdType = specificNodeIdType._2     //specific node type is vlunerablity 
-              if (getHierarchicalInheritance(specNodeIdType, dstTypeId)){
+              if (getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType)){
                 //update spDist,  parentId, and hierachical level distance
                 val changedEdgeLevel: Int = triplet.attr.toString.toInt
                 val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
@@ -999,13 +1003,13 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
   
   
   //execute main star query
-  def starQueryExeute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId,Int)], dstTypeId: Int, inputFileNodeInfoPath: String, outputFilePath: String, runTimeoutputFilePath: String) = {
+  def starQueryExeute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId,Int)], dstTypeId: Int, databaseType: Int, inputFileNodeInfoPath: String, outputFilePath: String, runTimeoutputFilePath: String) = {
     
    // val newGraph = preProcessGraphDeleteEdge(graph, List((40, 58)))      //preprocess for different query
     
     //val topKResultRdd = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, runTimeoutputFilePath)
     
-    val answers = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, runTimeoutputFilePath)
+    val answers = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, databaseType, runTimeoutputFilePath)
     val topKResultRdd = answers._1
     val pathAnswerRdd = answers._2
 

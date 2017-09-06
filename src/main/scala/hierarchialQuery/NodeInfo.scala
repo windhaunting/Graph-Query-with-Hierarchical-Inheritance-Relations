@@ -28,7 +28,7 @@ case class NodeInfo (specificNodeId: VertexId, specificNodeIdType: Int,  spDista
   }*/
  
 //enum type of node types
-object nodeTypeEnum extends Enumeration {
+object nodeTypeProductEnum extends Enumeration {
         type nodeType = Value
         val PRODUCT, VULNERABILITY, BUGID, WORKAROUND, TECHNOLOGY, WORKGROUP, PRODUCTSITE = Value
     }
@@ -38,7 +38,7 @@ object nodeTypeEnum extends Enumeration {
 //enum type of node types
 object nodeTypeDBLPEnum extends Enumeration {
         type nodeType = Value
-        val DUMMY, PRODUCT, PAPER, TOPIC, DATE, ARTICLE, BOOK, INCOLLECTION, INPROCEEDING, MASTERSTHESIS, PHDTHESIS, PROCEEDINGS, WWW = Value
+        val DUMMY, PEOPLE, PAPER, TOPIC, DATE, ARTICLE, BOOK, INCOLLECTION, INPROCEEDING, MASTERSTHESIS, PHDTHESIS, PROCEEDINGS, WWW = Value
     }
 //PRODUCT.id : get the node enum value ;       0, 1, 2, 3, 4, 5.....
 

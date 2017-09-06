@@ -69,7 +69,7 @@ object QueryMain {
     val dstTypeId = 0
     val topK = args(0).toInt
     starQuery.TOPK = topK
-    
+    val databaseType = 0
     
    // val runTimeFileIndex = args(1)
    // val runTimeoutputFilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
@@ -79,14 +79,14 @@ object QueryMain {
     val specificReadLst = inputQueryRead.getQuerySpecifiNodesLst(sc, inputNodeInfoFile, querySpecificNodeNumber)
     
     println("specificReadLst: ", specificReadLst.size)
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, inputNodeInfoFile, outputFileNode, outputFilePath, runTimeoutputFilePath)     //execute star query
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFile, outputFileNode, outputFilePath, runTimeoutputFilePath)     //execute star query
     */
    
    /*
     val specificReadLst = List((2020L, 1), (9573L,5))
    //val specificReadLst = List((8987L, 4), (8330L,1))
     // val specificReadLst = List((5817L, 1), (5737L,1))
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, inputNodeInfoFile,  outputFilePath, runTimeoutputFilePath)     //execute star query
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFile,  outputFilePath, runTimeoutputFilePath)     //execute star query
    */
   
 
@@ -171,11 +171,9 @@ object QueryMain {
     
     val outputFilePath = "../output/dblpData/starQueryOutput/starOutputFilePath"
     val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
-
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
+    val databaseType = 1
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
   
-    
-    
   }
   
   
