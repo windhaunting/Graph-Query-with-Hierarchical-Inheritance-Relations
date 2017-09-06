@@ -258,7 +258,7 @@ object starQuery {
                  if (graph.vertices.filter(_._1 == tmpPathLstBuffer.head).count != 0){
                    prevNodeId = graph.vertices.filter(_._1 == tmpPathLstBuffer.head).first()._2._2(specific).parentId
                   
-                   tmpPathLstBuffer.insert(0, prevNodeId)          //  iterate to add prarent node
+                   tmpPathLstBuffer.insert(0, prevNodeId)          //  iterate to insert prarent node into head
 
                  }
                  else{
@@ -978,8 +978,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     val newGraph =  graph.subgraph(epred = e => !judgeEdgeInPairList(newNodePair, e.srcId, e.dstId))
     
     // val newGraph = Graph.apply(graph.vertices, graph.edges)
-   // print ("493: judgeEdgeInPairList topKResultRdd \n")
-   // newGraph.edges.take(10).foreach(println)
+    // print ("493: judgeEdgeInPairList topKResultRdd \n")
+    // newGraph.edges.take(10).foreach(println)
     
     newGraph
   
@@ -1011,7 +1011,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     // outputFilePath
     resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
 
-   // topKResultRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
+    // topKResultRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
 
   }
   

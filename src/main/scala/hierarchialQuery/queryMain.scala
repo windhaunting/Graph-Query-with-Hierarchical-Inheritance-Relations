@@ -16,9 +16,8 @@ import org.apache.spark.graphx.util.GraphGenerators
 import scala.util.MurmurHash
 import scala.collection.mutable.ListBuffer
 
-
+//main entry 
 object QueryMain {
-  
   
   def main(args: Array[String]) {
     
