@@ -167,7 +167,7 @@ object QueryMain {
 
     //val specificReadLst = List((188470L, 3), (10821L,1))
     //val specificReadLst = List((188830L, 3), (10821L,1))
-    val specificReadLst = List((188466L, 3), (10821L,1))
+    val specificReadLst = List((189015, 3), (10821L,1))
 
     
     val runTimeFileIndex = args(1)
