@@ -166,15 +166,16 @@ object QueryMain {
     val databaseType = 1              //DBLP database
 
     //val specificReadLst = List((188470L, 3), (10821L,1))
-    //val specificReadLst = List((188830L, 3), (10821L,1))
-    val specificReadLst = List((189015L, 3), (10821L,1))
+     val specificReadLst = List((189059, 3), (10821L,1))
+     //val specificReadLst = List((189015L, 3), (10821L,1))
 
     
     val runTimeFileIndex = args(1)
     
-    val outputFilePath = "../output/dblpData/starQueryOutput/starOutputFilePath"
+    val outputFilePath = "../output/dblpData/starQueryOutput/starOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
+    
   
   }
   
