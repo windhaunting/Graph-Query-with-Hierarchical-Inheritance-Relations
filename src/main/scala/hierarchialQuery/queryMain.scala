@@ -166,7 +166,7 @@ object QueryMain {
     val databaseType = 1              //DBLP database
 
     //val specificReadLst = List((188470L, 3), (10821L,1))
-     val specificReadLst = List((189059, 3), (10821L,1))
+     val specificReadLst = List((189059L, 3), (10821L,1))
      //val specificReadLst = List((189015L, 3), (10821L,1))
 
     
