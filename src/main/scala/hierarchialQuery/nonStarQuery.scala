@@ -1167,7 +1167,7 @@ object nonStarQuery {
     //println("nonStarQueryExecute whole runtime: "+ (endTime-startTime) + " ms") 
     if (runTimeoutputFilePath != null)
     {
-            val runtTimefile = new File(runTimeoutputFilePath)
+        val runtTimefile = new File(runTimeoutputFilePath)
         val bw = new BufferedWriter(new FileWriter(runtTimefile))
         bw.write("Non-star Query TOP " + nonStarQuery_TOPK.toString + " " + "runtime: "+ (endTime-startTime).toString + " ms\n" )
         bw.close()

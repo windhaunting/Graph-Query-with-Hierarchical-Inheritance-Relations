@@ -172,11 +172,29 @@ object QueryMain {
     
     val runTimeFileIndex = args(1)
     
+    /*
     val outputFilePath = "../output/dblpData/starQueryOutput/starOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
-    
+    */
   
+    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/nonStarQueryOutputFilePath" + runTimeFileIndex
+
+    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((188704L, 3)))
+    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((2020L, 1)),List((2020L, 1)))
+
+    var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
+    for (specNodeLst <- specNodelistStarQueryTwoDimension)
+    {
+         
+        dstTypeIdLstBuffer += (1)
+    }
+    print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
+    val nonStarQueryTOPK = starQuery.TOPK
+    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeoutputFilePath)     //execute star query
+    
+    
+    
   }
   
   
