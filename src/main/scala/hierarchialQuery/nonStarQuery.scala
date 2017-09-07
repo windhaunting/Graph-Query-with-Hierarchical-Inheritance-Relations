@@ -1154,7 +1154,7 @@ object nonStarQuery {
         val answers = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, databaseType, null)
         val topKResultRdd = answers._1
         topKResultRdd.take(5).foreach(println)
-        //print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
+        print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
         topKStarRstLst  += topKResultRdd
         i = i + 1
     }
