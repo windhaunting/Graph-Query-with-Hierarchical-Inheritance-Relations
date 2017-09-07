@@ -109,7 +109,7 @@ object QueryMain {
     }
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
     val nonStarQueryTOPK = starQuery.TOPK
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFile, runTimeoutputFilePath)     //execute star query
+    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFile, null, runTimeoutputFilePath)     //execute star query
     
    
     /*
@@ -141,7 +141,7 @@ object QueryMain {
       val nonStarQueryTOPK = starQuery.TOPK
       i += 1
       tmpRunTimeoutputFilePath = tmpRunTimeoutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
-      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, inputNodeInfoFile, tmpRunTimeoutputFilePath)     //execute star query
+      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, inputNodeInfoFile, null, tmpRunTimeoutputFilePath)     //execute star query
       
     }
     */
@@ -178,8 +178,8 @@ object QueryMain {
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
     */
   
-    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/nonStarQueryOutputFilePath" + runTimeFileIndex
-
+    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/starQueryoutRuntime" + runTimeFileIndex
+    val outputFilePath =  "../output/dblpData/nonStarQueryOutput/nonStarQueryOutputFilePath" + runTimeFileIndex
     val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((188704L, 3)))
     //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((2020L, 1)),List((2020L, 1)))
 

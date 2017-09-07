@@ -1137,7 +1137,7 @@ object nonStarQuery {
 
   
   //entry to execute non star query 
-  def nonStarQueryExecute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdTwoDimensionLst: List[List[(VertexId,Int)]], dstTypeIdLstBuffer: ListBuffer[Int], nonStarQueryTOPK: Int, databaseType: Int, inputFileNodeInfoPath: String, runTimeoutputFilePath: String) = {
+  def nonStarQueryExecute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdTwoDimensionLst: List[List[(VertexId,Int)]], dstTypeIdLstBuffer: ListBuffer[Int], nonStarQueryTOPK: Int, databaseType: Int, inputFileNodeInfoPath: String, outputFilePath: String, runTimeoutputFilePath: String) = {
       
     nonStarQuery_TOPK = nonStarQueryTOPK
     
@@ -1159,12 +1159,20 @@ object nonStarQuery {
         i = i + 1
     }
     
-    //print ("size: " + topKStarRstLst.size +  " \n")
+    print ("size: " + topKStarRstLst.size +  " \n")
     
     // val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseTwoQueryNodes(sc, graph, topKStarRstLst, dstTypeIdLst)
     val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds(sc, graph, topKStarRstLst, dstTypeIdLstBuffer)
+    
     val endTime = System.currentTimeMillis()   
     //println("nonStarQueryExecute whole runtime: "+ (endTime-startTime) + " ms") 
+    print ("topKNonStarResultRdd size: " +  topKNonStarResultRdd.count() + " \n")
+    if (outputFilePath != null)
+    {
+        topKNonStarResultRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output
+    }
+    
+    
     if (runTimeoutputFilePath != null)
     {
         val runtTimefile = new File(runTimeoutputFilePath)
