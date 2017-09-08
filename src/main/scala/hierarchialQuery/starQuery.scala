@@ -671,6 +671,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     
     (topKResultRdd, pathAnswerRdd)
    // topKResultRdd                         //only return topKResultRdd
+   
+   
   }
  
   
