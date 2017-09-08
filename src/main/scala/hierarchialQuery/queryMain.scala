@@ -181,8 +181,8 @@ object QueryMain {
     //start non-star query
     val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/nonStarQueryoutRuntime" + runTimeFileIndex
     val outputFilePath =  "../output/dblpData/nonStarQueryOutput/nonStarQueryOutputFilePath" + runTimeFileIndex
-    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)))
-    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((188857L, 3)))
+    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)))
+    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((188857L, 3)))
 
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     for (specNodeLst <- specNodelistStarQueryTwoDimension)
