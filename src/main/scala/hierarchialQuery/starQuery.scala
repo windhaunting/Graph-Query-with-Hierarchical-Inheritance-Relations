@@ -1021,7 +1021,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     
     //resultStarQueryRdd.collect().foreach(println)
     //resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFileNode)        //coalesce into 1 file, it is small data output
-    print ("422: starQueryExeute pathAnswerRdd: \n")
+    print ("422: starQueryExeute pathAnswerRdd: "+ topKResultRdd.count() + "\n")
     pathAnswerRdd.collect().foreach(println)
     // outputFilePath
     resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFilePath)        //coalesce into 1 file, it is small data output

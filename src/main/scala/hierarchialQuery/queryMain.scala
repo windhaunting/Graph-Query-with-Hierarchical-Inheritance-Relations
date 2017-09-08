@@ -166,9 +166,9 @@ object QueryMain {
     val databaseType = 1              //DBLP database
 
     //val specificReadLst = List((188470L, 3), (10821L,1))
-     val specificReadLst = List((189059L, 3), (10821L,1))
+    //val specificReadLst = List((189059L, 3), (10821L,1))
      //val specificReadLst = List((189015L, 3), (10821L,1))
-
+     val specificReadLst = List((188857L, 3))
     
     val runTimeFileIndex = args(1)
     
@@ -178,10 +178,11 @@ object QueryMain {
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
     */
   
-    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/starQueryoutRuntime" + runTimeFileIndex
+    //start non-star query
+    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/nonStarQueryoutRuntime" + runTimeFileIndex
     val outputFilePath =  "../output/dblpData/nonStarQueryOutput/nonStarQueryOutputFilePath" + runTimeFileIndex
     //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)))
-    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((189089L, 3)))
+    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((188857L, 3)))
 
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     for (specNodeLst <- specNodelistStarQueryTwoDimension)
@@ -192,7 +193,6 @@ object QueryMain {
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
     val nonStarQueryTOPK = starQuery.TOPK
     nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeoutputFilePath)     //execute star query
-    
     
     
   }
