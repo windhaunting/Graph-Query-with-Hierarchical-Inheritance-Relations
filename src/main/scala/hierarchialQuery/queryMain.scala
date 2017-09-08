@@ -195,6 +195,17 @@ object QueryMain {
     nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeoutputFilePath)     //execute star query
     
     
+    
+    //topK varing test
+   val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((188857L, 3)))
+   val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((188857L, 3)))
+
+    
+    
+  }
+  
+  
+    
   }
   
   
