@@ -200,12 +200,26 @@ object QueryMain {
     
     
     //topK K varing test
+    /*
     val specificReadLst = List((189015L, 3), (10821L,1))
     val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/varingTopKOneMachine/starQueryoutRuntime" + runTimeFileIndex
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  null, runTimeoutputFilePath)     //execute star query
-    
-    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((188857L, 3)))
+    */
+   
+    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3), (10821L,1)), List((189086L, 3), (188857L, 3)))
    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((188857L, 3)))
+    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/varingTopKOneMachine/nonStarQueryoutRuntime" + runTimeFileIndex
+    val outputFilePath = null      //"../output/dblpData/nonStarQueryOutput/varingTopKOneMachine/nonStarQueryOutputFilePath" + runTimeFileIndex
+
+    var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
+    for (specNodeLst <- specNodelistStarQueryTwoDimension)
+    {
+         
+        dstTypeIdLstBuffer += (1)
+    }
+    
+    val nonStarQueryTOPK = starQuery.TOPK
+    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeoutputFilePath)     //execute star query
     
     
   }
