@@ -199,7 +199,7 @@ object QueryMain {
     */
     
     
-    //topK varing test
+    //topK K varing test
     val specificReadLst = List((189015L, 3), (10821L,1))
     val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/varingTopKOneMachine/starQueryoutRuntime" + runTimeFileIndex
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  null, runTimeoutputFilePath)     //execute star query
