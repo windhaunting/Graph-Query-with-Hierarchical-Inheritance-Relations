@@ -229,7 +229,7 @@ object QueryMain {
     //begin testing varying graph query size
     val runTimeFileIndex = args(1)
 
-    val inputFileSpecificStarQueryPath = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/hierarchicalQueryPython/output/extractSubgraphOutput/ciscoDataExtractQueryGraph"
+    val inputFileSpecificStarQueryPath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/Data/dblpParserGraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph"
     
     val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)  
     
