@@ -141,7 +141,7 @@ object QueryMain {
       val nonStarQueryTOPK = starQuery.TOPK
       i += 1
       tmpRunTimeoutputFilePath = tmpRunTimeoutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
-      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, inputNodeInfoFile, null, tmpRunTimeoutputFilePath)     //execute non star query
+      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFile, null, tmpRunTimeoutputFilePath)     //execute non star query
       
     }
     */
@@ -227,8 +227,6 @@ object QueryMain {
     */
   
     //begin testing varying graph query size
-    val runTimeFileIndex = args(1)
-
     val inputFileSpecificStarQueryPath = "../../Data/dblpParserGraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph"
     
     val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)         //read query 
@@ -254,7 +252,7 @@ object QueryMain {
       val nonStarQueryTOPK = starQuery.TOPK
       i += 1
       tmpRunTimeOutputFilePath = tmpRunTimeOutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
-      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, inputNodeInfoFile, null, tmpRunTimeOutputFilePath)     //execute non star query
+      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeOutputFilePath)     //execute non star query
     }
     
     
