@@ -232,30 +232,29 @@ object QueryMain {
     val inputFileSpecificStarQueryPath = "../../Data/dblpParserGraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph"
     
     val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)         //read query 
-    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/varyingSpecifcNumberSize_singleMachine/nonStarQueryoutRuntime" + runTimeFileIndex
+    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varyingSpecifcNumberSize_singleMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
     
     var i = 0 
-    var tmpRunTimeoutputFilePath = ""
+    var tmpRunTimeOutputFilePath = ""
     //set destination noe type
     for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
     {
       
-      tmpRunTimeoutputFilePath = runTimeoutputFilePath
+      tmpRunTimeOutputFilePath = runTimeOutputFilePath
 
       var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
       for (specNodeLst <- specNodelistStarQueryTwoDimension)
       {
 
-          dstTypeIdLstBuffer += (0)
+          dstTypeIdLstBuffer += (1)
       }
       
       print ("main  dblp dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
       val nonStarQueryTOPK = starQuery.TOPK
       i += 1
-      tmpRunTimeoutputFilePath = tmpRunTimeoutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
-      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, inputNodeInfoFile, null, tmpRunTimeoutputFilePath)     //execute non star query
-      
+      tmpRunTimeOutputFilePath = tmpRunTimeOutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
+      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, inputNodeInfoFile, null, tmpRunTimeOutputFilePath)     //execute non star query
     }
     
     
