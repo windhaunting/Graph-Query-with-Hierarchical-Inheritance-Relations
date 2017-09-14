@@ -229,9 +229,34 @@ object QueryMain {
     //begin testing varying graph query size
     val runTimeFileIndex = args(1)
 
-    val inputFileSpecificStarQueryPath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/Data/dblpParserGraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph"
+    val inputFileSpecificStarQueryPath = "../../Data/dblpParserGraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph"
     
-    val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)  
+    val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)         //read query 
+    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/varyingSpecifcNumberSize_singleMachine/nonStarQueryoutRuntime" + runTimeFileIndex
+
+    
+    var i = 0 
+    var tmpRunTimeoutputFilePath = ""
+    //set destination noe type
+    for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
+    {
+      
+      tmpRunTimeoutputFilePath = runTimeoutputFilePath
+
+      var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
+      for (specNodeLst <- specNodelistStarQueryTwoDimension)
+      {
+
+          dstTypeIdLstBuffer += (0)
+      }
+      
+      print ("main  dblp dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
+      val nonStarQueryTOPK = starQuery.TOPK
+      i += 1
+      tmpRunTimeoutputFilePath = tmpRunTimeoutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
+      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, inputNodeInfoFile, null, tmpRunTimeoutputFilePath)     //execute non star query
+      
+    }
     
     
   }
