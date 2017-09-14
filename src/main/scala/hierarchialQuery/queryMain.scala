@@ -227,10 +227,10 @@ object QueryMain {
     */
   
     //begin testing varying graph query size
-    val inputFileSpecificStarQueryPath = "../../Data/dblpParserGraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph"
+    val inputFileSpecificStarQueryPath = "../../Data/extractSubgraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph.tsv"
     
     val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)         //read query 
-    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varyingSpecifcNumberSize_singleMachine/nonStarQueryOutRuntime" + runTimeFileIndex
+    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varyingQueryGraphSize_singleMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
     
     var i = 0 
