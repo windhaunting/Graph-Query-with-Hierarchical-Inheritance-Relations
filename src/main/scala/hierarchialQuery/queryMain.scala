@@ -253,6 +253,8 @@ object QueryMain {
       i += 1
       tmpRunTimeOutputFilePath = tmpRunTimeOutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
       nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeOutputFilePath)     //execute non star query
+    
+    
     }
     
     
