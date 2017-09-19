@@ -260,7 +260,9 @@ object QueryMain {
    */
   
     //test varing graphData in dblp data
-    testVaringGraphData( sc, topK, runTimeFileIndex, databaseType)
+    val graphSizeRatio = args(2).toInt
+
+    testVaringGraphData( sc, topK, graphSizeRatio, runTimeFileIndex, databaseType)
     
     
   }
