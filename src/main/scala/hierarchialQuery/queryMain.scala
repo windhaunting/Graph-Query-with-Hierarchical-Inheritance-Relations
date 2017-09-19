@@ -202,8 +202,8 @@ object QueryMain {
     //begin topK K varing test
     /*
     val specificReadLst = List((189015L, 3), (10821L,1))
-    val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/varingTopKOneMachine/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  null, runTimeoutputFilePath)     //execute star query
+    val runTimeOutputFilePath = "../output/dblpData/starQueryOutput/varingTopKOneMachine/starQueryoutRuntime" + runTimeFileIndex
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  null, runTimeOutputFilePath)     //execute star query
     */
    
     //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3), (10821L,1)), List((189059L, 3), (189086L, 3)))
@@ -211,7 +211,7 @@ object QueryMain {
 
     /* 
     val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3), (10821L,1)), List((189059L, 3), (189086L, 3)), List((188857L, 3), (189086L, 3)))
-    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/varingTopKOneMachine/nonStarQueryoutRuntime" + runTimeFileIndex
+    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varingTopKOneMachine/nonStarQueryoutRuntime" + runTimeFileIndex
     val outputFilePath = null      //"../output/dblpData/nonStarQueryOutput/varingTopKOneMachine/nonStarQueryOutputFilePath" + runTimeFileIndex
 
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
@@ -273,12 +273,11 @@ object QueryMain {
     
     val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
     
-    val inputEdgeListfilePath = "../output/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList" +
+    val inputEdgeListfilePath = "../../Data/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList" +
                      varingGraphRatio.toString + "/edgeListPart" + varingGraphRatio.toString
     
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
-    
     val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
     val outputFilePath = null
@@ -292,12 +291,11 @@ object QueryMain {
         dstTypeIdLstBuffer += (1)
     }
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeoutputFilePath)     //execute star query
+    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath)     //execute star query
     
     
   }
   
-  
-  
+ 
    
 }
