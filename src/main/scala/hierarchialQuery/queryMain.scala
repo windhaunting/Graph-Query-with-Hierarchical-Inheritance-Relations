@@ -153,11 +153,11 @@ object QueryMain {
   def executeDblpGraphData(args: Array[String], sc: SparkContext) = {
       
     
-    val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
-    val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
+    //val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
+    //val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
         
     //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+    //val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
     val dstTypeId = 1                     //1: people
     val topK = args(0).toInt
@@ -278,6 +278,8 @@ object QueryMain {
                      varingGraphRatio.toString + "/edgeListPart" + varingGraphRatio.toString
     
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+    
+    print (" varingGraphRatio： " + varingGraphRatio + " " + inputEdgeListfilePath+ "\n")
 
     val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
