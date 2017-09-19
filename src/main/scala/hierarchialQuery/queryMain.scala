@@ -259,7 +259,7 @@ object QueryMain {
     
     
     //test data graph size changing
-    
+    val inputDir = "../output/dblpData/"
     
   }
    
