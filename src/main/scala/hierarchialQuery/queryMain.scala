@@ -226,6 +226,7 @@ object QueryMain {
     
     */
   
+    /*
     //begin testing varying graph query size
     val inputFileSpecificStarQueryPath = "../../Data/extractSubgraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph.tsv"
     
@@ -255,18 +256,20 @@ object QueryMain {
       nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, 
                                    nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeOutputFilePath)     //execute non star query
     
-    
     }
-   
+   */
+  
+    //test varing graphData in dblp data
+    testVaringGraphData( sc, topK, runTimeFileIndex, databaseType)
     
     
   }
   
-  
-  def testVaringGraphData (topK: Int, runTimeFileIndex: String, databaseType: Int, sc: SparkContext) = {
+  //function for testing varing graphData in dblp data
+  def testVaringGraphData (sc: SparkContext, topK: Int, runTimeFileIndex: String, databaseType: Int) = {
     
     //test data graph size changing
-    varingGraphRatio = 0.1
+    val varingGraphRatio = 0.1
     
     val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
     
@@ -283,14 +286,12 @@ object QueryMain {
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     
     val nonStarQueryTOPK = topK
-
     for (specNodeLst <- specNodelistStarQueryTwoDimension)
     {
          
         dstTypeIdLstBuffer += (1)
     }
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
-    val nonStarQueryTOPK = starQuery.TOPK
     nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeoutputFilePath)     //execute star query
     
     
