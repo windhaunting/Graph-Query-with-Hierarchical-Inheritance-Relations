@@ -261,14 +261,13 @@ object QueryMain {
   
     //test varing graphData in dblp data
     val graphSizeRatio = args(2).toInt
-
-    testVaringGraphData( sc, topK, graphSizeRatio, runTimeFileIndex, databaseType)
+    testVaringGraphData( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
     
     
   }
   
   //function for testing varing graphData in dblp data
-  def testVaringGraphData (sc: SparkContext, topK: Int, graphSizeRatio: Int, runTimeFileIndex: String, databaseType: Int) = {
+  def testVaringGraphData (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
     
     //test data graph size changing
     val varingGraphRatio = graphSizeRatio*0.1
