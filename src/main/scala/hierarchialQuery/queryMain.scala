@@ -266,10 +266,10 @@ object QueryMain {
   }
   
   //function for testing varing graphData in dblp data
-  def testVaringGraphData (sc: SparkContext, topK: Int, runTimeFileIndex: String, databaseType: Int) = {
+  def testVaringGraphData (sc: SparkContext, topK: Int, graphSizeRatio: Int, runTimeFileIndex: String, databaseType: Int) = {
     
     //test data graph size changing
-    val varingGraphRatio = 0.1
+    val varingGraphRatio = graphSizeRatio*0.1
     
     val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
     
