@@ -256,11 +256,22 @@ object QueryMain {
     
     
     }
+   
     
-    
-    //test data graph size changing
-    val inputDir = "../output/dblpData/"
     
   }
+  
+  
+  def testVaringGraphData () = {
+    
+    //test data graph size changing
+    varingGraphRatio = 0.1
+    val inputDir = "../output/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList0.1"  
+    
+    
+  }
+  
+  
+  
    
 }
