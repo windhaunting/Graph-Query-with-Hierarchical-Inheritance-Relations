@@ -252,7 +252,8 @@ object QueryMain {
       val nonStarQueryTOPK = starQuery.TOPK
       i += 1
       tmpRunTimeOutputFilePath = tmpRunTimeOutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
-      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeOutputFilePath)     //execute non star query
+      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, 
+                                   nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeOutputFilePath)     //execute non star query
     
     
     }
@@ -266,7 +267,9 @@ object QueryMain {
     
     //test data graph size changing
     varingGraphRatio = 0.1
-    val inputDir = "../output/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList0.1"  
+    val inputDir = "../output/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList" +
+                     varingGraphRatio.toString + "/edgeListPart" + varingGraphRatio.toString
+    
     
     
   }
