@@ -263,18 +263,27 @@ object QueryMain {
   }
   
   
-  def testVaringGraphData (topK: Int, runTimeFileIndex: String, sc: SparkContext, graph: Graph[VD, ED],) = {
+  def testVaringGraphData (topK: Int, runTimeFileIndex: String, databaseType: Int, sc: SparkContext) = {
     
     //test data graph size changing
     varingGraphRatio = 0.1
-    val inputDir = "../output/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList" +
+    
+    val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
+    
+    val inputEdgeListfilePath = "../output/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList" +
                      varingGraphRatio.toString + "/edgeListPart" + varingGraphRatio.toString
+    
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+
     
     val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
     val outputFilePath = null
     val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3), (189086L, 3)))
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
+    
+    val nonStarQueryTOPK = topK
+
     for (specNodeLst <- specNodelistStarQueryTwoDimension)
     {
          
