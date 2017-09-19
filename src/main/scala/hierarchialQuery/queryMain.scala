@@ -150,7 +150,7 @@ object QueryMain {
   
     
   //dblp data base execute --main entry
-  def executeDblpGraphData(args: Array[String], sc: SparkContext, graph: Graph[VD, ED]) = {
+  def executeDblpGraphData(args: Array[String], sc: SparkContext) = {
       
     
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
@@ -263,14 +263,16 @@ object QueryMain {
   }
   
   
-  def testVaringGraphData (sc: SparkContext) = {
+  def testVaringGraphData (topK: Int, runTimeFileIndex: String, sc: SparkContext, graph: Graph[VD, ED],) = {
     
     //test data graph size changing
     varingGraphRatio = 0.1
     val inputDir = "../output/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList" +
                      varingGraphRatio.toString + "/edgeListPart" + varingGraphRatio.toString
     
+    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
+    val outputFilePath = null
     val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3), (189086L, 3)))
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     for (specNodeLst <- specNodelistStarQueryTwoDimension)
