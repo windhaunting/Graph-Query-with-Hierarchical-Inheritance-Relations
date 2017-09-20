@@ -280,24 +280,23 @@ object QueryMain {
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
     
     print (" varingGraphRatio： " + varingGraphRatio + " " + inputEdgeListfilePath+ "\n")
-
     val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
     val outputFilePath = null
     val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189015L, 3), (10821L, 1)))
-    
+
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     
     val nonStarQueryTOPK = topK
     for (specNodeLst <- specNodelistStarQueryTwoDimension)
     {
-         
         dstTypeIdLstBuffer += (1)
     }
+    
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
     nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath)     //execute star query
     
-    
+  
   }
   
  
