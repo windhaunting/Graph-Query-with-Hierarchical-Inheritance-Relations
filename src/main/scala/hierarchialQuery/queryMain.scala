@@ -283,8 +283,8 @@ object QueryMain {
     val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
     val outputFilePath = null
-    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189015L, 3), (10821L, 1)))
-
+    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189015L, 3), (10821L, 1)))
+    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189015L, 3), (98267L, 1)))
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     
     val nonStarQueryTOPK = topK
