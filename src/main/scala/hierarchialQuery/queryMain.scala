@@ -272,9 +272,10 @@ object QueryMain {
     //test data graph size changing
     val varingGraphRatio = graphSizeRatio*0.1
     
-    val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
+    val inputNodeInfoFilePath = "../../Data/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphInfo" +
+                     varingGraphRatio.toString + "/nodeInfoPart" + varingGraphRatio.toString
     
-    val inputEdgeListfilePath = "../../Data/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphEdgeList" +
+    val inputEdgeListfilePath = "../../Data/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphInfo" +
                      varingGraphRatio.toString + "/edgeListPart" + varingGraphRatio.toString
     
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
