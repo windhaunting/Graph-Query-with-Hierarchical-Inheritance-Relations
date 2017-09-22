@@ -340,7 +340,6 @@ object QueryMain {
         }
     }
     
-    
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
     nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath)     //execute star query
     
