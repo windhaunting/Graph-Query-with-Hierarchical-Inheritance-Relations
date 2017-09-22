@@ -68,9 +68,9 @@ object QueryMain {
     val dstTypeId = 0
     val topK = args(0).toInt
     val databaseType = 0
+    val runTimeFileIndex = args(1)
     
     starQuery.TOPK = topK
-   // val runTimeFileIndex = args(1)
    // val runTimeoutputFilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
 
     /*
@@ -168,7 +168,6 @@ object QueryMain {
     starQuery.TOPK = topK
     
     val databaseType = 1              //DBLP database
-
     val runTimeFileIndex = args(1)
 
     //val specificReadLst = List((188470L, 3), (10821L,1))
