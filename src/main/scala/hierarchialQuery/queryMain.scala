@@ -28,8 +28,8 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")            // override output with the same path
     val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
-    //executeProductDatabase(args, sc)
-    executeDblpGraphData(args, sc)
+    executeProductDatabase(args, sc)
+    //executeDblpGraphData(args, sc)
     println("executeDblpGraphData: done")
     
   }
@@ -41,13 +41,13 @@ object QueryMain {
    //val file = "hdfs://192.168.0.52:8070/testEdgeListFile2"
     //val inputfilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/Data/testInput/teshierarchicalAdjacencyList"
     
-    val inputAdjacencyListfilePath = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
-    val inputNodeInfoFile = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphNodeInfo"
+    //val inputAdjacencyListfilePath = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
+    //val inputNodeInfoFile = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphNodeInfo"
     
     //val outputFileNode = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutNode"
     //args [0] is TOPK number
     
-    val outputFilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutPath"
+    //val outputFilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutPath"
 
     //test file
     //val inputAdjacencyListfilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/Data/testInput/test_smallGraphSpark"
@@ -67,9 +67,9 @@ object QueryMain {
    
     val dstTypeId = 0
     val topK = args(0).toInt
-    starQuery.TOPK = topK
     val databaseType = 0
     
+    starQuery.TOPK = topK
    // val runTimeFileIndex = args(1)
    // val runTimeoutputFilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
 
@@ -146,7 +146,9 @@ object QueryMain {
     }
     */
    
-    
+    //test varing graphData in dblp data
+    val graphSizeRatio = args(2).toInt
+    testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
     
   }
   
@@ -263,13 +265,13 @@ object QueryMain {
   
     //test varing graphData in dblp data
     val graphSizeRatio = args(2).toInt
-    testVaringGraphData( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
+    testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
     
     
   }
   
   //function for testing varing graphData in dblp data
-  def testVaringGraphData (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
+  def testVaringGraphDataDblp (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
     
     //test data graph size changing
     val varingGraphRatio = graphSizeRatio*0.1
@@ -307,8 +309,8 @@ object QueryMain {
   }
   
  
-  //function for testing varing graphData in dblp data
-  def testVaringGraphData (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
+  //function for testing varing graphData in cisco product data
+  def testVaringGraphDataProduct (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
     
     //test data graph size changing
     val varingGraphRatio = graphSizeRatio*0.1
@@ -321,11 +323,12 @@ object QueryMain {
     
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
     print (" varingGraphRatio： " + varingGraphRatio + " " + inputEdgeListfilePath+ "\n")
-    val runTimeOutputFilePath = "../output/varingDataGraphSizeOneMachine/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
+    val runTimeOutputFilePath = "../output/ciscoProduct/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
     val outputFilePath = null
-    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((59897L, 3), (66520L, 2)))
     
-       var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
+    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((9104L, 5), (6145L, 1)))
+    
+    var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     
     val nonStarQueryTOPK = topK
     for (specNodeLst <- specNodelistStarQueryTwoDimension)
