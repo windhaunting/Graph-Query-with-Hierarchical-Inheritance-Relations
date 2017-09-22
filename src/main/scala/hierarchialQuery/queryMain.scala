@@ -325,8 +325,8 @@ object QueryMain {
     val runTimeOutputFilePath = "../output/ciscoProduct/nonStarQueryOutput/varingDataGraphSizeOneMachine/nonStarQueryOutRuntime" + runTimeFileIndex
     val outputFilePath = null
     
-    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((9104L, 5), (6145L, 1)))
-    
+    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((9104L, 5), (6145L, 1)))
+    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((9104L, 5), (6145L, 1)), List((10210L, 6), (9923L, 6)))
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     
     val nonStarQueryTOPK = topK
