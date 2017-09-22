@@ -326,7 +326,9 @@ object QueryMain {
     val outputFilePath = null
     
     //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((9104L, 5), (6145L, 1)))
-    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((9104L, 5), (6145L, 1)), List((10210L, 6), (9923L, 6)))
+    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((9104L, 5), (6145L, 1)), List((10210L, 6), (9923L, 6)))
+    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((9104L, 5), (6145L, 1)), List((10210L, 6), (9923L, 6)), List((11300L, 6), (11095L, 6)))
+
     var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
     
     val nonStarQueryTOPK = topK
