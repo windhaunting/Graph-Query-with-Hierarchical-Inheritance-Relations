@@ -54,7 +54,7 @@ object QueryMain {
 
     
     //read adjacency list to vertex edge RDD
-    val hierGraph = graphInputCommon.readAdjcencyListFile(sc, inputAdjacencyListfilePath)
+    //val hierGraph = graphInputCommon.readAdjcencyListFile(sc, inputAdjacencyListfilePath)
 
     //graphInputCommon.test(sc)
         
@@ -64,7 +64,6 @@ object QueryMain {
     
     //here is the main function entry for star query
     //experiment input list element (nodeId and type)
-    
    
     val dstTypeId = 0
     val topK = args(0).toInt
@@ -89,7 +88,7 @@ object QueryMain {
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFile,  outputFilePath, runTimeoutputFilePath)     //execute star query
    */
   
-
+    /*
     val runTimeFileIndex = args(1)
    //for varing top-k
     val runTimeoutputFilePath = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/nonStarQueryOutput/varingTopKOneMachine/nonstarQueryoutRuntime" + runTimeFileIndex
@@ -110,8 +109,9 @@ object QueryMain {
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
     val nonStarQueryTOPK = starQuery.TOPK
     nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFile, null, runTimeoutputFilePath)     //execute star query
-    
+    */
    
+    
     /*
     // test varying query size
     val runTimeFileIndex = args(1)
@@ -146,6 +146,8 @@ object QueryMain {
     }
     */
    
+    
+    
   }
   
     
@@ -305,5 +307,17 @@ object QueryMain {
   }
   
  
+  //function for testing varing graphData in dblp data
+  def testVaringGraphData (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
+    
+    //test data graph size changing
+    val varingGraphRatio = graphSizeRatio*0.1
+    
+    val inputNodeInfoFilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo" +
+                     varingGraphRatio.toString + "/nodeInfoPart" + varingGraphRatio.toString
+                     
+    
+    
+  }
    
 }
