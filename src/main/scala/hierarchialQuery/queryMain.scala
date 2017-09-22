@@ -316,6 +316,10 @@ object QueryMain {
     val inputNodeInfoFilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo" +
                      varingGraphRatio.toString + "/nodeInfoPart" + varingGraphRatio.toString
                      
+    val inputEdgeListfilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo" +
+                     varingGraphRatio.toString + "/edgeListPart" + varingGraphRatio.toString
+    
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
     
     
   }
