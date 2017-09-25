@@ -348,4 +348,10 @@ object QueryMain {
     
   }
    
+  
+  //check hierarchical relations 
+  def testVaringGraphDataProduct (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
+    
+  }
+    
 }
