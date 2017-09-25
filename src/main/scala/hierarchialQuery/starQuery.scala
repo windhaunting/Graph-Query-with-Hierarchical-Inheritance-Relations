@@ -198,7 +198,10 @@ object starQuery {
   //given the node types, hierarchical inheritance or not (hierarchical or generic relations); databaseType: ciso product : 0, dblp : 1
   def getHierarchicalInheritance(nodeIdType1: Int, nodeIdType2: Int, databaseType: Int) = {
     //print ("189 getHierarchicalInheritance PRODUCT.id: ", PRODUCT.id +" " + VULNERABILITY.id)
-    
+
+    //test no hierarchical relations, return false always
+    return false 
+
     if (databaseType == 0){
       if ((nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id) || (nodeIdType1 == VULNERABILITY.id && nodeIdType2 == PRODUCT.id)){
         true
@@ -218,9 +221,8 @@ object starQuery {
     else{
       false
     }
-  }
+   }
   
-
   
 //get the closeness score from the parameters
   def calculateClosenessScore(spDistance: Long, spNumber: Long, hierLevelDifference: Long) = {
