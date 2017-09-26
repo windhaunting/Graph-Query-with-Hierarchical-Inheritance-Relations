@@ -349,8 +349,20 @@ object QueryMain {
   }
    
   
-  //check hierarchical relations 
-  def testVaringGraphDataProduct (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
+  //test theresult w/ and w/ hierarchical relations
+  def testHierarchicalRelationProductData (sc: SparkContext, topK: Int, databaseType: Int) = {
+   //based on star query check
+   val inputEdgeListfilePath =  //   "../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
+   val inputNodeInfoFile = "../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphNodeInfo"
+    
+    val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutPath/"
+
+    //read adjacency list to vertex edge RDD
+    val runTimeoutputFilePath = null
+    val hierGraph = graphInputCommon.readAdjcencyListFile(sc, inputAdjacencyListfilePath)
+    val specificReadLst = List((5817L, 1), (5737L,1))
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFile,  outputFilePath, runTimeoutputFilePath)     //execute star query
+ 
     
   }
     
