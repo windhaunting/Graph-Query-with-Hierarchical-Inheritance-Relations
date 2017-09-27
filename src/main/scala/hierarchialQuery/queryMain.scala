@@ -352,14 +352,14 @@ object QueryMain {
   //test theresult w/ and w/ hierarchical relations
   def testHierarchicalRelationProductData (sc: SparkContext, topK: Int, databaseType: Int) = {
    //based on star query check
-   val inputEdgeListfilePath = "./../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo "      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
-   val inputNodeInfoFile = "../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphNodeInfo"
+   val inputEdgeListfilePath = "./../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
+   val inputNodeInfoFile = "./../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
     
-    val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutPath/"
+    val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutPath/testNoHierarchiOutput.tsv"
 
     //read adjacency list to vertex edge RDD
     val runTimeoutputFilePath = null
-    val hierGraph = graphInputCommon.readAdjcencyListFile(sc, inputAdjacencyListfilePath)
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
     val specificReadLst = List((5817L, 1), (5737L,1))
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFile,  outputFilePath, runTimeoutputFilePath)     //execute star query
  
