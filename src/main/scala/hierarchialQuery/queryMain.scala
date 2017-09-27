@@ -147,7 +147,7 @@ object QueryMain {
     */
    
     //test varing graphData in dblp data
-    val graphSizeRatio = args(2).toInt
+   // val graphSizeRatio = args(2).toInt
   //  testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
     
     //test w/o or w/ hierarchical relations
