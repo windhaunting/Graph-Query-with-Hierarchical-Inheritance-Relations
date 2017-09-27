@@ -151,7 +151,7 @@ object QueryMain {
   //  testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
     
     //test w/o or w/ hierarchical relations
-    val hierarchialRelation = true
+    val hierarchialRelation = false
     testHierarchicalRelationProductData (sc: SparkContext, topK: Int, runTimeFileIndex, databaseType, hierarchialRelation)
     
   }
@@ -359,11 +359,12 @@ object QueryMain {
    val inputEdgeListfilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
    val inputNodeInfoFilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
     
+    var outputFilePath = ""
     if (hierarchialRelation){
-        val outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput.tsv"   
+        outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput.tsv"   
     }
     else{
-        val outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testNoHierarchiOutput.tsv"       
+        outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testNoHierarchiOutput.tsv"       
     }
 
     //read adjacency list to vertex edge RDD
