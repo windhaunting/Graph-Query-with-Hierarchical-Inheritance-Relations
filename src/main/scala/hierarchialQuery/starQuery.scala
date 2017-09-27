@@ -468,7 +468,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                 //update dstNodeMap 
                 newdstNodeMap += (specificNodeId -> tmpNodeInfo)
                
-                //println("282 starQueryGraphbfsTraverse newdstNodeMap: "+ triplet.srcId+ triplet.dstId+ newdstNodeMap)
+                println("282 starQueryGraphbfsTraverse newdstNodeMap: "+ triplet.srcId+ triplet.dstId)
               }
               else{
                   
