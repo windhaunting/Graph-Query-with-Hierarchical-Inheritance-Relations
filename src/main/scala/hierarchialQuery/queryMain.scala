@@ -65,7 +65,7 @@ object QueryMain {
     //here is the main function entry for star query
     //experiment input list element (nodeId and type)
    
-    val dstTypeId = 0
+    //val dstTypeId = 0
     val topK = args(0).toInt
     val databaseType = 0
     val runTimeFileIndex = args(1)
@@ -149,6 +149,8 @@ object QueryMain {
     //test varing graphData in dblp data
     val graphSizeRatio = args(2).toInt
     testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
+    
+    testHierarchicalRelationProductData (sc: SparkContext, topK: Int, runTimeFileIndex, databaseType: Int)
     
   }
   
@@ -349,18 +351,20 @@ object QueryMain {
   }
    
   
-  //test theresult w/ and w/ hierarchical relations
-  def testHierarchicalRelationProductData (sc: SparkContext, topK: Int, databaseType: Int) = {
+  //test theresult w/o and w/ hierarchical relations
+  def testHierarchicalRelationProductData (sc: SparkContext, topK: Int, runTimeFileIndex: String, databaseType: Int) = {
    //based on star query check
    val inputEdgeListfilePath = "./../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
    val inputNodeInfoFile = "./../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
     
-    val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutPath/testNoHierarchiOutput.tsv"
+    val outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testNoHierarchiOutput.tsv"
 
     //read adjacency list to vertex edge RDD
-    val runTimeoutputFilePath = null
+    val runTimeoutputFilePath = null       //"../output/ciscoProduct/starQueryOutput/testWithOrWORelations/runTime" + runTimeFileIndex
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-    val specificReadLst = List((5817L, 1), (5737L,1))
+    val specificReadLst = List((2020L, 1), (9573L,5))
+    val dstTypeId = 0
+    
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFile,  outputFilePath, runTimeoutputFilePath)     //execute star query
  
     
