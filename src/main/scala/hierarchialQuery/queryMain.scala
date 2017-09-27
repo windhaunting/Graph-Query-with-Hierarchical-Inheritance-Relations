@@ -148,8 +148,9 @@ object QueryMain {
    
     //test varing graphData in dblp data
     val graphSizeRatio = args(2).toInt
-    testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
+  //  testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
     
+    //test w/o or w/ hierarchical relations
     testHierarchicalRelationProductData (sc: SparkContext, topK: Int, runTimeFileIndex, databaseType: Int)
     
   }
@@ -354,8 +355,8 @@ object QueryMain {
   //test theresult w/o and w/ hierarchical relations
   def testHierarchicalRelationProductData (sc: SparkContext, topK: Int, runTimeFileIndex: String, databaseType: Int) = {
    //based on star query check
-   val inputEdgeListfilePath = "./../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
-   val inputNodeInfoFile = "./../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
+   val inputEdgeListfilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
+   val inputNodeInfoFilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
     
     val outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testNoHierarchiOutput.tsv"
 
@@ -365,7 +366,7 @@ object QueryMain {
     val specificReadLst = List((2020L, 1), (9573L,5))
     val dstTypeId = 0
     
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFile,  outputFilePath, runTimeoutputFilePath)     //execute star query
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
  
     
   }

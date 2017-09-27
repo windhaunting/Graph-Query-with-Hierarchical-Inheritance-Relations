@@ -200,7 +200,7 @@ object starQuery {
     //print ("189 getHierarchicalInheritance PRODUCT.id: ", PRODUCT.id +" " + VULNERABILITY.id)
 
     //test no hierarchical relations, return false always
-    return false 
+    false 
 
     if (databaseType == 0){
       if ((nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id) || (nodeIdType1 == VULNERABILITY.id && nodeIdType2 == PRODUCT.id)){
