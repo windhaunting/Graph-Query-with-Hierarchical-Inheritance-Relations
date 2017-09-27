@@ -467,8 +467,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                                    hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
                 //update dstNodeMap 
                 newdstNodeMap += (specificNodeId -> tmpNodeInfo)
-               
-                println("282 starQueryGraphbfsTraverse newdstNodeMap: "+ triplet.srcId+ triplet.dstId)
+                if (changedEdgeLevel !=0 ){
+                    println("282 starQueryGraphbfsTraverse newdstNodeMap: "+ triplet.srcId+ " " + triplet.dstId + " " + changedEdgeLevel)
+                }
               }
               else{
                   
