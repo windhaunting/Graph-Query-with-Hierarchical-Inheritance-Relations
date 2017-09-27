@@ -352,7 +352,7 @@ object QueryMain {
   //test theresult w/ and w/ hierarchical relations
   def testHierarchicalRelationProductData (sc: SparkContext, topK: Int, databaseType: Int) = {
    //based on star query check
-   val inputEdgeListfilePath =  //   "../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
+   val inputEdgeListfilePath = "./../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo "      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
    val inputNodeInfoFile = "../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphNodeInfo"
     
     val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutPath/"
