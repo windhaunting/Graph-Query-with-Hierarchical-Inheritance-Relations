@@ -148,7 +148,8 @@ object QueryMain {
    
     //test varing graphData in dblp data
    // val graphSizeRatio = args(2).toInt
-  //  testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
+    //val hierarchialRelation = true
+  //  testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
     
     //test w/o or w/ hierarchical relations
     val hierarchialRelation = false
@@ -268,13 +269,14 @@ object QueryMain {
   
     //test varing graphData in dblp data
     val graphSizeRatio = args(2).toInt
-    testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType)
+    val hierarchialRelation = true
+    testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
     
     
   }
   
   //function for testing varing graphData in dblp data
-  def testVaringGraphDataDblp (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
+  def testVaringGraphDataDblp (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int, hierarchialRelation: Boolean) = {
     
     //test data graph size changing
     val varingGraphRatio = graphSizeRatio*0.1
@@ -306,14 +308,14 @@ object QueryMain {
     
     
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath)     //execute star query
+    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute star query
     
   
   }
   
  
   //function for testing varing graphData in cisco product data
-  def testVaringGraphDataProduct (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int) = {
+  def testVaringGraphDataProduct (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int, hierarchialRelation: Boolean) = {
     
     //test data graph size changing
     val varingGraphRatio = graphSizeRatio*0.1
@@ -347,7 +349,7 @@ object QueryMain {
     }
     
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath)     //execute star query
+    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute star query
     
     
   }
