@@ -269,7 +269,7 @@ object QueryMain {
   
     //test varing graphData in dblp data
     val graphSizeRatio = args(2).toInt
-    val hierarchialRelation = true
+    val hierarchialRelation = false
     testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
     
     
@@ -363,10 +363,10 @@ object QueryMain {
     
     var outputFilePath = ""
     if (hierarchialRelation){
-        outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput.tsv"   
+        outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput" + runTimeFileIndex + ".tsv"   
     }
     else{
-        outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testNoHierarchiOutput.tsv"       
+        outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testNoHierarchiOutput" + runTimeFileIndex + ".tsv"       
     }
 
     //read adjacency list to vertex edge RDD
