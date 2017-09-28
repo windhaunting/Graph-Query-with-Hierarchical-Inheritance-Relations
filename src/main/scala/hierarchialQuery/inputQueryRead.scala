@@ -86,17 +86,4 @@ object inputQueryRead {
      } 
     
   
-  
-  //get subgraph from data graph;   random select nodes and create subgraph
-  def subgraphFromDataGraph[VD, ED](graph: Graph[VD, ED], ratioofNodes: Int) = {
-    
-    val totalNodes = graph.vertices.count
-    //extracted subgraph node number
-    val selectNodeNumber = totalNodes*ratioofNodes
-    
-    
-  }
-  
-  
-  
 }
