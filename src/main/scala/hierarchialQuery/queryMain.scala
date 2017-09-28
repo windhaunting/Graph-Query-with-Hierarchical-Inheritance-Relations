@@ -28,8 +28,9 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")            // override output with the same path
     val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
-    executeProductDatabase(args, sc)
-    //executeDblpGraphData(args, sc)
+    //executeProductDatabase(args, sc)
+    
+    executeDblpGraphData(args, sc)
     println("executeDblpGraphData: done")
     
   }
@@ -153,7 +154,7 @@ object QueryMain {
     
     //test w/o or w/ hierarchical relations
     val hierarchialRelation = false
-    testHierarchicalRelationProductData (sc: SparkContext, topK: Int, runTimeFileIndex, databaseType, hierarchialRelation)
+    testHierarchicalRelationProductData (sc, topK, runTimeFileIndex, databaseType, hierarchialRelation)
     
   }
   
@@ -268,9 +269,12 @@ object QueryMain {
    */
   
     //test varing graphData in dblp data
-    val graphSizeRatio = args(2).toInt
-    val hierarchialRelation = true
-    testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
+    //val graphSizeRatio = args(2).toInt
+    //val hierarchialRelation = true
+    //testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
+    
+    val hierarchialRelation = false
+    testHierarchicalRelationDblpData (sc, topK, runTimeFileIndex, databaseType, hierarchialRelation)
     
     
   }
@@ -383,10 +387,10 @@ object QueryMain {
   
     //test theresult w/o and w/ hierarchical relations in dblp data
   def testHierarchicalRelationDblpData (sc: SparkContext, topK: Int, runTimeFileIndex: String, databaseType: Int, hierarchialRelation: Boolean) = {
-   //based on star query check
-   val inputEdgeListfilePath = "../../Data/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
-   val inputNodeInfoFilePath = "../../Data/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
-    
+   //based on star query check    
+    val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
+    val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
+
     var outputFilePath = ""
     if (hierarchialRelation){
         outputFilePath = "../output/dblpData/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput" + runTimeFileIndex + ".tsv"   
@@ -398,8 +402,8 @@ object QueryMain {
     //read adjacency list to vertex edge RDD
     val runTimeoutputFilePath = null       //"../output/ciscoProduct/starQueryOutput/testWithOrWORelations/runTime" + runTimeFileIndex
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-    val specificReadLst = List((8330L, 1), (8987L,4))
-    val dstTypeId = 0
+    val specificReadLst = List((189015L, 3), (10821L,1))
+    val dstTypeId = 1
     
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
    }
