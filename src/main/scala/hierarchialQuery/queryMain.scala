@@ -152,7 +152,7 @@ object QueryMain {
   //  testVaringGraphDataProduct( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
     
     //test w/o or w/ hierarchical relations
-    val hierarchialRelation = true
+    val hierarchialRelation = false
     testHierarchicalRelationProductData (sc: SparkContext, topK: Int, runTimeFileIndex, databaseType, hierarchialRelation)
     
   }
@@ -269,7 +269,7 @@ object QueryMain {
   
     //test varing graphData in dblp data
     val graphSizeRatio = args(2).toInt
-    val hierarchialRelation = false
+    val hierarchialRelation = true
     testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
     
     
