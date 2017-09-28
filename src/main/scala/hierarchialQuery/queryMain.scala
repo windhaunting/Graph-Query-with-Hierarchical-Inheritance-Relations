@@ -273,7 +273,7 @@ object QueryMain {
     //val hierarchialRelation = true
     //testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
     
-    val hierarchialRelation = false
+    val hierarchialRelation = true
     testHierarchicalRelationDblpData (sc, topK, runTimeFileIndex, databaseType, hierarchialRelation)
     
     
