@@ -402,7 +402,7 @@ object QueryMain {
     //read adjacency list to vertex edge RDD
     val runTimeoutputFilePath = null       //"../output/ciscoProduct/starQueryOutput/testWithOrWORelations/runTime" + runTimeFileIndex
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-    val specificReadLst = List((189015L, 3), (9136L,1))
+    val specificReadLst = List((189057L, 3), (9136L,1))
     val dstTypeId = 1
     
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
