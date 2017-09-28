@@ -384,15 +384,15 @@ object QueryMain {
     //test theresult w/o and w/ hierarchical relations in dblp data
   def testHierarchicalRelationDblpData (sc: SparkContext, topK: Int, runTimeFileIndex: String, databaseType: Int, hierarchialRelation: Boolean) = {
    //based on star query check
-   val inputEdgeListfilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
-   val inputNodeInfoFilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
+   val inputEdgeListfilePath = "../../Data/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
+   val inputNodeInfoFilePath = "../../Data/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
     
     var outputFilePath = ""
     if (hierarchialRelation){
-        outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput" + runTimeFileIndex + ".tsv"   
+        outputFilePath = "../output/dblpData/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput" + runTimeFileIndex + ".tsv"   
     }
     else{
-        outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testNoHierarchiOutput" + runTimeFileIndex + ".tsv"       
+        outputFilePath = "../output/dblpData/starQueryOutput/testWithOrWORelations/testNoHierarchiOutput" + runTimeFileIndex + ".tsv"       
     }
 
     //read adjacency list to vertex edge RDD
