@@ -365,6 +365,7 @@ object QueryMain {
    val inputEdgeListfilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/edgeListPart1.0"      //"../../../hierarchicalNetworkQuery/inputData/ciscoProductVulnerability/newCiscoGraphAdjacencyList"
    val inputNodeInfoFilePath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/ciscoProductDataGraphExtractOut/dataGraphInfo1.0/nodeInfoPart1.0"
     
+    /*
     var outputFilePath = ""
     if (hierarchialRelation){
         outputFilePath = "../output/ciscoProduct/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput" + runTimeFileIndex + ".tsv"   
@@ -380,12 +381,45 @@ object QueryMain {
     val dstTypeId = 0
     
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
- 
+    
+    */
+   
+    //test runtime with different query size
+
+    val inputFileSpecificStarQueryPath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/extractSubgraphOutput/ciscoDataExtractQueryGraph"
+    
+    val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)
+   
+    //print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
+    //for varing query graph size
+    var runTimeoutputFilePath = "../../../GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/nonStarQueryOutput/varingSpecificSizeOneMachine/" + "queryGraphSize"
+    
+    var i = 0 
+    var tmpRunTimeoutputFilePath = ""
+    for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
+    {
+      
+      tmpRunTimeoutputFilePath = runTimeoutputFilePath
+
+      var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
+      for (specNodeLst <- specNodelistStarQueryTwoDimension)
+      {
+
+          dstTypeIdLstBuffer += (0)
+      }
+      print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
+      val nonStarQueryTOPK = starQuery.TOPK
+      i += 1
+      tmpRunTimeoutputFilePath = tmpRunTimeoutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
+      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFile, null, tmpRunTimeoutputFilePath, hierarchialRelation)     //execute non star query
+      
+    }
     
   }
   
   
-    //test theresult w/o and w/ hierarchical relations in dblp data
+  
+  //test theresult w/o and w/ hierarchical relations in dblp data
   def testHierarchicalRelationDblpData (sc: SparkContext, topK: Int, runTimeFileIndex: String, databaseType: Int, hierarchialRelation: Boolean) = {
    //based on star query check    
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
