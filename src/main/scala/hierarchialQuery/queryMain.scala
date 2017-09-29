@@ -385,15 +385,20 @@ object QueryMain {
     */
    
     //test runtime with different query size
-
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
     val inputFileSpecificStarQueryPath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/extractSubgraphOutput/ciscoDataExtractQueryGraph"
     
     val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)
    
     //print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
     //for varing query graph size
-    var runTimeoutputFilePath = "../../../GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/nonStarQueryOutput/varingSpecificSizeOneMachine/" + "queryGraphSize"
-    
+    var runTimeoutputFilePath = ""
+    if (hierarchialRelation){
+        runTimeoutputFilePath = "../../../GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
+    }
+    else{
+        runTimeoutputFilePath = "../../../GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
+    }
     var i = 0 
     var tmpRunTimeoutputFilePath = ""
     for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
@@ -411,7 +416,7 @@ object QueryMain {
       val nonStarQueryTOPK = starQuery.TOPK
       i += 1
       tmpRunTimeoutputFilePath = tmpRunTimeoutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
-      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFile, null, tmpRunTimeoutputFilePath, hierarchialRelation)     //execute non star query
+      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeoutputFilePath, hierarchialRelation)     //execute non star query
       
     }
     
