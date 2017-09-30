@@ -430,6 +430,9 @@ object QueryMain {
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
     val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
 
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+
+    /*
     var outputFilePath = ""
     if (hierarchialRelation){
         outputFilePath = "../output/dblpData/starQueryOutput/testWithOrWORelations/testWithHierarchiOutput" + runTimeFileIndex + ".tsv"   
@@ -440,14 +443,25 @@ object QueryMain {
 
     //read adjacency list to vertex edge RDD
     val runTimeoutputFilePath = null       //"../output/ciscoProduct/starQueryOutput/testWithOrWORelations/runTime" + runTimeFileIndex
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
     //val specificReadLst = List((188856L, 3), (9136L,1))
     val specificReadLst = List((189009L, 3), (9136L,1))
     
     val dstTypeId = 1
     
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
-   }
+    */
+    
+    val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)         //read query 
+    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varyingQueryGraphSize_singleMachine/nonStarQueryOutRuntime" + runTimeFileIndex
+
+    if (hierarchialRelation){
+        runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
+    }
+    else{
+        runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
+    }
+  
+  }
    
     
 }
