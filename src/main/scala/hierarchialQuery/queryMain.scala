@@ -28,9 +28,9 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")            // override output with the same path
     val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
-    //executeProductDatabase(args, sc)
+    executeProductDatabase(args, sc)
     
-    executeDblpGraphData(args, sc)
+   // executeDblpGraphData(args, sc)
     println("executeDblpGraphData: done")
     
   }
@@ -394,10 +394,10 @@ object QueryMain {
     //for varing query graph size
     var runTimeoutputFilePath = ""
     if (hierarchialRelation){
-        runTimeoutputFilePath = "../../../GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
+        runTimeoutputFilePath = "../output/ciscoProduct/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
     else{
-        runTimeoutputFilePath = "../../../GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
+        runTimeoutputFilePath = "../output/ciscoProduct/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
     var i = 0 
     var tmpRunTimeoutputFilePath = ""
@@ -476,7 +476,6 @@ object QueryMain {
       
     }
       
-    }
   
   }
    
