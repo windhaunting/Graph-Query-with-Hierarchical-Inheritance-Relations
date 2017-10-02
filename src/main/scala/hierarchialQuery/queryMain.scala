@@ -460,6 +460,22 @@ object QueryMain {
     else{
         runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
+    
+     var i = 0 
+    var tmpRunTimeoutputFilePath = ""
+    for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
+    {
+       tmpRunTimeoutputFilePath = runTimeoutputFilePath
+
+      var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
+      for (specNodeLst <- specNodelistStarQueryTwoDimension)
+      {
+
+          dstTypeIdLstBuffer += (0)
+      }
+    }
+      
+    }
   
   }
    
