@@ -473,6 +473,7 @@ object QueryMain {
 
           dstTypeIdLstBuffer += (0)
       }
+      
     }
       
     }
