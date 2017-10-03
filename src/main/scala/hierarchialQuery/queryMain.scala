@@ -29,9 +29,9 @@ object QueryMain {
     val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
     executeProductDatabase(args, sc)
-    
+    println("executeProductDatabase: done")
    // executeDblpGraphData(args, sc)
-    println("executeDblpGraphData: done")
+   // println("executeDblpGraphData: done")
     
   }
   
@@ -117,7 +117,7 @@ object QueryMain {
     // test varying query size
     val runTimeFileIndex = args(1)
 
-    val inputFileSpecificStarQueryPath = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/hierarchicalQueryPython/output/extractSubgraphOutput/ciscoDataExtractQueryGraph"
+    val inputFileSpecificStarQueryPath = "/home/fubao/workDir/ResearchProjects/hierarchicalNetworkQuery/hierarchicalQueryPython/output/extractSubgraphQueryOutput/ciscoDataExtractQueryGraph"
     
     val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)
    
@@ -386,7 +386,7 @@ object QueryMain {
    
     //test runtime with different query size
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-    val inputFileSpecificStarQueryPath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/extractSubgraphOutput/ciscoDataExtractQueryGraph"
+    val inputFileSpecificStarQueryPath = "../../../hierarchicalNetworkQuery/hierarchicalQueryPython/output/extractSubgraphQueryOutput/ciscoDataExtractQueryGraph"
     
     val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)
    
@@ -451,8 +451,10 @@ object QueryMain {
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
     */
     
+    val inputFileSpecificStarQueryPath = "../../Data/extractSubgraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph.tsv"
+    
     val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)         //read query 
-    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varyingQueryGraphSize_singleMachine/nonStarQueryOutRuntime" + runTimeFileIndex
+    var runTimeoutputFilePath = ""        //"../output/dblpData/nonStarQueryOutput/varyingQueryGraphSize_singleMachine/nonStarQueryOutRuntime" + runTimeFileIndex
 
     if (hierarchialRelation){
         runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
