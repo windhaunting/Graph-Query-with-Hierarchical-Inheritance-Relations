@@ -475,6 +475,9 @@ object QueryMain {
 
           dstTypeIdLstBuffer += (0)
       }
+      print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
+      val nonStarQueryTOPK = starQuery.TOPK
+      i += 1
       
     }
       
