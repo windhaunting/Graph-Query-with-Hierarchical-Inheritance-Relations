@@ -424,7 +424,7 @@ object QueryMain {
   
   
   
-  //test theresult w/o and w/ hierarchical relations in dblp data
+  //test the result w/o and w/ hierarchical relations in dblp data
   def testHierarchicalRelationDblpData (sc: SparkContext, topK: Int, runTimeFileIndex: String, databaseType: Int, hierarchialRelation: Boolean) = {
    //based on star query check    
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
