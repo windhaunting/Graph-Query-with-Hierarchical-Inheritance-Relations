@@ -397,8 +397,10 @@ object QueryMain {
         runTimeoutputFilePath = "../output/ciscoProduct/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
     else{
-        runTimeoutputFilePath = "../output/ciscoProduct/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
+        runTimeoutputFilePath = "../output/ciscoProduct/nonStarQueryOutput/testNoHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
+    
+    
     var i = 0 
     var tmpRunTimeoutputFilePath = ""
     for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
@@ -460,7 +462,7 @@ object QueryMain {
         runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
     else{
-        runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/testWithHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
+        runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/testNoHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
     
      var i = 0 
