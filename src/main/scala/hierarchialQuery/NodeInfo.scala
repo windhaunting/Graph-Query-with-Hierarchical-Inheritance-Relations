@@ -50,4 +50,10 @@ object visitedColorEnum extends Enumeration {
         type visitColor = Value
         val WHITE, GREY, BLACK, RED = Value           //0, 1, 2, 3...
     }
+  
+//for synthetic graph node types enum
+object nodeTypeSyntheticGraphEnum extends Enumeration {
+        type nodeType = Value
+        val TYPE0HIER, TYPE1HIER, TYPE0INHERIT, TYPE1INHERIT, TYPE0GENERIC, TYPE1GENERIC, TYPE2GENERIC = Value
+    }
     

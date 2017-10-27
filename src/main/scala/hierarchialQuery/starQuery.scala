@@ -18,6 +18,8 @@ import scala.collection.mutable.ListBuffer
 import main.scala.hierarchialQuery.nodeTypeProductEnum._
 import main.scala.hierarchialQuery.nodeTypeDBLPEnum._
 import main.scala.hierarchialQuery.visitedColorEnum._
+import main.scala.hierarchialQuery.nodeTypeSyntheticGraphEnum._
+
 
 import scala.reflect.ClassTag
 import scala.util.control.Breaks._
@@ -29,7 +31,7 @@ object starQuery {
  
   var TOPK = 0                 //top K candidate answer, set by main function parameter
   val ALPHA = 0.9               //propagation factor
-  val N = 1.05
+  val N = 1/ALPHA       //1.05
   val numTasks = 8                   //how many task for one core can execute in parallell
 
   var topKKthLowerBoundScore = 0.0        // the smallest (kth) lowest upper bound score in the k list
@@ -222,9 +224,17 @@ object starQuery {
             false
           } 
         }
-        else{
+        else if (databaseType == 2){
+          if (nodeIdType1 == TYPE0INHERIT.id || nodeIdType2 == TYPE1INHERIT.id){
+            true
+          }
+          else{
+            false
+          } 
+       }
+       else{
           false
-        }
+       }
     }
     
 }
