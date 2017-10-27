@@ -243,8 +243,12 @@ object starQuery {
 //get the closeness score from the parameters
   def calculateClosenessScore(spDistance: Long, spNumber: Long, hierLevelDifference: Long) = {
     
+    // val closeScore: Double = math.min(N*scala.math.pow(ALPHA, (spDistance-hierLevelDifference)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
+    
     val closeScore: Double = math.min(N*scala.math.pow(ALPHA, (spDistance-hierLevelDifference)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
+
     closeScore
+    
   }
 
   
