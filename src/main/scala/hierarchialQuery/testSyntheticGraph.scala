@@ -11,7 +11,8 @@ import org.apache.spark.SparkContext
 object testSyntheticGraph {
   
   
-    //product database execution -- main entry
+  //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
+  //product database execution -- main entry
   def executeSyntheticDatabase(args: Array[String], sc: SparkContext) = {
    
     
