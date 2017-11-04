@@ -477,8 +477,13 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               if (getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType, hierarchialRelation)){
                 //update spDist,  parentId, and hierachical level distance
                 val changedEdgeLevel: Int = triplet.attr.toString.toInt
+                //val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
+                //                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
+
                 val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
-                                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
+                                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + math.abs(changedEdgeLevel), parentId = triplet.srcId)  
+               
+                
                 //update dstNodeMap 
                 newdstNodeMap += (specificNodeId -> tmpNodeInfo)
               //  if (changedEdgeLevel !=0 ){
