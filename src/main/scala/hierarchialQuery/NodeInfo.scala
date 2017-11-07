@@ -13,7 +13,7 @@ import org.apache.spark.graphx.VertexId
 //                     closenessNodeScore: Double, parentId: VertexId, vistiedColor: Int)
 
 
-case class NodeInfo (specificNodeId: VertexId, specificNodeIdType: Int,  spDistance: Long, spNumber: Long, hierLevelDifference: Long, 
+case class NodeInfo (specificNodeId: VertexId, specificNodeIdType: Int,  spDistance: Long, spNumber: Long, hierLevelDifference: Double, 
                      closenessNodeScore: Double, parentId: VertexId, visitedColor: Int, lowerBoundCloseScore: Double, upperBoundCloseScore: Double)
 
 /*var specificNdId: VertexId = specificNodeId             //source node Id for bfs

@@ -33,7 +33,7 @@ object starQuery {
   val ALPHA = 0.9               //propagation factor
   val N = 1/ALPHA       //1.05
   val numTasks = 8                   //how many task for one core can execute in parallell
-
+  val BETA = 0.8                    //attenutation for hierarchical level difference causing the score reduction.
   var topKKthLowerBoundScore = 0.0        // the smallest (kth) lowest upper bound score in the k list
   
   //one source bfs from one src to dst
@@ -85,118 +85,6 @@ object starQuery {
  }
 
 
- /*
-//single specific node query
-  def singleSourceGraphbfsTraverse[VD, ED](graph: Graph[VD, ED], specificNodeId: VertexId, dstTypeId: Int) = {
-  
-   // if (specificNodeId == dst) return List(specificNodeId)
-
-    // The attribute of each vertex is (VD (nodetypeId), NodeInfo )
-    var g: Graph[(VD, NodeInfo), ED] =
-      graph.mapVertices((id, nodeIdType) => (nodeIdType, NodeInfo(specificNodeId, if (id == specificNodeId) 0 else Long.MaxValue, if (id == specificNodeId) 1 else 0, 0, 0.0, 0))).cache()
-    
-    //g.vertices.take(10).foreach(println)
-    //println("77 singleSourceGraphbfsTraverse :  ")
-
-    val tt01Attr = g.vertices.filter(_._1 == 1)
-    tt01Attr.collect().foreach(println)
-      
-    //var dstAttr = ()
-    var iterationCount = 0             //traverseCount <= topK
-    var currentCandidateNumber: Long = 0
-    while (currentCandidateNumber < TOPK)        // find top k or whole graph iteration end
-    {
-      
-      //equal to create a new rdd
-      val msgs: VertexRDD[(VD, NodeInfo)] = g.aggregateMessages[(VD, NodeInfo)](
-        triplet => {
-           //println("108 singleSourceGraphbfsTraverse: ", triplet.srcAttr._2)
-          if (triplet.srcAttr._2.spDistance != Long.MaxValue && triplet.srcAttr._2.spDistance + 1  < triplet.dstAttr._2.spDistance)
-          {
-              
-              val specificNodeIdType = graph.vertices.filter(x=>x._1 == specificNodeId).first()._2.toString.toInt       //specific node type is vlunerablity 
-              if (getHierarchicalInheritance(specificNodeIdType, dstTypeId)){
-                //update spDist and parentId, and hierachical level distance
-                val changedEdgeLevel: Int = triplet.attr.toString.toInt
-                val tmpNodeInfo = triplet.srcAttr._2.copy(spDistance = triplet.srcAttr._2.spDistance+1,
-                                   hierLevelDifference = triplet.srcAttr._2.hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
-                val currentNodeTypeId = triplet.dstAttr._1  
-                triplet.sendToDst((currentNodeTypeId, tmpNodeInfo))
-
-              }
-              else{
-                //update spDist and parentId
-                val tmpNodeInfo = triplet.srcAttr._2.copy(spDistance = triplet.srcAttr._2.spDistance+1, parentId = triplet.srcId) 
-                  val currentNodeTypeId = triplet.dstAttr._1  
-                  triplet.sendToDst((currentNodeTypeId, tmpNodeInfo))
-              }
-
-            //  println("128 singleSourceGraphbfsTraverse: ", triplet.srcAttr._2)
-          }
-        },
-        
-        (a, b) => {
-          if (a._2.spDistance < b._2.spDistance){
-            a
-          }
-          else if(a._2.spDistance == b._2.spDistance){
-            val tmpNodeInfo = a._2.copy(spNumber = a._2.spNumber+1)  //update spNumber
-            val nodeTypeId = a._1
-            (nodeTypeId, tmpNodeInfo)
-
-          }
-          else{
-             b
-          }
-        }
-      ).cache()
-      
-      //if (msgs.count == 0) return List.empty
-
-      g = g.ops.joinVertices(msgs) {
-        (nodeId, oldAttr, newAttr) =>
-        if (newAttr._2.spDistance < oldAttr._2.spDistance) 
-        {
-          val spDistance = newAttr._2.spDistance
-          val spNumber = newAttr._2.spNumber
-          val hierLevelDifference =  newAttr._2.hierLevelDifference*(1)          //-1*hierLevelDifference； downward inheritance
-          val newClosenessScore = calculateClosenessScore(spDistance, spNumber, hierLevelDifference)
-          
-          val tmpNodeInfo = newAttr._2.copy(closenessNodeScore = newClosenessScore)  //update closenessNodeScore 
-          val nodeTypeId = newAttr._1
-          //print ("157: singleSourceGraphbfsTraverse: ", nodeId, spDistance, spNumber, hierLevelDifference, newClosenessScore)
-          (nodeTypeId, tmpNodeInfo)
-        }
-        else{
-          oldAttr
-        }        
-      }.cache()
-      
-    
-    //check candidate nodes   //&& _._2._2.spDistance != Long.MaxValue
-    currentCandidateNumber = g.vertices.filter(x=>(x._2._1 == dstTypeId && x._2._2.spDistance != Long.MaxValue)).count()
-    
-    //check whether all nodes have been traversed, iteration ends
-    /*
-    val test01Attr = g.vertices.filter(_._1 == 1)
-    test01Attr.collect().foreach(println)
-
-    val test02Attr = g.vertices.filter(_._1 == 2)
-    test02Attr.collect().foreach(println)
-    */
-    println("136 singleSourceGraphbfsTraverse g vertices: ", currentCandidateNumber)
-
-    //g.vertices.take(6).foreach(println)
-    iterationCount = iterationCount + 1
-  }
-  
-  val candidateNodesRdd = g.vertices.filter(x=>(x._2._1 == dstTypeId && x._2._2.spDistance != Long.MaxValue))
-
-  candidateNodesRdd.collect().foreach(println)
-  
-  candidateNodesRdd
-}
-*/
   //given the node types, hierarchical inheritance or not (hierarchical or generic relations); databaseType: ciso product : 0, dblp : 1
   def getHierarchicalInheritance(nodeIdType1: Int, nodeIdType2: Int, databaseType: Int, hierarchialRelation: Boolean) = {
     //print ("189 getHierarchicalInheritance PRODUCT.id: ", PRODUCT.id +" " + VULNERABILITY.id)
@@ -241,7 +129,7 @@ object starQuery {
   
   
 //get the closeness score from the parameters
-  def calculateClosenessScore(spDistance: Long, spNumber: Long, hierLevelDifference: Long) = {
+  def calculateClosenessScore(spDistance: Long, spNumber: Long, hierLevelDifference: Double) = {
     
     val closeScore: Double = math.min(N*scala.math.pow(ALPHA, (spDistance-hierLevelDifference)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
     
@@ -346,7 +234,7 @@ def calculateLowerBound[VD, ED](specificNodeId: VertexId, nodeMap: Map[VertexId,
 }
 
 //global update lower bound closeness score
-def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLevelDifference: Long) = {
+def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLevelDifference: Double) = {
    
     var updatedUpperBoundCloseScore = 0.0
     if (currentLowerBound > 0)
@@ -476,7 +364,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val specNodeIdType = specificNodeIdType._2     //specific node type is vlunerablity 
               if (getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType, hierarchialRelation)){
                 //update spDist,  parentId, and hierachical level distance
-                val changedEdgeLevel: Int = math.abs(triplet.attr.toString.toInt)
+                val changedEdgeLevel: Double = BETA*math.abs(triplet.attr.toString.toInt)
                 //val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
                 //                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
 
