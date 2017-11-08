@@ -228,7 +228,7 @@ def calculateLowerBound[VD, ED](specificNodeId: VertexId, nodeMap: Map[VertexId,
     else
     {
         //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
-        updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-BETA) * prevIterLowerScore
+        updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-prevHierLevelDistance) * prevIterLowerScore
     }
     updatedLowerBoundCloseScore
     
@@ -281,7 +281,7 @@ def setnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, Map[VertexId,
       case (nodeId, (nodeIdType, nodeMap))=>
         val matchingScoreUpperBound = calculateMatchingScoreUpperBound(nodeMap)
         
-        if (matchingScoreUpperBound < topKKthLowerBoundScore)          //upperbound less than the kth lowerbound score
+        if (matchingScoreUpperBound <= topKKthLowerBoundScore)          //upperbound less than the kth lowerbound score
         {
           var newMap = Map[VertexId, NodeInfo]()
 
@@ -417,7 +417,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val updatedLowerBoundCloseScoreA = calculateLowerBound(specificNodeIdType._1, nodeMapA)
               val updatedLowerBoundCloseScoreB = calculateLowerBound(specificNodeIdType._1, nodeMapB)
               
-              val updatedLowerBoundCloseScore =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
+              val tmpLBSum =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
+              val updatedLowerBoundCloseScore =  math.min(N*scala.math.pow(ALPHA, (nodeMapA(specificNodeIdType._1).spDistance-nodeMapA(specificNodeIdType._1).hierLevelDifference)), tmpLBSum)
               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(spNumber = nodeMapA(specificNodeIdType._1).spNumber+1, visitedColor = GREY.id, 
                                                                      lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update spNumber
               newMap += (specificNodeIdType._1 -> tmpNodeInfo)
