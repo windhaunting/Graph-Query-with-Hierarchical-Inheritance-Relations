@@ -219,15 +219,16 @@ object starQuery {
 def calculateLowerBound[VD, ED](specificNodeId: VertexId, nodeMap: Map[VertexId, NodeInfo]) = {
   
     val prevIterLowerScore = nodeMap(specificNodeId).lowerBoundCloseScore
+    val prevHierLevelDistance = nodeMap(specificNodeId).hierLevelDifference
     var updatedLowerBoundCloseScore = 0.0
     if (prevIterLowerScore > 0.0)
     {
-        updatedLowerBoundCloseScore = nodeMap(specificNodeId).lowerBoundCloseScore
+        updatedLowerBoundCloseScore = prevIterLowerScore
     }
     else
     {
-        //aggregate from A's lower bound close score
-        updatedLowerBoundCloseScore = ALPHA * nodeMap(specificNodeId).lowerBoundCloseScore
+        //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
+        updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-BETA) * prevIterLowerScore
     }
     updatedLowerBoundCloseScore
     
@@ -243,7 +244,7 @@ def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLe
       }
     else
       {
-        updatedUpperBoundCloseScore = scala.math.pow(ALPHA, (iterationNumber-hierLevelDifference))
+        updatedUpperBoundCloseScore = scala.math.pow(ALPHA, (iterationNumber-hierLevelDifference))       //hierLevelDifference includes BETA already
       }
     updatedUpperBoundCloseScore    
     
@@ -322,7 +323,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     var g: Graph[(VD, Map[VertexId, NodeInfo]), ED] =
       graph.mapVertices((id, nodeIdType) => (nodeIdType, 
                                              specificNodeIdLst.map(specificNodeIdType=> specificNodeIdType._1-> NodeInfo(specificNodeIdType._1, 
-                                                                                                                         specificNodeIdType._2, if (id == specificNodeIdType._1) 0 else Long.MaxValue, if (id == specificNodeIdType._1) 1 else 0, 0, 0.0, 0, if (id == specificNodeIdType._1) GREY.id else WHITE.id, if (id == specificNodeIdType._1) 1.0 else 0.0,  if (id == specificNodeIdType._1) 1 else {N*scala.math.pow(ALPHA, 1)})).toMap
+                                                                                                                         specificNodeIdType._2, if (id == specificNodeIdType._1) 0 else Long.MaxValue, if (id == specificNodeIdType._1) 1 else 0, 0, 0.0, 0, if (id == specificNodeIdType._1) GREY.id else WHITE.id, if (id == specificNodeIdType._1) 1.0 else 0.0,  if (id == specificNodeIdType._1) 1.0 else 1.0)).toMap
       )).cache()
                                  
     // g.vertices.take(5).foreach(println)
@@ -455,7 +456,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           {
               val spDistance = nodeNewMap(specificNodeIdType._1).spDistance
               val spNumber = nodeNewMap(specificNodeIdType._1).spNumber
-              val newhierLevelDifference =  nodeNewMap(specificNodeIdType._1).hierLevelDifference*(-1)          //-1*hierLevelDifference； downward inheritance
+              val newhierLevelDifference =  nodeNewMap(specificNodeIdType._1).hierLevelDifference        //*(-1)          //-1*hierLevelDifference； downward inheritance
               val newClosenessScore = calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)
               val newLowerBoundCScore = math.min(N*scala.math.pow(ALPHA, (spDistance-newhierLevelDifference)), nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore)
               
