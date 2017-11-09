@@ -411,6 +411,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
               newMap += (specificNodeIdType._1 -> tmpNodeInfo)       //update key -> value
               
+              
           }
           else if (nodeMapA(specificNodeIdType._1).spDistance == nodeMapB(specificNodeIdType._1).spDistance){   
               //update bound
@@ -431,6 +432,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
 
               val tmpNodeInfo = nodeMapB(specificNodeIdType._1).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
               newMap += (specificNodeIdType._1 -> tmpNodeInfo)
+              
               
           })
          //print ("286: starQueryGraphbfsTraverseWithBoundPruning: ", newMap)
@@ -455,6 +457,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
           if (nodeNewMap(specificNodeIdType._1).spDistance <= nodeOldMap(specificNodeIdType._1).spDistance)
           {
+            
+
+             
               val spDistance = nodeNewMap(specificNodeIdType._1).spDistance
               val spNumber = nodeNewMap(specificNodeIdType._1).spNumber
               val newhierLevelDifference =  nodeNewMap(specificNodeIdType._1).hierLevelDifference        //*(-1)          //-1*hierLevelDifference； downward inheritance
@@ -462,6 +467,14 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val newLowerBoundCScore = math.min(N*scala.math.pow(ALPHA, (spDistance-newhierLevelDifference)), nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore)
               
               val newUpperBoundCScore = calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
+                            //test
+              if (nodeId == 72908)
+                {
+                  println("464 starQueryGraphbfsTraverse: " + specificNodeIdType + " _" + nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore + "_" +nodeNewMap(specificNodeIdType._1).spDistance)
+                  println("467 starQueryGraphbfsTraverse: " + newLowerBoundCScore + " _" + newUpperBoundCScore)
+                }
+                
+                
               val tmpNodeInfo = nodeNewMap(specificNodeIdType._1).copy(closenessNodeScore = newClosenessScore, hierLevelDifference = newhierLevelDifference,
                                                                  lowerBoundCloseScore = newLowerBoundCScore, upperBoundCloseScore = newUpperBoundCScore)  //update closenessNodeScore 
               newMap += (specificNodeIdType._1 -> tmpNodeInfo)
