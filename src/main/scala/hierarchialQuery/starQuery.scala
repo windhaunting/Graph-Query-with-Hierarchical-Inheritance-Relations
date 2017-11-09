@@ -221,15 +221,15 @@ def calculateLowerBound[VD, ED](specificNodeId: VertexId, nodeMap: Map[VertexId,
     val prevIterLowerScore = nodeMap(specificNodeId).lowerBoundCloseScore
     val prevHierLevelDistance = nodeMap(specificNodeId).hierLevelDifference
     var updatedLowerBoundCloseScore = 0.0
-    if (prevIterLowerScore > 0.0)
-    {
-        updatedLowerBoundCloseScore = prevIterLowerScore
-    }
-    else
-    {
+    //if (prevIterLowerScore > 0.0)
+    //{
+    //    updatedLowerBoundCloseScore = prevIterLowerScore
+   // }
+   // else
+   // {
         //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
         updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-prevHierLevelDistance) * prevIterLowerScore
-    }
+   // }
     updatedLowerBoundCloseScore
     
 }
@@ -361,25 +361,25 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
             //consider bound with RED.id 
             if (srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance)
             {
-              val specificNodeId = specificNodeIdType._1
-              val specNodeIdType = specificNodeIdType._2     //specific node type is vlunerablity 
-              if (getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType, hierarchialRelation)){
-                //update spDist,  parentId, and hierachical level distance
-                val changedEdgeLevel: Double = BETA*math.abs(triplet.attr.toString.toInt)
-                //val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
-                //                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
+               val specificNodeId = specificNodeIdType._1
+               val specNodeIdType = specificNodeIdType._2     //specific node type is vlunerablity 
+               if (getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType, hierarchialRelation)){
+                 //update spDist,  parentId, and hierachical level distance
+                 val changedEdgeLevel: Double = BETA*math.abs(triplet.attr.toString.toInt)
+                 //val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
+                 //                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
 
-                val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
+                 val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
                                    hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
                
                 
-                //update dstNodeMap 
-                newdstNodeMap += (specificNodeId -> tmpNodeInfo)
-              //  if (changedEdgeLevel !=0 ){
-              //      println("282 starQueryGraphbfsTraverse newdstNodeMap: "+ triplet.srcId+ " " + triplet.dstId + " " + changedEdgeLevel)
-              //  }
-              }
-              else{
+                 //update dstNodeMap 
+                 newdstNodeMap += (specificNodeId -> tmpNodeInfo)
+                //  if (changedEdgeLevel !=0 ){
+                //      println("282 starQueryGraphbfsTraverse newdstNodeMap: "+ triplet.srcId+ " " + triplet.dstId + " " + changedEdgeLevel)
+                //  }
+               }
+               else{
                   
                   //update spDist and parentId only
                   val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, parentId = triplet.srcId)  
@@ -388,9 +388,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                   //val currentNodeTypeId = triplet.dstAttr._1 
                   //if (specificNodeIdType == 1)
                   //    println("295 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: ", specificNodeIdType, dstTypeId)
-              }
-              val currentNodeTypeId = triplet.dstAttr._1 
-              triplet.sendToDst((currentNodeTypeId, newdstNodeMap))
+               }
+               val currentNodeTypeId = triplet.dstAttr._1 
+               triplet.sendToDst((currentNodeTypeId, newdstNodeMap))
                           
             }
           )
@@ -455,7 +455,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         var dstNodeTypeVisitFlag = true
         var newMap = Map[VertexId, NodeInfo]()           //initialization 
         specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
-          if (nodeNewMap(specificNodeIdType._1).spDistance <= nodeOldMap(specificNodeIdType._1).spDistance)
+          if (nodeNewMap(specificNodeIdType._1).spDistance < nodeOldMap(specificNodeIdType._1).spDistance)        // or <=
           {
             
 
@@ -468,10 +468,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               
               val newUpperBoundCScore = calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
                             //test
-              if (nodeId == 72908)
+              if (nodeId == 8151)
                 {
-                  println("464 starQueryGraphbfsTraverse: " + specificNodeIdType + " _" + nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore + "_" +nodeNewMap(specificNodeIdType._1).spDistance)
-                  println("467 starQueryGraphbfsTraverse: " + newLowerBoundCScore + " _" + newUpperBoundCScore)
+                  println("464 starQueryGraphbfsTraverse: " + specificNodeIdType + " _ " + nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore + "_ " +nodeNewMap(specificNodeIdType._1).spDistance + " hierLevel: " + newhierLevelDifference)
+                  println("467 starQueryGraphbfsTraverse: " + newLowerBoundCScore + " _" + newUpperBoundCScore+ " score: " + newClosenessScore + "  currentSatisfiedNodesNumber: " +currentSatisfiedNodesNumber)
                 }
                 
                 
