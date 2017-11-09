@@ -1148,11 +1148,11 @@ object nonStarQuery {
     while(i < specificNodeIdTwoDimensionLst.size)
     {
         val dstTypeId = dstTypeIdLstBuffer(i)
-        //val topKResultRdd = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, null, hierarchialRelation)
-         
+        val topKResultRdd = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, databaseType, null, hierarchialRelation)
+       
         //when return paths
-        val answers = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, databaseType, null, hierarchialRelation)
-        val topKResultRdd = answers._1
+        //val answers = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, databaseType, null, hierarchialRelation)
+       // val topKResultRdd = answers._1
         //val pathAnswerRdd = answers._2
         //topKResultRdd.take(5).foreach(println)
         //print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
