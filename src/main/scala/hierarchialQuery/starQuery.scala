@@ -131,9 +131,9 @@ object starQuery {
 //get the closeness score from the parameters
   def calculateClosenessScore(spDistance: Long, spNumber: Long, hierLevelDifference: Double) = {
     
-    val closeScore: Double = math.min(N*scala.math.pow(ALPHA, (spDistance-hierLevelDifference)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
+   // val closeScore: Double = math.min(N*scala.math.pow(ALPHA, (spDistance-hierLevelDifference)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
     
-     //val closeScore: Double = math.min(N*scala.math.pow(ALPHA, (spDistance-hierLevelDifference)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
+    val closeScore: Double = math.min(scala.math.pow(ALPHA, (spDistance-hierLevelDifference-1)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
 
     closeScore
     
@@ -221,15 +221,15 @@ def calculateLowerBound[VD, ED](specificNodeId: VertexId, nodeMap: Map[VertexId,
     val prevIterLowerScore = nodeMap(specificNodeId).lowerBoundCloseScore
     val prevHierLevelDistance = nodeMap(specificNodeId).hierLevelDifference
     var updatedLowerBoundCloseScore = 0.0
-    //if (prevIterLowerScore > 0.0)
-    //{
-    //    updatedLowerBoundCloseScore = prevIterLowerScore
-   // }
-   // else
-   // {
+    if (prevIterLowerScore > 0.0)
+    {
+        updatedLowerBoundCloseScore = prevIterLowerScore
+    }
+    else
+    {
         //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
         updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-prevHierLevelDistance) * prevIterLowerScore
-   // }
+    }
     updatedLowerBoundCloseScore
     
 }
@@ -419,7 +419,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val updatedLowerBoundCloseScoreB = calculateLowerBound(specificNodeIdType._1, nodeMapB)
               
               val tmpLBSum =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
-              val updatedLowerBoundCloseScore =  math.min(N*scala.math.pow(ALPHA, (nodeMapA(specificNodeIdType._1).spDistance-nodeMapA(specificNodeIdType._1).hierLevelDifference)), tmpLBSum)
+              //val updatedLowerBoundCloseScore =  math.min(N*scala.math.pow(ALPHA, (nodeMapA(specificNodeIdType._1).spDistance-nodeMapA(specificNodeIdType._1).hierLevelDifference)), tmpLBSum)
+              val updatedLowerBoundCloseScore =  math.min(scala.math.pow(ALPHA, (nodeMapA(specificNodeIdType._1).spDistance-nodeMapA(specificNodeIdType._1).hierLevelDifference)-1), tmpLBSum)
+
               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(spNumber = nodeMapA(specificNodeIdType._1).spNumber+1, visitedColor = GREY.id, 
                                                                      lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update spNumber
               newMap += (specificNodeIdType._1 -> tmpNodeInfo)
@@ -442,9 +444,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     ).cache()
       
     //no updated messages
-    if (msgs.count == 0)
+   // if (msgs.count == 0)
       //(topKResultRdd, pathAnswerRdd)
-        topKResultRdd                         //only return topKResultRdd
+   //     topKResultRdd                         //only return topKResultRdd
        
     g = g.ops.joinVertices(msgs) {
         (nodeId, oldAttr, newAttr) =>
@@ -455,20 +457,20 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         var dstNodeTypeVisitFlag = true
         var newMap = Map[VertexId, NodeInfo]()           //initialization 
         specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
-          if (nodeNewMap(specificNodeIdType._1).spDistance < nodeOldMap(specificNodeIdType._1).spDistance)        // or <=
+          if (nodeNewMap(specificNodeIdType._1).spDistance <= nodeOldMap(specificNodeIdType._1).spDistance)        //<  or <=
           {
                          
               val spDistance = nodeNewMap(specificNodeIdType._1).spDistance
               val spNumber = nodeNewMap(specificNodeIdType._1).spNumber
               val newhierLevelDifference =  nodeNewMap(specificNodeIdType._1).hierLevelDifference        //*(-1)          //-1*hierLevelDifference； downward inheritance
               val newClosenessScore = calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)
-              val newLowerBoundCScore = math.min(N*scala.math.pow(ALPHA, (spDistance-newhierLevelDifference)), nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore)
-              
+             // val newLowerBoundCScore = math.min(N*scala.math.pow(ALPHA, (spDistance-newhierLevelDifference)), nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore)
+              val newLowerBoundCScore = math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore)
               val newUpperBoundCScore = calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
                             //test
               if (nodeId == 8151)
                 {
-                  println("464 starQueryGraphbfsTraverse: " + specificNodeIdType + " _ " + nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore + "_ " +nodeNewMap(specificNodeIdType._1).spDistance + " hierLevel: " + newhierLevelDifference)
+                  println("464 starQueryGraphbfsTraverse: " + specificNodeIdType + " _ " + nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore + " sd: " +nodeNewMap(specificNodeIdType._1).spDistance + " hierLevel: " + newhierLevelDifference + " spNum: " + spNumber)
                   println("467 starQueryGraphbfsTraverse: " + newLowerBoundCScore + " _" + newUpperBoundCScore+ " score: " + newClosenessScore + "  currentSatisfiedNodesNumber: " +currentSatisfiedNodesNumber)
                 }
                 
