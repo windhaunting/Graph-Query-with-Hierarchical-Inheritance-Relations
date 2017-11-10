@@ -349,12 +349,16 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
 
   {
       //println("412 starQueryGraphbfsTraverse iterationCount: ", iterationCount)
-      val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo], Double)] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo], Double)](
+      val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo], Map[VertexId, Double])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo], Map[VertexId, Double])](
         triplet => {
           val srcNodeMap = triplet.srcAttr._2
           //println("266 starQueryGraphbfsTraverse srcNodeMap: ", srcNodeMap)
           var dstNodeMap = triplet.dstAttr._2          //dstNodeMap
           var newdstNodeMap = dstNodeMap
+          
+          var  prevIterLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
+          var sendMsgFlag  = false         //sendMsgFlag
+          val currentNodeType = triplet.dstAttr._1  
           //println("273 starQueryGraphbfsTraverse newdstNodeMap: "+  triplet.srcAttr._1.toString.toInt+ "   " + dstTypeId)
           specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int)) => 
             //val sourceIdType = triplet.srcAttr._1
@@ -385,21 +389,29 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                   val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, parentId = triplet.srcId)  
                   //update dstNodeMap 
                   newdstNodeMap += (specificNodeId -> tmpNodeInfo)
-                  //val currentNodeTypeId = triplet.dstAttr._1 
+                  //val currentNodeType = triplet.dstAttr._1 
                   //if (specificNodeIdType == 1)
                   //    println("295 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: ", specificNodeIdType, dstTypeId)
                }
-               val currentNodeTypeId = triplet.dstAttr._1        // dstId type
-               triplet.sendToDst((currentNodeTypeId, newdstNodeMap, dstNodeMap))
-                          
+               
+              //get current lowerbounds that is actually the previous iteration's lower bound  t-1
+             prevIterLowerBoundsMap += (specificNodeId.toLong->dstNodeMap(specificNodeId).lowerBoundCloseScore)
+              sendMsgFlag = true
+   
             }
           )
+          if (!sendMsgFlag)
+          {
+             triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterLowerBoundsMap))
+             
+          }
         },
         
         (a, b) => {                  //aggregate message;  reduce function;    different src nodes
           val nodeTypeId = a._1
           val nodeMapA = a._2
           val nodeMapB = b._2
+          val prevIterLowerBoundsMap = Map[VertexId, Double]()
           var newMap = Map[VertexId, NodeInfo]()
           specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int)) =>
 
@@ -444,7 +456,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               
           })
          //print ("286: starQueryGraphbfsTraverseWithBoundPruning: ", newMap)
-         (nodeTypeId, newMap)
+         (nodeTypeId, newMap, prevIterLowerBoundsMap)
           
         }
     ).cache()
