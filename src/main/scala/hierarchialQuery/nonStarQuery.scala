@@ -812,10 +812,11 @@ object nonStarQuery {
             val nodeMapB = b._2
             var newMap = Map[VertexId, NodeInfo]()
             specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int, Double)) =>
+              
                //keep current specificNodeId's map value
              if (nodeMapA(specificNodeIdType._1).spDistance < nodeMapB(specificNodeIdType._1).spDistance){  
                //update visit color,  lowerBoundCloseness Score
-               val updatedLowerBoundCloseScore = starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapA)
+               val updatedLowerBoundCloseScore = 0 // starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapA)
 
                val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
                newMap += (specificNodeIdType._1 -> tmpNodeInfo)       //update key -> value
@@ -823,8 +824,8 @@ object nonStarQuery {
              }
              else if (nodeMapA(specificNodeIdType._1).spDistance == nodeMapB(specificNodeIdType._1).spDistance){   
                //update bound
-               val updatedLowerBoundCloseScoreA = starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapA)
-               val updatedLowerBoundCloseScoreB = starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapB)
+               val updatedLowerBoundCloseScoreA = 0  // starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapA)
+               val updatedLowerBoundCloseScoreB = 0 //  starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapB)
 
                val updatedLowerBoundCloseScore =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
                val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(spNumber = nodeMapA(specificNodeIdType._1).spNumber+1, visitedColor = GREY.id, 
@@ -835,11 +836,12 @@ object nonStarQuery {
            else
              {
                //nodeMapB(specificNodeIdType._1).lowerBoundCloseScore + ....
-               val updatedLowerBoundCloseScore = starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapB)
+               val updatedLowerBoundCloseScore = 0 // starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapB)
 
                val tmpNodeInfo = nodeMapB(specificNodeIdType._1).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
                newMap += (specificNodeIdType._1 -> tmpNodeInfo)
              }
+             
            )
 
           (nodeTypeId, newMap)
