@@ -411,6 +411,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
               newMap += (specificNodeIdType._1 -> tmpNodeInfo)       //update key -> value
               
+              print ("414: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : ", updatedLowerBoundCloseScore)
               
           }
           else if (nodeMapA(specificNodeIdType._1).spDistance == nodeMapB(specificNodeIdType._1).spDistance){   
@@ -418,6 +419,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val updatedLowerBoundCloseScoreA = calculateLowerBound(specificNodeIdType._1, nodeMapA)
               val updatedLowerBoundCloseScoreB = calculateLowerBound(specificNodeIdType._1, nodeMapB)
               
+              print ("422: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " " + updatedLowerBoundCloseScoreA + "  " +  updatedLowerBoundCloseScoreB)
+                     
+
               val tmpLBSum =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
               //val updatedLowerBoundCloseScore =  math.min(N*scala.math.pow(ALPHA, (nodeMapA(specificNodeIdType._1).spDistance-nodeMapA(specificNodeIdType._1).hierLevelDifference)), tmpLBSum)
               val updatedLowerBoundCloseScore =  math.min(scala.math.pow(ALPHA, (nodeMapA(specificNodeIdType._1).spDistance-nodeMapA(specificNodeIdType._1).hierLevelDifference)-1), tmpLBSum)
@@ -426,6 +430,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                                                                      lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update spNumber
               newMap += (specificNodeIdType._1 -> tmpNodeInfo)
              // val newMap = {newMap}
+              print ("432: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " sd: " + nodeMapA(specificNodeIdType._1).spDistance + " hier:   " +nodeMapA(specificNodeIdType._1).hierLevelDifference +" score: " +updatedLowerBoundCloseScore )
+
           }
           else{
             
