@@ -10,6 +10,14 @@ import org.apache.spark.SparkContext
 
 object testSyntheticGraph {
   
+  def testUseSmallGraphData(arags: Array[String], sc: SparkContext) ={
+    val inputEdgeListfilePath = "../../Data/syntheticGraph//.tsv"
+    val inputNodeInfoFilePath = "../../Data/syntheticGraph//.tsv"
+
+    
+  }
+  
+  
   
   //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
   //product database execution -- main entry

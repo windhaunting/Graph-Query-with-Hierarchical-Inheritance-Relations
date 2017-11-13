@@ -113,7 +113,7 @@ object starQuery {
           } 
         }
         else if (databaseType == 2){
-          if (nodeIdType1 == TYPE0INHERIT.id || nodeIdType2 == TYPE1INHERIT.id){
+          if (nodeIdType1 == TYPE0INHERIT.id || nodeIdType2 == TYPE1INHERIT.id || nodeIdType1 == TYPE1INHERIT.id || nodeIdType2 == TYPE0INHERIT.id){
             true
           }
           else{
