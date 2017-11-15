@@ -428,14 +428,14 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val tmpNodeInfo = nodeMapA(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
               nodeMapA += (specificNodeId -> tmpNodeInfo)       //update key -> value
               
-              print ("414: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : ", updatedLowerBoundCloseScore)
+              print ("414: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+specificNodeId + " " + updatedLowerBoundCloseScore)
               
               (nodeTypeId, nodeMapA, prevIterLowerBoundsMapA)
               
           }
           else if (nodeMapA(specificNodeId).spDistance == nodeMapB(specificNodeId).spDistance){   
               //update bound
-              print ("414: starQueryGraphbfsTraverseWithBoundPruning prevIterLowerBoundsMapA : ", prevIterLowerBoundsMapA)
+              print ("415: starQueryGraphbfsTraverseWithBoundPruning prevIterLowerBoundsMapA : "+ prevIterLowerBoundsMapA)
 
               
               val updatedLowerBoundCloseScoreA = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
@@ -496,6 +496,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val spDistance = nodeNewMap(specificNodeId).spDistance
               val spNumber = nodeNewMap(specificNodeId).spNumber
               val newhierLevelDifference =  nodeNewMap(specificNodeId).hierLevelDifference        //(-1) x hierLevelDifference； downward inheritance
+
               val newClosenessScore = calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)      //node similarity score
               val newLowerBoundCScore =  nodeNewMap(specificNodeId).lowerBoundCloseScore // math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeId).lowerBoundCloseScore)           // error ??
               val newUpperBoundCScore = nodeNewMap(specificNodeId).upperBoundCloseScore // calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
