@@ -416,7 +416,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           val prevIterLowerBoundsMapA = a._3              //Map[VertexId, Double]()
           val prevIterLowerBoundsMapB = b._3
           var newMap = Map[VertexId, NodeInfo]()
-          prevIterLowerBoundsMapA.keys.foreach{(specificNodeId) =>
+          nodeMapA.keys.foreach{(specificNodeId) =>
            
            //keep current specificNodeId's map value
           if (nodeMapA(specificNodeId).spDistance < nodeMapB(specificNodeId).spDistance){  
@@ -494,7 +494,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val newLowerBoundCScore =  nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore // math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore)           // error ??
               val newUpperBoundCScore = nodeNewMap(specificNodeIdType._1).upperBoundCloseScore // calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
                             //test
-              if (nodeId == 8151)
+              if (nodeId == 4)
                 {
                   println("464 starQueryGraphbfsTraverse: " + specificNodeIdType + " _ " + nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore + " sd: " +nodeNewMap(specificNodeIdType._1).spDistance + " hierLevel: " + newhierLevelDifference + " spNum: " + spNumber)
                   println("467 starQueryGraphbfsTraverse: " + newLowerBoundCScore + " _ " + newUpperBoundCScore+ " score: " + newClosenessScore + "  currentSatisfiedNodesNumber: " +currentSatisfiedNodesNumber)
@@ -549,7 +549,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           var visitedFlag = false
           for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
               if (nodeInfo.spDistance != Long.MaxValue)        //any one exist
-              visitedFlag = true
+               {visitedFlag = true
+               }
           }
           visitedFlag
         }
