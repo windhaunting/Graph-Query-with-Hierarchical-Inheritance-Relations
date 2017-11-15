@@ -314,6 +314,7 @@ def setnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, Map[VertexId,
 }
 
 
+ /*
 //star query traverse with pruning
 // starQueryGraphbfsTraverseWithBoundPruning
 def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId, Int)], dstTypeId: Int, databaseType: Int, runTimeoutputFilePath: String, hierarchialRelation: Boolean) = {
@@ -399,7 +400,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               prevIterLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)
               sendMsgFlag = true
               triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterLowerBoundsMap))
-
+              if (specificNodeId == 1)
+                 println("403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
+                  
             }
           )
           
@@ -428,20 +431,20 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val tmpNodeInfo = nodeMapA(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
               nodeMapA += (specificNodeId -> tmpNodeInfo)       //update key -> value
               
-              print ("414: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+specificNodeId + " " + updatedLowerBoundCloseScore)
+              print ("414: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+specificNodeId + " " + updatedLowerBoundCloseScore + "    ")
               
               (nodeTypeId, nodeMapA, prevIterLowerBoundsMapA)
               
           }
           else if (nodeMapA(specificNodeId).spDistance == nodeMapB(specificNodeId).spDistance){   
               //update bound
-              print ("415: starQueryGraphbfsTraverseWithBoundPruning prevIterLowerBoundsMapA : "+ prevIterLowerBoundsMapA)
+              print ("415: starQueryGraphbfsTraverseWithBoundPruning prevIterLowerBoundsMapA : "+ prevIterLowerBoundsMapA + "   ")
 
               
               val updatedLowerBoundCloseScoreA = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
               val updatedLowerBoundCloseScoreB = calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
               
-              print ("422: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " " + updatedLowerBoundCloseScoreA + "  " +  updatedLowerBoundCloseScoreB)
+              print ("422: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " " + updatedLowerBoundCloseScoreA + "  " +  updatedLowerBoundCloseScoreB + "   ")
                      
 
               val tmpLBSum =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
@@ -452,7 +455,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                                                                      lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update spNumber
               nodeMapA += (specificNodeId -> tmpNodeInfo)
              // val newMap = {newMap}
-              print ("432: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " sd: " + nodeMapA(specificNodeId).spDistance + " hier:   " +nodeMapA(specificNodeId).hierLevelDifference +" score: " +updatedLowerBoundCloseScore )
+              print ("432: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " sd: " + nodeMapA(specificNodeId).spDistance + " hier:   " +nodeMapA(specificNodeId).hierLevelDifference +" score: " +updatedLowerBoundCloseScore + "   ")
               (nodeTypeId, nodeMapA, prevIterLowerBoundsMapA)
 
           }
@@ -639,6 +642,335 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
    
   }
  
+  */
+ 
+  
+  //star query traverse with pruning
+// starQueryGraphbfsTraverseWithBoundPruning
+def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId, Int)], dstTypeId: Int, databaseType: Int, runTimeoutputFilePath: String, hierarchialRelation: Boolean) = {
+     
+    val startTime = System.currentTimeMillis()              //System.nanoTime()
+
+    //Vertex's  property is (VD, Map[VertexId, NodeInfo]) ; VD is the node property-- nodeIdType here; Map's key: specificNodeId, value is NodeInfo
+    var g: Graph[(VD, Map[VertexId, NodeInfo]), ED] =
+      graph.mapVertices((id, nodeIdType) => (nodeIdType, 
+                                             specificNodeIdLst.map(specificNodeIdType=> specificNodeIdType._1-> NodeInfo(specificNodeIdType._1, 
+                                                                                                                         specificNodeIdType._2, if (id == specificNodeIdType._1) 0 else Long.MaxValue, if (id == specificNodeIdType._1) 1 else 0, 0, 0.0, 0, if (id == specificNodeIdType._1) GREY.id else WHITE.id, if (id == specificNodeIdType._1) 1.0 else 0.0,  if (id == specificNodeIdType._1) 1.0 else 1.0)).toMap
+      )).cache()
+                                 
+    // g.vertices.take(5).foreach(println)
+    //println("486 starQueryGraphbfsTraverseWithBoundPruning :  \n")
+    //iterations for bfs begin
+    var iterationCount = 0
+    var currentSatisfiedNodesNumber: Long = 0L                   //number of dest type nodes that visited
+    var allNodesVisitedNumber: Long = 0L                         // all nodes visited
+    var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
+    var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
+    
+    var topKResultRdd: RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))] = sc.emptyRDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
+
+    
+    var pathAnswerRdd: RDD[(VertexId, Map[VertexId, ListBuffer[VertexId]])]  = sc.emptyRDD[(VertexId, Map[VertexId, ListBuffer[VertexId]])]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
+
+    val dstNodesNumberGraph = graph.vertices.filter(x=>x._2 == dstTypeId)
+    //println("504 starQueryGraphbfsTraverseWithBoundPruning :  ", dstNodesNumberGraph.count)
+   
+  //no value change or all the destination node has been visited
+  while (twoPreviousOldAllNodesVisitedNumber != oldAllNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
+  //while (currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
+
+  {
+      //println("412 starQueryGraphbfsTraverse iterationCount: ", iterationCount)
+      val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo], Map[VertexId, Double])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo], Map[VertexId, Double])](
+        triplet => {
+          val srcNodeMap = triplet.srcAttr._2
+          //println("266 starQueryGraphbfsTraverse srcNodeMap: ", srcNodeMap)
+          var dstNodeMap = triplet.dstAttr._2          //dstNodeMap
+          var newdstNodeMap = dstNodeMap
+          
+          var  prevIterLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
+          var sendMsgFlag  = false          //sendMsgFlag
+          val currentNodeType = triplet.dstAttr._1  
+          //println("273 starQueryGraphbfsTraverse newdstNodeMap: "+  triplet.srcAttr._1.toString.toInt+ "   " + dstTypeId)
+          specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int)) => 
+            //val sourceIdType = triplet.srcAttr._1
+            //consider bound with RED.id 
+            if (srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance)
+            {
+               val specificNodeId = specificNodeIdType._1
+               val specNodeIdType = specificNodeIdType._2     //specific node type is vlunerablity 
+               if (getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType, hierarchialRelation)){
+                 //update spDist,  parentId, and hierachical level distance
+                 val changedEdgeLevel: Double = BETA*math.abs(triplet.attr.toString.toInt)
+                 //val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
+                 //                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
+
+                 val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
+                                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
+               
+                
+                 //update dstNodeMap 
+                 newdstNodeMap += (specificNodeId -> tmpNodeInfo)
+                //  if (changedEdgeLevel !=0 ){
+                //      println("282 starQueryGraphbfsTraverse newdstNodeMap: "+ triplet.srcId+ " " + triplet.dstId + " " + changedEdgeLevel)
+                //  }
+               }
+               else{
+                  
+                  //update spDist and parentId only
+                  val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, parentId = triplet.srcId)  
+                  //update dstNodeMap 
+                  newdstNodeMap += (specificNodeId -> tmpNodeInfo)
+                  //val currentNodeType = triplet.dstAttr._1 
+                  //if (specificNodeIdType == 1)
+                  //    println("295 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: ", specificNodeIdType, dstTypeId)
+               }
+               
+              //get current lowerbounds that is actually the previous iteration's lower bound  t-1
+              prevIterLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)
+              sendMsgFlag = true
+              triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterLowerBoundsMap))
+              if (specificNodeId == 1)
+                 println("403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
+                  
+            }
+          )
+          
+        //  if (sendMsgFlag)
+        //  {
+        //     triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterLowerBoundsMap))
+             
+        //  }
+        },
+        
+        (a, b) => {                  //aggregate message;  reduce function;    different src nodes
+          val nodeTypeId = a._1
+          var nodeMapA = a._2
+          var nodeMapB = b._2
+          val prevIterLowerBoundsMapA = a._3              //Map[VertexId, Double]()
+          val prevIterLowerBoundsMapB = b._3
+          //var newMap = Map[VertexId, NodeInfo]()
+          
+          prevIterLowerBoundsMapA.keys.foreach{(specificNodeId) =>
+           
+           //keep current specificNodeId's map value
+          if (nodeMapA(specificNodeId).spDistance < nodeMapB(specificNodeId).spDistance){  
+              //update visit color,  lowerBoundCloseness Score
+              val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
+               
+              val tmpNodeInfo = nodeMapA(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
+              nodeMapA += (specificNodeId -> tmpNodeInfo)       //update key -> value
+              
+              print ("414: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+specificNodeId + " " + updatedLowerBoundCloseScore + "    ")
+              
+              (nodeTypeId, nodeMapA, prevIterLowerBoundsMapA)
+              
+          }
+          else if (nodeMapA(specificNodeId).spDistance == nodeMapB(specificNodeId).spDistance){   
+              //update bound
+              print ("415: starQueryGraphbfsTraverseWithBoundPruning prevIterLowerBoundsMapA : "+ prevIterLowerBoundsMapA + "   ")
+
+              
+              val updatedLowerBoundCloseScoreA = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
+              val updatedLowerBoundCloseScoreB = calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
+              
+              print ("422: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " " + updatedLowerBoundCloseScoreA + "  " +  updatedLowerBoundCloseScoreB + "   ")
+                     
+
+              val tmpLBSum =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
+              //val updatedLowerBoundCloseScore =  math.min(N*scala.math.pow(ALPHA, (nodeMapA(specificNodeId).spDistance-nodeMapA(specificNodeId).hierLevelDifference)), tmpLBSum)
+              val updatedLowerBoundCloseScore =  math.min(scala.math.pow(ALPHA, (nodeMapA(specificNodeId).spDistance-nodeMapA(specificNodeId).hierLevelDifference)-1), tmpLBSum)
+
+              val tmpNodeInfo = nodeMapA(specificNodeId).copy(spNumber = nodeMapA(specificNodeId).spNumber+1, visitedColor = GREY.id, 
+                                                                     lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update spNumber
+              nodeMapA += (specificNodeId -> tmpNodeInfo)
+             // val newMap = {newMap}
+              print ("432: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " sd: " + nodeMapA(specificNodeId).spDistance + " hier:   " +nodeMapA(specificNodeId).hierLevelDifference +" score: " +updatedLowerBoundCloseScore + "   ")
+              (nodeTypeId, nodeMapA, prevIterLowerBoundsMapA)
+
+          }
+          else{
+            
+              //nodeMapB(specificNodeIdType._1).lowerBoundCloseScore + ....
+              val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
+
+              val tmpNodeInfo = nodeMapB(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
+              nodeMapB += (specificNodeId -> tmpNodeInfo)
+              (nodeTypeId, nodeMapB, prevIterLowerBoundsMapB)
+          }
+          
+        }
+         //print ("286: starQueryGraphbfsTraverseWithBoundPruning: ", newMap)
+        (nodeTypeId, nodeMapA, prevIterLowerBoundsMapA)
+
+          
+        }
+    ).cache()
+      
+    //no updated messages
+    if (msgs.count == 0)
+      //(topKResultRdd, pathAnswerRdd)
+        topKResultRdd                         //only return topKResultRdd
+       
+    g = g.ops.joinVertices(msgs) {
+        (nodeId, oldAttr, newAttr) =>
+        var nodeOldMap = oldAttr._2
+        var nodeNewMap = newAttr._2
+        val nodeTypeId = newAttr._1
+        val prevIterLowerBoundsMap = newAttr._3              //Map[VertexId, Double]()
+
+        var dstNodeTypeVisitFlag = true
+      //  var newMap = nodeOldMap         //Map[VertexId, NodeInfo]()           //initialization 
+        prevIterLowerBoundsMap.keys.foreach{(specificNodeId) =>
+          
+          if (nodeNewMap(specificNodeId).spDistance <= nodeOldMap(specificNodeId).spDistance)        //<  or <=
+          {
+                         
+              val spDistance = nodeNewMap(specificNodeId).spDistance
+              val spNumber = nodeNewMap(specificNodeId).spNumber
+              val newhierLevelDifference =  nodeNewMap(specificNodeId).hierLevelDifference        //(-1) x hierLevelDifference； downward inheritance
+
+              val newClosenessScore = calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)      //node similarity score
+              val newLowerBoundCScore =  nodeNewMap(specificNodeId).lowerBoundCloseScore // math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeId).lowerBoundCloseScore)           // error ??
+              val newUpperBoundCScore = nodeNewMap(specificNodeId).upperBoundCloseScore // calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
+                            //test
+              if (nodeId == 4)
+                {
+                  println("464 starQueryGraphbfsTraverse: " + specificNodeId + " _ " + nodeNewMap(specificNodeId).lowerBoundCloseScore + " sd: " +nodeNewMap(specificNodeId).spDistance + " hierLevel: " + newhierLevelDifference + " spNum: " + spNumber)
+                  println("467 starQueryGraphbfsTraverse: " + newLowerBoundCScore + " _ " + newUpperBoundCScore+ " score: " + newClosenessScore + "  currentSatisfiedNodesNumber: " +currentSatisfiedNodesNumber)
+                }
+                
+                
+              val tmpNodeInfo = nodeNewMap(specificNodeId).copy(closenessNodeScore = newClosenessScore, hierLevelDifference = newhierLevelDifference,
+                                                                 lowerBoundCloseScore = newLowerBoundCScore, upperBoundCloseScore = newUpperBoundCScore)  //update closenessNodeScore 
+              nodeOldMap += (specificNodeId -> tmpNodeInfo)
+          }
+         // else
+         // {
+          //    newMap += (specificNodeId -> nodeOldMap(specificNodeId))
+        //  }
+           
+       //  if (newMap(specificNodeId).visitedColor != GREY.id)
+       //   {
+        //     dstNodeTypeVisitFlag = false
+         // }
+          
+          
+        }
+          
+          //test println
+         // if (nodeId == 40)
+         (nodeTypeId, nodeOldMap)
+
+      }.cache()
+      
+      //check all the nodes that have been updated, i.e. visited 
+      /*
+      val allNodesVisited =  g.vertices.filter{ case x=>
+        val nodeMap = x._2._2
+        
+        //judge the nodes is visited from all the specific nodes
+        def getAllVisiteFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
+          var visitedFlag = true
+          for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
+           if (nodeInfo.spDistance == Long.MaxValue)
+             visitedFlag = false
+          }
+          visitedFlag
+        }
+        getAllVisiteFlag(nodeMap)
+      }
+      */
+     val allNodesVisited =  g.vertices.filter{ case x=>
+        val nodeMap = x._2._2
+        
+        //judge the nodes is visited from all the specific nodes
+        def getAllVisiteFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
+          var visitedFlag = false
+          for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
+              if (nodeInfo.spDistance != Long.MaxValue)        //any one exist
+              visitedFlag = true
+          }
+          visitedFlag
+        }
+        getAllVisiteFlag(nodeMap)
+      }
+      
+      
+       g = setnodeIdColorForBound(allNodesVisited, g)                 //update bounding nodes color
+  
+        
+      //how many nodes have been visited from all specific nodes
+      allNodesVisitedNumber =  allNodesVisited.count()
+      
+      //print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
+      
+      twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber
+      
+      val currentIterateNodeResult = allNodesVisited.filter(x => x._2._1 == dstTypeId)
+      // currentIterateNodeResult.take(10).foreach(println)
+      
+      //how many satisfied nodes into top K nodes list
+      currentSatisfiedNodesNumber = currentIterateNodeResult.count()
+      //print ("649: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, currentSatisfiedNodesNumber)
+      
+      //statisitics of iteration number
+      iterationCount += 1
+
+      oldAllNodesVisitedNumber = allNodesVisitedNumber
+      //print ("604: starQueryGraphbfsTraverseWithBoundPruning twoPreviousOldAllNodesVisitedNumber oldAllNodesVisitedNumber: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
+      
+          
+      //put result into topK final list top K
+      //var transferedResultRdd: RDD[(VertexId, Int)] = sc.emptyRDD()
+      //whether it has topK candidates satisfied.
+      if (currentSatisfiedNodesNumber <= TOPK)
+      {
+          topKResultRdd =  currentIterateNodeResult.map(x=>
+          (x._1, (calculateNodeScoreStarquery(x._2._2), calculateMatchingScoreLowerBound(x._2._2),  calculateMatchingScoreUpperBound(x._2._2), x._2._1.toString.toInt, x._2._2)))
+        
+          //print ("584: starQueryGraphbfsTraverseWithBoundPruning topKResultRdd： "+ TOPK+ "--" + topKResultRdd.count)
+          //topKResultRdd.collect().foreach(println)
+          
+         // topKResultRdd
+      }
+      else{              //there are k element in the list
+        //get topK union by calculateNodesScoreStarquery
+          val topKResultRddArray =  currentIterateNodeResult.map(x=>
+          (x._1, (calculateNodeScoreStarquery(x._2._2), calculateMatchingScoreLowerBound(x._2._2),  calculateMatchingScoreUpperBound(x._2._2), x._2._1.toString.toInt, x._2._2))).takeOrdered(TOPK)(Ordering[Double].reverse.on(x=>x._2._1))    //sort by matching score calculateNodeScoreStarquery result
+       
+          //get the kth smallest lower bound score in the topKResultRddArray
+          topKKthLowerBoundScore = topKResultRddArray.sortBy(x=>x._2._2).head._2._2       //sorted by lower bound matching score
+           
+          topKResultRdd = sc.parallelize(topKResultRddArray)                //transfer to RDD data structure
+           //print ("598: starQueryGraphbfsTraverseWithBoundPruning topKResultRdd: "+ TOPK + "----" + topKResultRdd.count, topKKthLowerBoundScore)
+         // topKResultRdd.collect().foreach(println)
+        //  topKResultRdd
+      } 
+    
+      
+    }
+     
+    
+    val endTime = System.currentTimeMillis()   
+    //println("673 starQueryGraphbfsTraverseWithBoundPruning runtime: "+ (endTime-startTime) + " ms")
+    if (runTimeoutputFilePath != null)
+    {
+        
+      val runtTimefile = new File(runTimeoutputFilePath)
+      val bw = new BufferedWriter(new FileWriter(runtTimefile))
+      bw.write("TOP " + TOPK.toString + " " + "runtime: "+ (endTime-startTime).toString + " ms\n" )
+      bw.close()
+    }
+
+    //get shortest path for the top K answer:
+   //  pathAnswerRdd = getPathforAnswers(sc, topKResultRdd, g)
+    
+  //  (topKResultRdd, pathAnswerRdd)
+   topKResultRdd                         //only return topKResultRdd
+   
+   
+  }
   
   //judge src and dst Id is in the pair
   def judgeEdgeInPairList(newNodePair: List[String],  srcId: VertexId, dstId: VertexId) = {
