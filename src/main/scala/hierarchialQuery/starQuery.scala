@@ -705,8 +705,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                  //val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
                  //                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
 
-                 val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
-                                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
+                 val tmpNodeInfo = dstNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
+                                   hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, spNumber= srcNodeMap(specificNodeId).spNumber,  parentId = triplet.srcId)  
                
                 
                  //update dstNodeMap 
@@ -718,7 +718,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                else{
                   
                   //update spDist and parentId only
-                  val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, parentId = triplet.srcId)  
+                  val tmpNodeInfo = dstNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, spNumber= srcNodeMap(specificNodeId).spNumber, parentId = triplet.srcId)  
                   //update dstNodeMap 
                   newdstNodeMap += (specificNodeId -> tmpNodeInfo)
                   //val currentNodeType = triplet.dstAttr._1 
@@ -830,7 +830,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         val nodeTypeId = newAttr._1
        // val prevIterLowerBoundsMap = newAttr._3              //Map[VertexId, Double]()
 
-        var dstNodeTypeVisitFlag = true
+      //  var dstNodeTypeVisitFlag = true
       //  var newMap = nodeOldMap         //Map[VertexId, NodeInfo]()           //initialization 
       //  prevIterLowerBoundsMap.keys.foreach{(specificNodeId) =>
         specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
@@ -847,13 +847,13 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val newLowerBoundCScore =  nodeNewMap(specificNodeId).lowerBoundCloseScore // math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeId).lowerBoundCloseScore)           // error ??
               val newUpperBoundCScore = nodeNewMap(specificNodeId).upperBoundCloseScore // calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
                             //test
-              /*            
-              if (nodeId == 3)
-                {
-                  println("464 starQueryGraphbfsTraverse: " + specificNodeId + " _ " + nodeNewMap(specificNodeId).lowerBoundCloseScore + " sd: " +nodeNewMap(specificNodeId).spDistance + " hierLevel: " + newhierLevelDifference + " spNum: " + spNumber)
+                        
+             // if (nodeId == 3)
+             //   {
+                  println("464 starQueryGraphbfsTraverse: "  + specificNodeId + " nodeId: " + nodeId  +" _ " + nodeNewMap(specificNodeId).lowerBoundCloseScore + " sd: " +nodeNewMap(specificNodeId).spDistance + " hierLevel: " + newhierLevelDifference + " spNum: " + spNumber)
                   println("467 starQueryGraphbfsTraverse: " + newLowerBoundCScore + " _ " + newUpperBoundCScore+ " score: " + newClosenessScore + "  currentSatisfiedNodesNumber: " +currentSatisfiedNodesNumber)
-                }
-              */
+             //   }
+              
                 
               val tmpNodeInfo = nodeNewMap(specificNodeId).copy(closenessNodeScore = newClosenessScore, hierLevelDifference = newhierLevelDifference,
                                                                  lowerBoundCloseScore = newLowerBoundCScore, upperBoundCloseScore = newUpperBoundCScore)  //update closenessNodeScore 
