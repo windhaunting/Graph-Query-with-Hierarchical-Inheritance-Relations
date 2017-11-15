@@ -10,10 +10,29 @@ import org.apache.spark.SparkContext
 
 object testSyntheticGraph {
   
-  def testUseSmallGraphData(arags: Array[String], sc: SparkContext) ={
-    val inputEdgeListfilePath = "../../Data/syntheticGraph//.tsv"
-    val inputNodeInfoFilePath = "../../Data/syntheticGraph//.tsv"
+  //test tiny graph to verify the score and bounding
+  def testTinyGraphData(arags: Array[String], sc: SparkContext) ={
+    val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile01"
+    val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo01"
 
+    //read edge list to graphX graph
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+
+    val dstTypeId = 0                    //0 hierarchical node   or 1
+    val topK = args(0).toInt
+    starQuery.TOPK = topK
+    
+    val databaseType = 2              //synthetic graph database   2
+    val runTimeFileIndex = args(1)
+    
+    val specificReadLst =  List((1L, 2), (2L, 2))               // List((648027L, 2), (636461L, 2))        
+    
+    val hierarchialRelation = true
+
+    val outputFilePath = "../output/testInput/starQueryOutput/starOutputFilePath" + runTimeFileIndex
+    val runTimeoutputFilePath = "../output/testInput/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
+    
     
   }
   
