@@ -416,7 +416,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           val prevIterLowerBoundsMapA = a._3              //Map[VertexId, Double]()
           val prevIterLowerBoundsMapB = b._3
           var newMap = Map[VertexId, NodeInfo]()
-          prevIterLowerBoundsMap.keys.foreach{(specificNodeId) =>
+          prevIterLowerBoundsMapA.keys.foreach{(specificNodeId) =>
            
            //keep current specificNodeId's map value
           if (nodeMapA(specificNodeId).spDistance < nodeMapB(specificNodeId).spDistance){  

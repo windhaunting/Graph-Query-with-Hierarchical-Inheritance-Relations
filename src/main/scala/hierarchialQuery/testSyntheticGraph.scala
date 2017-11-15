@@ -11,7 +11,7 @@ import org.apache.spark.SparkContext
 object testSyntheticGraph {
   
   //test tiny graph to verify the score and bounding
-  def testTinyGraphData(arags: Array[String], sc: SparkContext) ={
+  def testTinyGraphData(args: Array[String], sc: SparkContext) ={
     val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile01"
     val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo01"
 
