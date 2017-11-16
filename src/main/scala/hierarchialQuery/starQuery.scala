@@ -843,9 +843,14 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val spNumber = nodeNewMap(specificNodeId).spNumber
               val newhierLevelDifference =  nodeNewMap(specificNodeId).hierLevelDifference        //(-1) x hierLevelDifference； downward inheritance
 
+              //update closeness score from this sepcific nodeId
               val newClosenessScore = calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)      //node similarity score
-              val newLowerBoundCScore =  nodeNewMap(specificNodeId).lowerBoundCloseScore // math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeId).lowerBoundCloseScore)           // error ??
-              val newUpperBoundCScore = nodeNewMap(specificNodeId).upperBoundCloseScore // calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
+              
+              //update lower bound score from this specific nodeId
+              val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
+
+             // val newLowerBoundCScore =  nodeNewMap(specificNodeId).lowerBoundCloseScore // math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeId).lowerBoundCloseScore)           // error ??
+             // val newUpperBoundCScore = nodeNewMap(specificNodeId).upperBoundCloseScore // calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
                             //test
                         
              // if (nodeId == 3)
