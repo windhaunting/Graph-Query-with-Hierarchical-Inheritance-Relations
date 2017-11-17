@@ -870,7 +870,7 @@ object nonStarQuery {
                  val newClosenessScore = starQuery.calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)
                  val newLowerBoundCScore =  math.min(starQuery.N*scala.math.pow(starQuery.ALPHA, (spDistance-newhierLevelDifference)), nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore)
 
-                 val newUpperBoundCScore = starQuery.calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
+                 val newUpperBoundCScore = -100   //modify later starQuery.calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
                  val tmpNodeInfo = nodeNewMap(specificNodeIdType._1).copy(closenessNodeScore = newClosenessScore,
                                                                     lowerBoundCloseScore = newLowerBoundCScore, upperBoundCloseScore = newUpperBoundCScore)      //update closenessNodeScore 
                  newMap += (specificNodeIdType._1 -> tmpNodeInfo)
