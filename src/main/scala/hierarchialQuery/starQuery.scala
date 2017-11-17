@@ -235,23 +235,9 @@ def calculateLowerBound[VD, ED](specificNodeId: VertexId, nodeMap: Map[VertexId,
     updatedLowerBoundCloseScore
     
 }
-*/
 
-  //calculate node similarity lower bound when the node visited from one specificNodeId
-  def calculateNodeSimilarityLowerBound[VD, ED](prevIterCurrentNodeLowerScore: Double,  parentNodePrevIterLowerScore: Double, neighborNodehierLevelDifference: Double) = {
-      var updatedLowerBoundCloseScore = 0.0
-      if (prevIterCurrentNodeLowerScore > 0)
-      {
-        updatedLowerBoundCloseScore = prevIterCurrentNodeLowerScore
-      }
-      else{
-        //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
-        updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-neighborNodehierLevelDifference) * parentNodePrevIterLowerScore
-    }
-    updatedLowerBoundCloseScore
+
     
-  }
-  
 //global update lower bound closeness score
 def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLevelDifference: Double) = {
    
@@ -268,6 +254,30 @@ def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLe
     
 }
 
+  */
+
+  
+  //calculate node similarity lower bound when the node visited from one specificNodeId
+  def calculateNodeSimilarityLowerBound[VD, ED](prevIterCurrentNodeLowerScore: Double,  parentNodePrevIterLowerScore: Double, neighborNodehierLevelDifference: Double) = {
+      var updatedLowerBoundCloseScore = 0.0
+      if (prevIterCurrentNodeLowerScore > 0)
+      {
+        updatedLowerBoundCloseScore = prevIterCurrentNodeLowerScore
+      }
+      else{
+        //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
+        updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-neighborNodehierLevelDifference) * parentNodePrevIterLowerScore
+    }
+    updatedLowerBoundCloseScore
+    
+  }
+
+def calculateNodeSimilarityUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLevelDifference: Double) = {
+
+    
+}
+
+    
 
 //get matching Score lowerBound from nodeMap
 def calculateMatchingScoreLowerBound(nodeMap: Map[VertexId, NodeInfo]) = {
@@ -746,7 +756,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               //get current lowerbounds that is actually the previous iteration's lower bound  t-1
               prevIterParentNodeLowerBoundsMap += (specificNodeIdType._1-> srcNodeMap(specificNodeIdType._1).lowerBoundCloseScore)   // check
               val neighborNodehierLevelDifference = Math.abs(triplet.attr)            //edge hierarchical level difference
-              prevIterCurrentNodeLowerBoundsMap += (specificNodeIdType._1-> (neighborNodehierLevelDifference, dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore))  //check
+              prevIterCurrentNodeLowerBoundsMap += (specificNodeIdType._1-> (dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore, neighborNodehierLevelDifference))  //check
               sendMsgFlag = true
               //if (specificNodeId == 1)
               println("403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
@@ -769,8 +779,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           var nodeMapB = b._2
           val prevIterLowerBoundsMapA = a._4              //Map[VertexId, Double]()
           val prevIterLowerBoundsMapB = b._4
-          
-          var prevIterLowerBoundsMapNew =  Map[VertexId, (Int, Double)]()   
+          var prevIterParentNodeLowerBoundsMap = Map[VertexId, (Int, Double)]()
+          var prevIterLowerBoundsMapNew =  Map[VertexId, Double]()   
           var newMap = nodeMapA         //Map[VertexId, NodeInfo]()
            print ("409: starQueryGraphbfsTraverseWithBoundPruning a : "+a + " b:   " + b + " done ")
 
@@ -784,7 +794,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               if (nodeMapA(specificNodeId).spDistance < nodeMapB(specificNodeId).spDistance){  
               //update visit color,  lowerBoundCloseness Score
                //  calculateNodeSimilarityLowerBound()
-              val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
+              val updatedLowerBoundCloseScore =  0 // calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
                
               val tmpNodeInfo = nodeMapA(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
               newMap += (specificNodeId -> tmpNodeInfo)       //update key -> value
@@ -799,8 +809,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
             //  print ("415: starQueryGraphbfsTraverseWithBoundPruning prevIterLowerBoundsMapA : "+ prevIterLowerBoundsMapA + "   ")
 
               
-              val updatedLowerBoundCloseScoreA = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
-              val updatedLowerBoundCloseScoreB = calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
+              val updatedLowerBoundCloseScoreA = 0  //calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
+              val updatedLowerBoundCloseScoreB = 0   //calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
               
            //   print ("422: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " " + updatedLowerBoundCloseScoreA + "  " +  updatedLowerBoundCloseScoreB + "   ")
                      
@@ -821,7 +831,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           else if (nodeMapA(specificNodeId).spDistance > nodeMapB(specificNodeId).spDistance){
             
               //nodeMapB(specificNodeIdType._1).lowerBoundCloseScore + ....
-              val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
+              val updatedLowerBoundCloseScore = 0  //calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
 
               val tmpNodeInfo = nodeMapB(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
               newMap += (specificNodeId -> tmpNodeInfo)
@@ -832,7 +842,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           
         }
          //print ("286: starQueryGraphbfsTraverseWithBoundPruning: ", newMap)
-        (nodeTypeId, newMap, prevIterLowerBoundsMapNew)
+        (nodeTypeId, newMap, prevIterParentNodeLowerBoundsMap, prevIterLowerBoundsMapNew)
   
         }
     ).cache()
@@ -847,8 +857,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         var nodeOldMap = oldAttr._2
         var nodeNewMap = newAttr._2
         val nodeTypeId = newAttr._1
-        val prevIterParentNodeLowerBoundsMap = newAttr._3       //Map[VertexId, Double]()
-       // val prevIterLowerBoundsMap = newAttr._4              //Map[VertexId, Double]()
+        val prevIterParentNodeLowerBoundsMap = newAttr._3       //Map[VertexId, Double]()       neighbor node parent node
+        val prevIterCurrentNodeLowerBoundsMap = newAttr._4              //Map[VertexId, Double]()          current node's previous iteration'
 
       //  var dstNodeTypeVisitFlag = true
       //  var newMap = nodeOldMap         //Map[VertexId, NodeInfo]()           //initialization 
@@ -868,8 +878,14 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val newClosenessScore = calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)      //node similarity score
               
               //update lower bound score from this specific nodeId
-              val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeNewMap, prevIterLowerBoundsMapA(specificNodeId))
-
+              
+              // val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeNewMap, prevIterLowerBoundsMapA(specificNodeId))
+              val prevIterCurrentNodeLowerScore = prevIterCurrentNodeLowerBoundsMap(specificNodeId)
+              val parentNodePrevIterLowerScore = prevIterCurrentNodeLowerBoundsMap(specificNodeId)._1
+              val neighborNodehierLevelDifference = prevIterCurrentNodeLowerBoundsMap(specificNodeId)._2
+              
+              valupdatedLowerBoundCloseScore = calculateNodeSimilarityLowerBound(prevIterCurrentNodeLowerScore,  parentNodePrevIterLowerScore, neighborNodehierLevelDifference) = {
+     
              // val newLowerBoundCScore =  nodeNewMap(specificNodeId).lowerBoundCloseScore // math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeId).lowerBoundCloseScore)           // error ??
              // val newUpperBoundCScore = nodeNewMap(specificNodeId).upperBoundCloseScore // calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
                             //test
