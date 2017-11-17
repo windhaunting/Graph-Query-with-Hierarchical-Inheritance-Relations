@@ -770,7 +770,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           val prevIterLowerBoundsMapA = a._4              //Map[VertexId, Double]()
           val prevIterLowerBoundsMapB = b._4
           
-          var prevIterLowerBoundsMapNew =  Map[VertexId, Double]()   
+          var prevIterLowerBoundsMapNew =  Map[VertexId, (Int, Double)]()   
           var newMap = nodeMapA         //Map[VertexId, NodeInfo]()
            print ("409: starQueryGraphbfsTraverseWithBoundPruning a : "+a + " b:   " + b + " done ")
 
