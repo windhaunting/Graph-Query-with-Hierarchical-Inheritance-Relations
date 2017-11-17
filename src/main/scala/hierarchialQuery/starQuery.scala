@@ -698,14 +698,14 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
 
   {
       //println("412 starQueryGraphbfsTraverse iterationCount: ", iterationCount)
-      val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo], Map[VertexId, Double])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo], Map[VertexId, Double])](
+      val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo], Map[VertexId, (Int, Double)], Map[VertexId, Double])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo],  Map[VertexId, (Int, Double)], Map[VertexId, Double])](
         triplet => {
           val srcNodeMap = triplet.srcAttr._2
           //println("266 starQueryGraphbfsTraverse srcNodeMap: ", srcNodeMap)
           var dstNodeMap = triplet.dstAttr._2          //dstNodeMap
           var newdstNodeMap = Map[VertexId, NodeInfo]()            // not dstNodeMap any more, empty first, only updated vertexId part need to be sent (message)
-          
-          var  prevIterLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
+          var prevIterParentNodeLowerBoundsMap = Map[VertexId, Double]()  
+          var  prevIterCurrentNodeLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
           var sendMsgFlag  = false          //sendMsgFlag
           val currentNodeType = triplet.dstAttr._1  
           //println("273 starQueryGraphbfsTraverse newdstNodeMap: "+  triplet.srcAttr._1.toString.toInt+ "   " + dstTypeId)
@@ -744,19 +744,21 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                }
                
               //get current lowerbounds that is actually the previous iteration's lower bound  t-1
-              prevIterLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)
+              prevIterParentNodeLowerBoundsMap += (specificNodeIdType._1-> srcNodeMap(specificNodeIdType._1).lowerBoundCloseScore)   // check
+              val neighborNodehierLevelDifference = triplet              //edge property
+              prevIterCurrentNodeLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)  //check
               sendMsgFlag = true
               //if (specificNodeId == 1)
               println("403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
               
-              triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterLowerBoundsMap))
+              triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap))
      
             }
           )
           
         //  if (sendMsgFlag)
         //  {
-        //     triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterLowerBoundsMap))
+        //     triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap))
              
         //  }
         },
@@ -765,8 +767,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           val nodeTypeId = a._1
           var nodeMapA = a._2
           var nodeMapB = b._2
-          val prevIterLowerBoundsMapA = a._3              //Map[VertexId, Double]()
-          val prevIterLowerBoundsMapB = b._3
+          val prevIterLowerBoundsMapA = a._4              //Map[VertexId, Double]()
+          val prevIterLowerBoundsMapB = b._4
           
           var prevIterLowerBoundsMapNew =  Map[VertexId, Double]()   
           var newMap = nodeMapA         //Map[VertexId, NodeInfo]()
@@ -845,7 +847,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         var nodeOldMap = oldAttr._2
         var nodeNewMap = newAttr._2
         val nodeTypeId = newAttr._1
-       // val prevIterLowerBoundsMap = newAttr._3              //Map[VertexId, Double]()
+        val prevIterParentNodeLowerBoundsMap = newAttr._3       //Map[VertexId, Double]()
+       // val prevIterLowerBoundsMap = newAttr._4              //Map[VertexId, Double]()
 
       //  var dstNodeTypeVisitFlag = true
       //  var newMap = nodeOldMap         //Map[VertexId, NodeInfo]()           //initialization 
