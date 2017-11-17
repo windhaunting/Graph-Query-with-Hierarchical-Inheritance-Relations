@@ -215,10 +215,11 @@ object starQuery {
  
   
 
+  /*
 //inner local update lower bound closeness score
 def calculateLowerBound[VD, ED](specificNodeId: VertexId, nodeMap: Map[VertexId, NodeInfo], prevIterCurrentNodeLowerScore: Double) = {
   
-    val prevIterNeighborNodeLowerScore = nodeMap(specificNodeId).lowerBoundCloseScore
+    val prevParentNodeLowerScore = nodeMap(specificNodeId).lowerBoundCloseScore
     val prevIterNeighborHierLevelDistance = nodeMap(specificNodeId).hierLevelDifference
     
     var updatedLowerBoundCloseScore = 0.0
@@ -229,12 +230,28 @@ def calculateLowerBound[VD, ED](specificNodeId: VertexId, nodeMap: Map[VertexId,
     else
     {
         //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
-        updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-prevIterNeighborHierLevelDistance) * prevIterNeighborNodeLowerScore
+        updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-prevIterNeighborHierLevelDistance) * prevParentNodeLowerScore
     }
     updatedLowerBoundCloseScore
     
 }
+*/
 
+  //calculate node similarity lower bound when the node visited from one specificNodeId
+  def calculateNodeSimilarityLowerBound[VD, ED](prevIterCurrentNodeLowerScore: Double,  parentNodePrevIterLowerScore: Double, neighborNodehierLevelDifference: Double) = {
+      var updatedLowerBoundCloseScore = 0.0
+      if (prevIterCurrentNodeLowerScore > 0)
+      {
+        updatedLowerBoundCloseScore = prevIterCurrentNodeLowerScore
+      }
+      else{
+        //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
+        updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-neighborNodehierLevelDifference) * parentNodePrevIterLowerScore
+    }
+    updatedLowerBoundCloseScore
+    
+  }
+  
 //global update lower bound closeness score
 def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLevelDifference: Double) = {
    
@@ -764,6 +781,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               //keep current specificNodeId's map value
               if (nodeMapA(specificNodeId).spDistance < nodeMapB(specificNodeId).spDistance){  
               //update visit color,  lowerBoundCloseness Score
+               //  calculateNodeSimilarityLowerBound()
               val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
                
               val tmpNodeInfo = nodeMapA(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
@@ -847,7 +865,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val newClosenessScore = calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)      //node similarity score
               
               //update lower bound score from this specific nodeId
-              val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
+              val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeNewMap, prevIterLowerBoundsMapA(specificNodeId))
 
              // val newLowerBoundCScore =  nodeNewMap(specificNodeId).lowerBoundCloseScore // math.min(scala.math.pow(ALPHA, (spDistance-newhierLevelDifference-1)), nodeNewMap(specificNodeId).lowerBoundCloseScore)           // error ??
              // val newUpperBoundCScore = nodeNewMap(specificNodeId).upperBoundCloseScore // calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
