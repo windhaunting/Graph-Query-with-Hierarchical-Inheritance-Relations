@@ -466,6 +466,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
             //  print ("410: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+prevIterLowerBoundsMapA + "    " + prevIterLowerBoundsMapB + " ")
               
          // prevIterLowerBoundsMapA.keys.foreach{(specificNodeId) =>
+         //combine and update only when there is update from any specificNode updated
            specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
               
               val specificNodeId = specificNodeIdType._1
