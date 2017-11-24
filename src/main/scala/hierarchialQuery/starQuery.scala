@@ -469,9 +469,12 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               
          // prevIterLowerBoundsMapA.keys.foreach{(specificNodeId) =>
          //combine and update only when there is update from any specificNode updated
-          nodeMapA.keys.foreach{(specificNodeId) =>
-            if nodeMapB.contains(specificNodeId){
-              //combine
+           specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
+            val specificNodeId = specificNodeIdType._1
+            
+            if (nodeMapA.contains(specificNodeId) && nodeMapB.contains(specificNodeId))
+              //combine the new key->value pair into the nodeMapA； 
+              val newspDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)                
               
             }
             
