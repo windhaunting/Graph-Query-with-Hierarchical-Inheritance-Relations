@@ -458,10 +458,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           val nodeTypeId = a._1
           var nodeMapA = a._2
           var nodeMapB = b._2
-          val prevIterParentNodeLowerBoundsMapA = a._3
+          var prevIterParentNodeLowerBoundsMapA = a._3
           val prevIterParentNodeLowerBoundsMapB = b._3
           
-          val prevIterCurrentLowerBoundsMapA = a._4              //Map[VertexId, Double]()
+          var prevIterCurrentLowerBoundsMapA = a._4              //Map[VertexId, Double]()
           val prevIterCurrentLowerBoundsMapB = b._4
           //var prevIterParentNodeLowerBoundsMap = Map[VertexId, (Double, Double)]()
           //var prevIterLowerBoundsMapNew =  Map[VertexId, Double]()   
@@ -476,7 +476,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
            specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
             val specificNodeId = specificNodeIdType._1
             
-            if (nodeMapA.contains(specificNodeId) && nodeMapB.contains(specificNodeId))
+            if (nodeMapA.contains(specificNodeId) && nodeMapB.contains(specificNodeId)) {
+              
               //combine the new key->value pair into the nodeMapA；  update spDistance, hierarchicalLevelDistance, spNumber
               val newSpDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)               
               val newHierLevelDistance = math.max(nodeMapA(specificNodeId).hierLevelDifference, nodeMapB(specificNodeId).hierLevelDifference)
@@ -490,11 +491,19 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val newNeighborNodehierLevelDifference = math.max(prevIterParentNodeLowerBoundsMapA(specificNodeId)._2, prevIterParentNodeLowerBoundsMapB(specificNodeId)._2)
               prevIterParentNodeLowerBoundsMapA += (specificNodeId -> (newprevIterParentNodeLowerBound, newNeighborNodehierLevelDifference))
               
-            //update prevIterCurrentLowerBoundsMap
+             //update prevIterCurrentLowerBoundsMap  the same as prevIterCurrentLowerBoundsMapA
+            
+            }
+            else if (nodeMapB.contains(specificNodeId)){        //only in b, put into A, because we want to return A
+              nodeMapA += (specificNodeId -> nodeMapB(specificNodeId))
+              prevIterParentNodeLowerBoundsMapA += (specificNodeId -> prevIterParentNodeLowerBoundsMapB(specificNodeId))
+              prevIterCurrentLowerBoundsMapA += (specificNodeId -> prevIterCurrentLowerBoundsMapB(specificNodeId))
               
             }
             
           }
+         print ("504: starQueryGraphbfsTraverseWithBoundPruning: ", nodeMapA)
+        (nodeTypeId, nodeMapA, prevIterParentNodeLowerBoundsMapA, prevIterCurrentLowerBoundsMapA)
           
          /*
            specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
