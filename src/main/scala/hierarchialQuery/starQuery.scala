@@ -471,7 +471,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
          //combine and update only when there is update from any specificNode updated
           nodeMapA.keys.foreach{(specificNodeId) =>
             if nodeMapB.contains(specificNodeId){
-              
+              //combine
               
             }
             
