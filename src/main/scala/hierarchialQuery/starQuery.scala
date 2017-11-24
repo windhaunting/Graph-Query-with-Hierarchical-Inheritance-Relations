@@ -457,17 +457,27 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           val nodeTypeId = a._1
           var nodeMapA = a._2
           var nodeMapB = b._2
-          val prevIterLowerBoundsMapA = a._4              //Map[VertexId, Double]()
-          val prevIterLowerBoundsMapB = b._4
-          var prevIterParentNodeLowerBoundsMap = Map[VertexId, (Double, Double)]()
-          var prevIterLowerBoundsMapNew =  Map[VertexId, Double]()   
-          var newMap = nodeMapA         //Map[VertexId, NodeInfo]()
+          
+          val prevIterCurrentLowerBoundsMapA = a._4              //Map[VertexId, Double]()
+          val prevIterCurrentLowerBoundsMapB = b._4
+          //var prevIterParentNodeLowerBoundsMap = Map[VertexId, (Double, Double)]()
+          //var prevIterLowerBoundsMapNew =  Map[VertexId, Double]()   
+          //var newMap = nodeMapA         //Map[VertexId, NodeInfo]()
            print ("409: starQueryGraphbfsTraverseWithBoundPruning a : "+a + " b:   " + b + " done \n")
 
             //  print ("410: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+prevIterLowerBoundsMapA + "    " + prevIterLowerBoundsMapB + " ")
               
          // prevIterLowerBoundsMapA.keys.foreach{(specificNodeId) =>
          //combine and update only when there is update from any specificNode updated
+          nodeMapA.keys.foreach{(specificNodeId) =>
+            if nodeMapB.contains(specificNodeId){
+              
+              
+            }
+            
+          }
+          
+         /*
            specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
               
               val specificNodeId = specificNodeIdType._1
@@ -524,6 +534,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         }
          //print ("286: starQueryGraphbfsTraverseWithBoundPruning: ", newMap)
         (nodeTypeId, newMap, prevIterParentNodeLowerBoundsMap, prevIterLowerBoundsMapNew)
+        
+          */
   
         }
     ).cache()
