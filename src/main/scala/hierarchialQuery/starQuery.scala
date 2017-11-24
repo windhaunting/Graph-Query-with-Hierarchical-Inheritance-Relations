@@ -257,7 +257,7 @@ def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLe
 
   
  //calculate node similarity lower bound when the node visited from one specificNodeId
- def calculateNodeSimilarityLowerBound[VD, ED](prevIterCurrentNodeLowerScore: Double,  parentNodePrevIterLowerScore: Double, neighborNodehierLevelDifference: Double) = {
+ def calculateNodeSimilarityLowerBound[VD, ED](currentSpDistance: Long, currentHierLevelDifference: Double, prevIterCurrentNodeLowerScore: Double,  parentNodePrevIterLowerScore: Double, neighborNodehierLevelDifference: Double) = {
     var updatedLowerBoundCloseScore = 0.0
     if (prevIterCurrentNodeLowerScore > 0)
     {
@@ -265,7 +265,8 @@ def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLe
     }
     else{
         //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
-      updatedLowerBoundCloseScore = scala.math.pow(ALPHA, 1-neighborNodehierLevelDifference) * parentNodePrevIterLowerScore
+        //  math.min(N*scala.math.pow(ALPHA, (currentSpDistance-currentHierLevelDifference)),
+      updatedLowerBoundCloseScore = math.min(N*scala.math.pow(ALPHA, (currentSpDistance-currentHierLevelDifference)), scala.math.pow(ALPHA, 1-neighborNodehierLevelDifference) * parentNodePrevIterLowerScore)
     }
     updatedLowerBoundCloseScore
     
@@ -564,7 +565,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val parentNodePrevIterLowerScore = prevIterParentNodeLowerBoundsMap(specificNodeId)._1
               val neighborNodehierLevelDifference = prevIterParentNodeLowerBoundsMap(specificNodeId)._2
               
-              val newLowerBoundCScore = calculateNodeSimilarityLowerBound(prevIterCurrentNodeLowerScore,  parentNodePrevIterLowerScore, neighborNodehierLevelDifference)
+              val newLowerBoundCScore = calculateNodeSimilarityLowerBound(spDistance, newhierLevelDifference, prevIterCurrentNodeLowerScore,  parentNodePrevIterLowerScore, neighborNodehierLevelDifference)
      
               val newUpperBoundCScore = calculateNodeSimilarityUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
 
