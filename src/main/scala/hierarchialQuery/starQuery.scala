@@ -504,67 +504,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           }
          print ("504: starQueryGraphbfsTraverseWithBoundPruning: ", nodeMapA)
         (nodeTypeId, nodeMapA, prevIterParentNodeLowerBoundsMapA, prevIterCurrentLowerBoundsMapA)
-          
-         /*
-           specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
-              
-              val specificNodeId = specificNodeIdType._1
-              //keep current specificNodeId's map value
-              if (nodeMapA(specificNodeId).spDistance < nodeMapB(specificNodeId).spDistance){  
-              //update visit color,  lowerBoundCloseness Score
-               //  calculateNodeSimilarityLowerBound()
-              val updatedLowerBoundCloseScore =  0 // calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
-               
-              val tmpNodeInfo = nodeMapA(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
-              newMap += (specificNodeId -> tmpNodeInfo)       //update key -> value
-              
-           //   print ("414: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+specificNodeId + " " + updatedLowerBoundCloseScore + "    ")
-              
-            //  (nodeTypeId, nodeMapA, prevIterLowerBoundsMapA)
-              prevIterLowerBoundsMapNew +=(specificNodeId -> updatedLowerBoundCloseScore)  
-          }
-          else if ((nodeMapA(specificNodeId).spDistance == nodeMapB(specificNodeId).spDistance) && (nodeMapA(specificNodeId).spDistance != Long.MaxValue)){   
-              //update bound
-            //  print ("415: starQueryGraphbfsTraverseWithBoundPruning prevIterLowerBoundsMapA : "+ prevIterLowerBoundsMapA + "   ")
-
-              
-              val updatedLowerBoundCloseScoreA = 0  //calculateLowerBound(specificNodeId, nodeMapA, prevIterLowerBoundsMapA(specificNodeId))
-              val updatedLowerBoundCloseScoreB = 0   //calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
-              
-           //   print ("422: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " " + updatedLowerBoundCloseScoreA + "  " +  updatedLowerBoundCloseScoreB + "   ")
-                     
-
-              val tmpLBSum =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
-              //val updatedLowerBoundCloseScore =  math.min(N*scala.math.pow(ALPHA, (nodeMapA(specificNodeId).spDistance-nodeMapA(specificNodeId).hierLevelDifference)), tmpLBSum)
-              val updatedLowerBoundCloseScore =  math.min(scala.math.pow(ALPHA, (nodeMapA(specificNodeId).spDistance-nodeMapA(specificNodeId).hierLevelDifference)-1), tmpLBSum)
-
-              val tmpNodeInfo = nodeMapA(specificNodeId).copy(spNumber = nodeMapA(specificNodeId).spNumber+1, visitedColor = GREY.id, 
-                                                                     lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update spNumber
-              newMap += (specificNodeId -> tmpNodeInfo)
-             // val newMap = {newMap}
-          //    print ("432: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : " + " sd: " + nodeMapA(specificNodeId).spDistance + " hier:   " +nodeMapA(specificNodeId).hierLevelDifference +" score: " +updatedLowerBoundCloseScore + "   ")
-          //    (nodeTypeId, nodeMapA, prevIterLowerBoundsMapA)
-              prevIterLowerBoundsMapNew += (specificNodeId -> updatedLowerBoundCloseScore)
-
-          }
-          else if (nodeMapA(specificNodeId).spDistance > nodeMapB(specificNodeId).spDistance){
-            
-              //nodeMapB(specificNodeIdType._1).lowerBoundCloseScore + ....
-              val updatedLowerBoundCloseScore = 0  //calculateLowerBound(specificNodeId, nodeMapB, prevIterLowerBoundsMapB(specificNodeId))
-
-              val tmpNodeInfo = nodeMapB(specificNodeId).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
-              newMap += (specificNodeId -> tmpNodeInfo)
-          //  (nodeTypeId, nodeMapB, prevIterLowerBoundsMapB)
-              prevIterLowerBoundsMapNew +=(specificNodeId -> updatedLowerBoundCloseScore) 
-
-          }
-          
-        }
-         //print ("286: starQueryGraphbfsTraverseWithBoundPruning: ", newMap)
-        (nodeTypeId, newMap, prevIterParentNodeLowerBoundsMap, prevIterLowerBoundsMapNew)
         
-          */
-  
         }
     ).cache()
       
