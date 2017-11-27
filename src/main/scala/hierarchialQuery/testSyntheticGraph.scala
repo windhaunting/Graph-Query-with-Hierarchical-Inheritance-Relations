@@ -28,9 +28,9 @@ object testSyntheticGraph {
     val databaseType = 2              //synthetic graph database   2
     val runTimeFileIndex = args(1)
     
-     val specificReadLst =  List((1L, 2), (2L, 2))               // List((648027L, 2), (636461L, 2))        
+    // val specificReadLst =  List((1L, 2), (2L, 2))               // List((648027L, 2), (636461L, 2))        
 
-     //val specificReadLst =  List((1L, 2)) //, (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
+     val specificReadLst =  List((1L, 2)) //, (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
 
     val hierarchialRelation = true
 
