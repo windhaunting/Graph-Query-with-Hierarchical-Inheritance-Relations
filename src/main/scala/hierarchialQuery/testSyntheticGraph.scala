@@ -15,8 +15,11 @@ object testSyntheticGraph {
     //val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile01"
     // val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo01"
 
-    val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile02"
-    val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo02"
+    //val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile02"
+    //val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo02"
+    
+    val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile03"
+    val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo03"
     
     //read edge list to graphX graph
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
@@ -28,9 +31,9 @@ object testSyntheticGraph {
     val databaseType = 2              //synthetic graph database   2
     val runTimeFileIndex = args(1)
     
-    // val specificReadLst =  List((1L, 2), (2L, 2))               // List((648027L, 2), (636461L, 2))        
+    val specificReadLst =  List((1L, 2), (2L, 2))               // List((648027L, 2), (636461L, 2))        
     // val specificReadLst =  List((1L, 2)) //, (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
-     val specificReadLst =  List((1L, 2), (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
+    //  val specificReadLst =  List((1L, 2), (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
 
     val hierarchialRelation = true
 
