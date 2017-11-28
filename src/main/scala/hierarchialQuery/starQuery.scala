@@ -631,7 +631,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       //how many nodes have been visited from all specific nodes
       allNodesVisitedNumber =  allNodesVisited.count()
       
-      //print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
+      print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
       
       twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber
       
