@@ -439,7 +439,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               prevIterParentNodeLowerBoundsMap += (specificNodeIdType._1-> (srcNodeMap(specificNodeIdType._1).lowerBoundCloseScore, neighborNodehierLevelDifference))    // check
               prevIterCurrentNodeLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)  //check
               //sendMsgFlag = true
-              //println("403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
+              println("403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
               
               triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap))
      
@@ -464,9 +464,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           val prevIterCurrentLowerBoundsMapB = b._4
           //var prevIterParentNodeLowerBoundsMap = Map[VertexId, (Double, Double)]()
           //var prevIterLowerBoundsMapNew =  Map[VertexId, Double]()   
-          //var newMap = nodeMapA         //Map[VertexId, NodeInfo]()
-
-          print ("409: starQueryGraphbfsTraverseWithBoundPruning a : "+a + " b:   " + b + " done \n")
+          var newMap = Map[VertexId, NodeInfo]()
+          var prevIterParentNodeLowerBoundsMapNew = Map[VertexId, (Double, Double)]() 
+          var prevIterCurrentLowerBoundsMapNew = Map[VertexId, Double]()
+         // print ("409: starQueryGraphbfsTraverseWithBoundPruning a : "+a + " b:   " + b + " done \n")
 
             //  print ("410: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+prevIterLowerBoundsMapA + "    " + prevIterLowerBoundsMapB + " ")
               
@@ -483,26 +484,33 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val newSpNumber = nodeMapA(specificNodeId).spNumber + 1
               
               val tmpNodeInfo = nodeMapA(specificNodeId).copy(spDistance = newSpDistance, spNumber = newSpNumber, hierLevelDifference = newHierLevelDistance)
-              nodeMapA += (specificNodeId -> tmpNodeInfo)
+              newMap += (specificNodeId -> tmpNodeInfo)
               
               //update prevIterParentNodeLowerBoundsMap
               val newprevIterParentNodeLowerBound =  prevIterParentNodeLowerBoundsMapA(specificNodeId)._1 + prevIterParentNodeLowerBoundsMapB(specificNodeId)._1
               val newNeighborNodehierLevelDifference = math.max(prevIterParentNodeLowerBoundsMapA(specificNodeId)._2, prevIterParentNodeLowerBoundsMapB(specificNodeId)._2)
-              prevIterParentNodeLowerBoundsMapA += (specificNodeId -> (newprevIterParentNodeLowerBound, newNeighborNodehierLevelDifference))
+              prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> (newprevIterParentNodeLowerBound, newNeighborNodehierLevelDifference))
               
              //update prevIterCurrentLowerBoundsMap  the same as prevIterCurrentLowerBoundsMapA
-            
+             prevIterCurrentLowerBoundsMapNew  += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
+             
+            }
+            else if (nodeMapA.contains(specificNodeId)){        //only in b, put into A, because we want to return A
+              newMap += (specificNodeId -> nodeMapA(specificNodeId))
+              prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> prevIterParentNodeLowerBoundsMapA(specificNodeId))
+              prevIterCurrentLowerBoundsMapNew += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
+              
             }
             else if (nodeMapB.contains(specificNodeId)){        //only in b, put into A, because we want to return A
-              nodeMapA += (specificNodeId -> nodeMapB(specificNodeId))
-              prevIterParentNodeLowerBoundsMapA += (specificNodeId -> prevIterParentNodeLowerBoundsMapB(specificNodeId))
-              prevIterCurrentLowerBoundsMapA += (specificNodeId -> prevIterCurrentLowerBoundsMapB(specificNodeId))
+              newMap += (specificNodeId -> nodeMapB(specificNodeId))
+              prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> prevIterParentNodeLowerBoundsMapB(specificNodeId))
+              prevIterCurrentLowerBoundsMapNew += (specificNodeId -> prevIterCurrentLowerBoundsMapB(specificNodeId))
               
             }
             
           }
-         print ("504: starQueryGraphbfsTraverseWithBoundPruning: ", nodeMapA)
-        (nodeTypeId, nodeMapA, prevIterParentNodeLowerBoundsMapA, prevIterCurrentLowerBoundsMapA)
+         print ("504: starQueryGraphbfsTraverseWithBoundPruning: ", newMap)
+        (nodeTypeId, newMap, prevIterParentNodeLowerBoundsMapNew, prevIterCurrentLowerBoundsMapNew)
         
         }
     ).cache()
