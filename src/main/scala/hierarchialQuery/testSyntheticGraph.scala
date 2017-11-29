@@ -18,8 +18,8 @@ object testSyntheticGraph {
     //val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile02"
     //val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo02"
     
-    val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile03"
-    val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo03"
+    val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile04"
+    val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo04"
     
     //read edge list to graphX graph
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")

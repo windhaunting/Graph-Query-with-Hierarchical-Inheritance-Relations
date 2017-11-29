@@ -129,9 +129,9 @@ object starQuery {
   
   
 //get the closeness score from the parameters
-  def calculateClosenessScore(spDistance: Long, spNumber: Long, hierLevelDifference: Double) = {
+  def calculateClosenessScore(spDistance: Long, spNumber: Long, parentNodeHierarchicalLeve: Double, currntHierLevelDifference: Double) = {
     
-    val closeScore: Double = math.min(N*scala.math.pow(ALPHA, (spDistance-hierLevelDifference)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
+    val closeScore: Double = math.min(N*scala.math.pow(ALPHA, (spDistance-parentNodeHierarchicalLeve)), spNumber*scala.math.pow(ALPHA, (spDistance - currntHierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
     
    // val closeScore: Double = math.min(scala.math.pow(ALPHA, (spDistance-hierLevelDifference-1)), spNumber*scala.math.pow(ALPHA, (spDistance -hierLevelDifference).toDouble))                         //just use math.pow( ) deprecated? http://alvinalexander.com/scala/scala-math-power-exponent-exponentiation-function
 
@@ -257,7 +257,7 @@ def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLe
 
   
  //calculate node similarity lower bound when the node visited from one specificNodeId
- def calculateNodeSimilarityLowerBound[VD, ED](currentSpDistance: Long, currentHierLevelDifference: Double, prevIterCurrentNodeLowerScore: Double,  parentNodePrevIterLowerScore: Double, neighborNodehierLevelDifference: Double) = {
+ def calculateNodeSimilarityLowerBound[VD, ED](currentSpDistance: Long, parentNodeHierarchicalLevel: Double, prevIterCurrentNodeLowerScore: Double,  parentNodePrevIterLowerScore: Double, neighborNodehierLevelDifference: Double) = {
     var updatedLowerBoundCloseScore = 0.0
     if (prevIterCurrentNodeLowerScore > 0)
     {
@@ -266,7 +266,7 @@ def calculateUpperBound(currentLowerBound: Double, iterationNumber: Long, hierLe
     else{
         //get previous visited neighbor lower score; aggregate is done in the graphX aggregateMessage
         //  math.min(N*scala.math.pow(ALPHA, (currentSpDistance-currentHierLevelDifference)),
-      updatedLowerBoundCloseScore = math.min(N*scala.math.pow(ALPHA, (currentSpDistance-currentHierLevelDifference)), scala.math.pow(ALPHA, 1-neighborNodehierLevelDifference) * parentNodePrevIterLowerScore)
+      updatedLowerBoundCloseScore = math.min(N*scala.math.pow(ALPHA, (currentSpDistance-parentNodeHierarchicalLevel)), scala.math.pow(ALPHA, 1-neighborNodehierLevelDifference) * parentNodePrevIterLowerScore)
     }
     updatedLowerBoundCloseScore
     
@@ -370,9 +370,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     //iterations for bfs begin
     var iterationCount = 0
     var currentSatisfiedNodesNumber: Long = 0L                   //number of dest type nodes that visited
-    var allNodesVisitedNumber: Long = 0L                         // all nodes visited
+    var allNodesVisitedNumber: Long = 0L                         // all nodes visited at current iteration
     var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
-    var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
+   // var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
     
     var topKResultRdd: RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))] = sc.emptyRDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
 
@@ -383,8 +383,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     //println("504 starQueryGraphbfsTraverseWithBoundPruning :  ", dstNodesNumberGraph.count)
    
   //no value change or all the destination node has been visited
-  while (twoPreviousOldAllNodesVisitedNumber != oldAllNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
+  //while (twoPreviousOldAllNodesVisitedNumber != oldAllNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
   //while (currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
+  while (oldAllNodesVisitedNumber != allNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
+
   {
       //println("412 starQueryGraphbfsTraverse iterationCount: ", iterationCount)
       val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo], Map[VertexId, (Double, Double)], Map[VertexId, Double])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo],  Map[VertexId, (Double, Double)], Map[VertexId, Double])](
@@ -545,7 +547,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val newhierLevelDifference =  nodeNewMap(specificNodeId).hierLevelDifference        //(-1) x hierLevelDifference； downward inheritance
 
               //update closeness score from this sepcific nodeId
-              val newClosenessScore = calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)      //node similarity score
+              val parentNodeHierarchicalLevel = newhierLevelDifference - prevIterParentNodeLowerBoundsMap(specificNodeId)._2         //parent node max hierarchical level difference
+              val newClosenessScore = calculateClosenessScore(spDistance, spNumber, parentNodeHierarchicalLevel, newhierLevelDifference)      //node similarity score
               
               //update lower bound score from this specific nodeId
               
@@ -553,8 +556,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               val prevIterCurrentNodeLowerScore = prevIterCurrentNodeLowerBoundsMap(specificNodeId)
               val parentNodePrevIterLowerScore = prevIterParentNodeLowerBoundsMap(specificNodeId)._1
               val neighborNodehierLevelDifference = prevIterParentNodeLowerBoundsMap(specificNodeId)._2
-              
-              val newLowerBoundCScore = calculateNodeSimilarityLowerBound(spDistance, newhierLevelDifference, prevIterCurrentNodeLowerScore,  parentNodePrevIterLowerScore, neighborNodehierLevelDifference)
+             // val parentNodeHierarchicalLeve = newhierLevelDifference - prevIterParentNodeLowerBoundsMap(specificNodeId)._2
+
+              val newLowerBoundCScore = calculateNodeSimilarityLowerBound(spDistance, parentNodeHierarchicalLevel, prevIterCurrentNodeLowerScore,  parentNodePrevIterLowerScore, neighborNodehierLevelDifference)
      
               val newUpperBoundCScore = calculateNodeSimilarityUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
 
@@ -623,17 +627,17 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         }
         getAllVisiteFlag(nodeMap)
       }
+             g = setnodeIdColorForBound(allNodesVisited, g)                 //update bounding nodes color
       
+      oldAllNodesVisitedNumber = allNodesVisitedNumber
+      //print ("604: starQueryGraphbfsTraverseWithBoundPruning twoPreviousOldAllNodesVisitedNumber oldAllNodesVisitedNumber: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
       
-       g = setnodeIdColorForBound(allNodesVisited, g)                 //update bounding nodes color
-  
-        
       //how many nodes have been visited from all specific nodes
       allNodesVisitedNumber =  allNodesVisited.count()
       
-      print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
+      print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, oldAllNodesVisitedNumber)
       
-      twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber
+      //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber
       
       val currentIterateNodeResult = allNodesVisited.filter(x => x._2._1 == dstTypeId)
       // currentIterateNodeResult.take(10).foreach(println)
@@ -644,10 +648,6 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       
       //statisitics of iteration number
       iterationCount += 1
-
-      oldAllNodesVisitedNumber = allNodesVisitedNumber
-      //print ("604: starQueryGraphbfsTraverseWithBoundPruning twoPreviousOldAllNodesVisitedNumber oldAllNodesVisitedNumber: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
-      
           
       //put result into topK final list top K
       //var transferedResultRdd: RDD[(VertexId, Int)] = sc.emptyRDD()
