@@ -139,7 +139,6 @@ object starQuery {
     
   }
 
-  
   //calculate node score given all specific nodes in nodeMap
   def calculateNodeScoreStarquery(nodeMap: Map[VertexId, NodeInfo]) = {
     val nodeNum: Double = nodeMap.size
