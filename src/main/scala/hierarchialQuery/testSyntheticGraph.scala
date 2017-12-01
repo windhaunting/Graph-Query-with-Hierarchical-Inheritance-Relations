@@ -64,8 +64,10 @@ object testSyntheticGraph {
     val databaseType = 2              //synthetic graph database   2
     val runTimeFileIndex = args(1)
 
-    val specificReadLst = List((648027L, 2), (636461L, 2))        
+    //val specificReadLst = List((648027L, 2), (636461L, 2))        
     
+    val specificReadLst = List((648027L, 2), (636461L, 2))        // three or more query graph size
+
     val hierarchialRelation = true
 
     val outputFilePath = "../output/syntheticData/starQueryOutput/starOutputFilePath" + runTimeFileIndex
