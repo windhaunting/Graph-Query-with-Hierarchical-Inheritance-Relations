@@ -33,11 +33,11 @@ object QueryMain {
    // executeDblpGraphData(args, sc)
    // println("executeDblpGraphData: done")
    
-    testSyntheticGraph.executeSyntheticDatabase(args, sc)
-    println("executeSyntheticDatabase: done") 
+   // testSyntheticGraph.executeSyntheticDatabase(args, sc)
+   // println("executeSyntheticDatabase: done") 
     
-   // testSyntheticGraph.testTinyGraphData(args, sc)
-   // println("testSyntheticGraph: done")
+    testSyntheticGraph.testTinyGraphData(args, sc)
+    println("testSyntheticGraph: done")
     
     
   }
