@@ -527,11 +527,11 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       //  var dstNodeTypeVisitFlag = true
         var newMap = nodeOldMap    // Map[VertexId, NodeInfo]()    //  //nodeOldMap         //Map[VertexId, NodeInfo]()           //initialization 
       //  prevIterLowerBoundsMap.keys.foreach{(specificNodeId) =>
-          specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
-         val specificNodeId = specificNodeIdType._1
-         //  nodeNewMap.keys.foreach{(specificNodeId) =>
-           if (nodeNewMap.contains(specificNodeId))
-           {
+        //  specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
+        // val specificNodeId = specificNodeIdType._1
+         nodeNewMap.keys.foreach{(specificNodeId) =>
+         //  if (nodeNewMap.contains(specificNodeId))
+          // {
               if (nodeNewMap(specificNodeId).spDistance <= nodeOldMap(specificNodeId).spDistance)        //<  or <=
               {
 
@@ -569,15 +569,15 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                                                                      lowerBoundCloseScore = newLowerBoundCScore, upperBoundCloseScore = newUpperBoundCScore)  //update closenessNodeScore  etc
                   newMap += (specificNodeId -> tmpNodeInfo)
               }
-              else
-             {
-                  newMap += (specificNodeId -> nodeOldMap(specificNodeId))
-             }
-        }
-        else
-        {
-          newMap += (specificNodeId -> nodeOldMap(specificNodeId))
-        }
+            //   else
+            // {
+             //     newMap += (specificNodeId -> nodeOldMap(specificNodeId))
+             //}
+       // }
+       // else
+       // {
+        //  newMap += (specificNodeId -> nodeOldMap(specificNodeId))
+       // }
            
        //  if (newMap(specificNodeId).visitedColor != GREY.id)
        //   {
@@ -591,7 +591,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
        // (nodeTypeId, newMap)
         (nodeTypeId, newMap)
         
-      }  // .cache()
+      }.cache()
       
       //check all the nodes that have been updated, i.e. visited 
       /*
@@ -611,10 +611,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       }
       */
      
-      print ("555: starQueryGraphbfsTraverseWithBoundPruning  g.vertices.isEmpty: ", g.vertices.isEmpty())
-      val x1 = 1
-      val x2 = 2
-      print ("556: starQueryGraphbfsTraverseWithBoundPruning  g.vertices.count: ", g.vertices.count())
+     // print ("555: starQueryGraphbfsTraverseWithBoundPruning  g.vertices.isEmpty: ", g.vertices.isEmpty())
+     // val x1 = 1
+     // val x2 = 2
+     // print ("556: starQueryGraphbfsTraverseWithBoundPruning  g.vertices.count: ", g.vertices.count())
 
 
      val allNodesVisited =  g.vertices.filter{ case x=>
@@ -666,7 +666,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       
       //how many satisfied nodes into top K nodes list
       currentSatisfiedNodesNumber = currentIterateNodeResult.count()
-      print ("649: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, currentSatisfiedNodesNumber)
+     // print ("649: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, currentSatisfiedNodesNumber)
       
       //statisitics of iteration number
       iterationCount += 1
