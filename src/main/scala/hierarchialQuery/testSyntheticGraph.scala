@@ -67,7 +67,7 @@ object testSyntheticGraph {
     //val specificReadLst = List((648027L, 2), (636461L, 2))        
     
     //val specificReadLst = List((624793L, 2), (619226L, 2))            // three or more query graph size
-    val specificReadLst = List((649273L, 2), (629979L, 2), (634263L, 2))        // three or more query graph size
+    val specificReadLst = List((695138L, 2), (655399L, 2))        // three or more query graph size
      
     val hierarchialRelation = true
 
