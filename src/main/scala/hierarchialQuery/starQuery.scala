@@ -611,7 +611,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           var visitedFlag = false
           for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
               if (nodeInfo.spDistance != Long.MaxValue)        //any one exist
-              visitedFlag = true
+                visitedFlag = true
           }
           visitedFlag
         }
@@ -623,17 +623,31 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       oldAllNodesVisitedNumber = allNodesVisitedNumber
       //print ("604: starQueryGraphbfsTraverseWithBoundPruning twoPreviousOldAllNodesVisitedNumber oldAllNodesVisitedNumber: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
       
-       print ("560: starQueryGraphbfsTraverseWithBoundPruning test: ", allNodesVisited.take(1))
+      // print ("560: starQueryGraphbfsTraverseWithBoundPruning test: ", allNodesVisited.take(1).foreach(println))
       
       //how many nodes have been visited from all specific nodes
       
-      allNodesVisitedNumber =  allNodesVisited.count()
+      allNodesVisitedNumber =  allNodesVisited.count
       
       print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, oldAllNodesVisitedNumber, currentSatisfiedNodesNumber, topKKthLowerBoundScore)
       
       //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber
       
-      val currentIterateNodeResult = allNodesVisited.filter(x => x._2._1 == dstTypeId)
+      val currentIterateNodeResult = allNodesVisited.filter{ case x => 
+        
+        val nodeMap = x._2._2
+         def getAllVisiteFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
+          var visitedFlag = true
+          for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
+           if (nodeInfo.spDistance == Long.MaxValue)
+             visitedFlag = false
+          }
+          visitedFlag
+        }
+        (getAllVisiteFlag(nodeMap)) && (x._2._1 == dstTypeId)
+        
+      }
+        
       // currentIterateNodeResult.take(10).foreach(println)
       
       //how many satisfied nodes into top K nodes list
