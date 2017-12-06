@@ -591,7 +591,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
        // (nodeTypeId, newMap)
         (nodeTypeId, newMap)
         
-      }.cache()
+      }  // .cache()
       
       //check all the nodes that have been updated, i.e. visited 
       /*
@@ -632,7 +632,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         getAllVisiteFlag(nodeMap)
       }
       
-     // g = setnodeIdColorForBound(allNodesVisited, g)                 //update bounding nodes color
+      g = setnodeIdColorForBound(allNodesVisited, g)                 //update bounding nodes color
       
       oldAllNodesVisitedNumber = allNodesVisitedNumber
       //print ("604: starQueryGraphbfsTraverseWithBoundPruning twoPreviousOldAllNodesVisitedNumber oldAllNodesVisitedNumber: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
