@@ -525,7 +525,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         val prevIterCurrentNodeLowerBoundsMap = newAttr._4              //Map[VertexId, Double]()          current node's previous iteration'
 
       //  var dstNodeTypeVisitFlag = true
-        var newMap = Map[VertexId, NodeInfo]()    //nodeOldMap  //nodeOldMap         //Map[VertexId, NodeInfo]()           //initialization 
+        var newMap = nodeOldMap    // Map[VertexId, NodeInfo]()    //  //nodeOldMap         //Map[VertexId, NodeInfo]()           //initialization 
       //  prevIterLowerBoundsMap.keys.foreach{(specificNodeId) =>
           specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int)) =>
          val specificNodeId = specificNodeIdType._1
@@ -611,7 +611,11 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       }
       */
      
-      print ("555: starQueryGraphbfsTraverseWithBoundPruning  g.vertices.count: ", g.vertices.take(2).foreach(println))
+      print ("555: starQueryGraphbfsTraverseWithBoundPruning  g.vertices.isEmpty: ", g.vertices.isEmpty())
+      val x1 = 1
+      val x2 = 2
+      print ("556: starQueryGraphbfsTraverseWithBoundPruning  g.vertices.count: ", g.vertices.count())
+
 
      val allNodesVisited =  g.vertices.filter{ case x=>
         val nodeMap = x._2._2
