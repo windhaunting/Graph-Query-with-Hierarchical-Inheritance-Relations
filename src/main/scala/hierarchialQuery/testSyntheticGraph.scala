@@ -67,8 +67,10 @@ object testSyntheticGraph {
     //val specificReadLst = List((648027L, 2), (636461L, 2))        
     
     //val specificReadLst = List((624793L, 2), (619226L, 2))            // three or more query graph size
-    val specificReadLst = List((695138L, 2), (655399L, 2))        // three or more query graph size
+    //val specificReadLst = List((695138L, 2), (655399L, 2))        // three or more query graph size
      
+    val specificReadLst = List((628210L, 2), (662132L, 2), (609465L, 2))        // three or more query graph size
+
     val hierarchialRelation = true
 
     val outputFilePath = "../output/syntheticData/starQueryOutput/starOutputFilePath" + runTimeFileIndex

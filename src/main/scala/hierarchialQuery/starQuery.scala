@@ -23,7 +23,6 @@ import main.scala.hierarchialQuery.nodeTypeSyntheticGraphEnum._
 
 import scala.reflect.ClassTag
 import scala.util.control.Breaks._
-import scala.util.control.Breaks._
 
 import java.io._
 
@@ -83,7 +82,6 @@ object starQuery {
 
     path
  }
-
 
   //given the node types, hierarchical inheritance or not (hierarchical or generic relations); databaseType: ciso product : 0, dblp : 1
   def getHierarchicalInheritance(nodeIdType1: Int, nodeIdType2: Int, databaseType: Int, hierarchialRelation: Boolean) = {
@@ -146,7 +144,8 @@ object starQuery {
     for ((specNodeId, nodeInfo) <- nodeMap){
       sumClosenessScore += nodeInfo.closenessNodeScore
     }
-    sumClosenessScore/nodeNum
+    //sumClosenessScore/nodeNum
+    sumClosenessScore
   }
   
   
@@ -297,7 +296,8 @@ def calculateMatchingScoreLowerBound(nodeMap: Map[VertexId, NodeInfo]) = {
     for ((specNodeId, nodeInfo) <- nodeMap){
       matchingScoreLowerBound += nodeInfo.lowerBoundCloseScore
     }
-    matchingScoreLowerBound/nodeNum
+    //matchingScoreLowerBound/nodeNum
+    matchingScoreLowerBound
   }
   
 //get matching Score upper Bound from nodeMap
@@ -308,7 +308,9 @@ def calculateMatchingScoreUpperBound(nodeMap: Map[VertexId, NodeInfo]) = {
     for ((specNodeId, nodeInfo) <- nodeMap){
       matchingScoreUpperBound += nodeInfo.upperBoundCloseScore
     }
-    matchingScoreUpperBound/nodeNum
+    //matchingScoreUpperBound/nodeNum
+    matchingScoreUpperBound
+
   }
   
   
@@ -386,7 +388,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
   //no value change or all the destination node has been visited
   //while (twoPreviousOldAllNodesVisitedNumber != oldAllNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
   //while (currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
-  while (oldAllNodesVisitedNumber != allNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
+  while (topKResultRdd.count <= TOPK && oldAllNodesVisitedNumber != allNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
 
   {
       //println("412 starQueryGraphbfsTraverse iterationCount: ", iterationCount)
@@ -674,9 +676,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           (x._1, (calculateNodeScoreStarquery(x._2._2), calculateMatchingScoreLowerBound(x._2._2),  calculateMatchingScoreUpperBound(x._2._2), x._2._1.toString.toInt, x._2._2)))
         
           //print ("584: starQueryGraphbfsTraverseWithBoundPruning topKResultRdd： "+ TOPK+ "--" + topKResultRdd.count)
-          //topKResultRdd.collect().foreach(println)
           
-         // topKResultRdd
       }
       else{              //there are k element in the list
         //get topK union by calculateNodesScoreStarquery
@@ -687,12 +687,13 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           topKKthLowerBoundScore = topKResultRddArray.sortBy(x=>x._2._2).head._2._2       //sorted by lower bound matching score
            
           topKResultRdd = sc.parallelize(topKResultRddArray)                //transfer to RDD data structure
-           //print ("598: starQueryGraphbfsTraverseWithBoundPruning topKResultRdd: "+ TOPK + "----" + topKResultRdd.count, topKKthLowerBoundScore)
-         // topKResultRdd.collect().foreach(println)
+          print ("598: starQueryGraphbfsTraverseWithBoundPruning topKResultRdd: "+ TOPK + "----" + topKResultRdd.count, topKKthLowerBoundScore)
+        //  
+         pathAnswerRdd = getPathforAnswers(sc, topKResultRdd, g)
         //  topKResultRdd
+        //(topKResultRdd, pathAnswerRdd)
       } 
     
-      
     }
       
     val endTime = System.currentTimeMillis()   
