@@ -516,8 +516,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       
     //no updated messages
     if (msgs.count == 0)
-      //(topKResultRdd, pathAnswerRdd)
-        topKResultRdd                         //only return topKResultRdd
+      (topKResultRdd, pathAnswerRdd)
+      //  topKResultRdd                         //only return topKResultRdd
        
     g = g.ops.joinVertices(msgs) {
         (nodeId, oldAttr, newAttr) =>
@@ -537,7 +537,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
          nodeNewMap.keys.foreach{(specificNodeId) =>
          //  if (nodeNewMap.contains(specificNodeId))
           // {
-              if (nodeNewMap(specificNodeId).spDistance < nodeOldMap(specificNodeId).spDistance)        //<  or <=
+              if (nodeNewMap(specificNodeId).spDistance <= nodeOldMap(specificNodeId).spDistance)        //<  or <=
               {
                
                   
@@ -608,6 +608,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
      // val x2 = 2
      // print ("556: starQueryGraphbfsTraverseWithBoundPruning  g.vertices.count: ", g.vertices.count())
 
+
      //find all nodes that have at least visited from one specific node
      val allNodesVisitedParts =  g.vertices.filter{ case x=>
         val nodeMap = x._2._2
@@ -624,7 +625,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
         getAllVisiteFlag(nodeMap)
       }
       
-     
+     // val elapsedTime = System.currentTimeMillis() - startTime  
+     // print("iterationCount " + iterationCount + " " + "runtime: "+ elapsedTime + " ms\n" )
+
       val currentIterateNodeResult = allNodesVisitedParts.filter{ case x => 
         
         val nodeMap = x._2._2
@@ -647,7 +650,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
      // print ("649: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, currentSatisfiedNodesNumber)
       
       
-     // g = setnodeIdColorForBound(g.vertices, g)                 //update bounding nodes color
+     g = setnodeIdColorForBound(g.vertices, g)                 //update bounding nodes color
       
       oldAllNodesVisitedNumber = allNodesVisitedNumber
       //print ("604: starQueryGraphbfsTraverseWithBoundPruning twoPreviousOldAllNodesVisitedNumber oldAllNodesVisitedNumber: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
@@ -655,8 +658,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       // print ("560: starQueryGraphbfsTraverseWithBoundPruning test: ", allNodesVisited.take(1).foreach(println))
       
       //how many nodes have been visited from all specific nodes
-      allNodesVisitedNumber =  allNodesVisitedParts.count
-      print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ",iterationCount, allNodesVisitedNumber, oldAllNodesVisitedNumber, currentSatisfiedNodesNumber, topKKthLowerBoundScore)
+      allNodesVisitedNumber =  allNodesVisitedParts.count()
+      print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ",iterationCount, allNodesVisitedNumber, oldAllNodesVisitedNumber, currentSatisfiedNodesNumber, topKKthLowerBoundScore, " \n")
       
       //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber
       //statisitics of iteration number
@@ -691,7 +694,6 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     
       
     }
-    
       
     val endTime = System.currentTimeMillis()   
     //println("673 starQueryGraphbfsTraverseWithBoundPruning runtime: "+ (endTime-startTime) + " ms")
@@ -705,10 +707,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     }
 
     //get shortest path for the top K answer:
-   //  pathAnswerRdd = getPathforAnswers(sc, topKResultRdd, g)
+     pathAnswerRdd = getPathforAnswers(sc, topKResultRdd, g)
     
-  //  (topKResultRdd, pathAnswerRdd)
-   topKResultRdd                         //only return topKResultRdd
+    (topKResultRdd, pathAnswerRdd)
+  // topKResultRdd                         //only return topKResultRdd
    
    
   }
@@ -742,12 +744,12 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     
    // val newGraph = preProcessGraphDeleteEdge(graph, List((40, 58)))      //preprocess for different query
     
-    val topKResultRdd = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, databaseType, runTimeoutputFilePath, hierarchialRelation)
+    //val topKResultRdd = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, databaseType, runTimeoutputFilePath, hierarchialRelation)
     
-    //val answers = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, databaseType, runTimeoutputFilePath, hierarchialRelation)
+    val answers = starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdLst, dstTypeId, databaseType, runTimeoutputFilePath, hierarchialRelation)
     
-    //val topKResultRdd = answers._1
-   // val pathAnswerRdd = answers._2
+    val topKResultRdd = answers._1
+    val pathAnswerRdd = answers._2
 
     //topKResultRdd.count()
     val nodeInfoRdd =  graphInputCommon.readNodeInfoName(sc, inputFileNodeInfoPath)
@@ -758,13 +760,13 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     //resultStarQueryRdd.collect().foreach(println)
     //resultStarQueryRdd.coalesce(1).saveAsTextFile(outputFileNode)        //coalesce into 1 file, it is small data output
     print ("422: starQueryExeute pathAnswerRdd: "+ topKResultRdd.count() + "\n")
-    /*
+    
     if (!pathAnswerRdd.isEmpty())
     {
         pathAnswerRdd.collect().foreach(println)
 
     }
-    */
+    
     // outputFilePath
     if (outputFilePath != null)
     {
