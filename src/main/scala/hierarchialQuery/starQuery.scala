@@ -35,7 +35,7 @@ object starQuery {
   val numTasks = 8                   //how many task for one core can execute in parallell
   val BETA = 0.8                    //attenutation for hierarchical level difference causing the score reduction.
   var topKKthLowerBoundScore = 0.0        // the smallest (kth) lowest upper bound score in the k list
-  
+ 
   //one source bfs from one src to dst
   def bfs[VD, ED](graph: Graph[VD, ED], src: VertexId, dst: VertexId): Seq[VertexId] = {
     if (src == dst) return List(src)
@@ -365,10 +365,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     //println("486 starQueryGraphbfsTraverseWithBoundPruning :  \n")
     //iterations for bfs begin
     var iterationCount = 0
-    var currentSatisfiedNodesNumber: Long = 0L                   //number of dest type nodes that visited
-    var allNodesVisitedNumber: Long = 0L                         // all nodes visited at current iteration
-    var allNodesVisitedNumberNewTemp: Long = specificNodeIdLst.length // 0L                     //temp allNodesVisitedNumber
-    var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
+                   //previous iteration nodes visited
    // var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
     
     var topKResultRdd: RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))] = sc.emptyRDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
@@ -378,6 +375,12 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     val dstNodesNumberGraph = graph.vertices.filter(x=>x._2 == dstTypeId)
     //println("504 starQueryGraphbfsTraverseWithBoundPruning :  ", dstNodesNumberGraph.count)
    
+     var currentSatisfiedNodesNumber: Long = 0L                   //number of dest type nodes that visited
+    var allNodesVisitedNumber = sc.broadcast(0L)                         // all nodes visited at current iteration
+    var allNodesVisitedNumberNewTemp = sc.broadcast(0L) // specificNodeIdLst.length // 0L                     //temp allNodesVisitedNumber
+    var oldAllNodesVisitedNumber = sc.broadcast(-1L)
+    
+    
     val startTime = System.currentTimeMillis()              //System.nanoTime()
   
   //no value change or all the destination node has been visited
@@ -539,11 +542,11 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                 //println("464 starQueryGraphbfsTraverse: "  + specificNodeId + " nodeId: " + nodeId)
                   if (allNodesVisitedNumberNewTempFlag)
                   {
-                    allNodesVisitedNumberNewTemp += 1
+                    allNodesVisitedNumberNewTemp.value +=  allNodesVisitedNumberNewTemp.value +1
                     allNodesVisitedNumberNewTempFlag = false
                   }
                   
-                  println("464 starQueryGraphbfsTraverse: "  + specificNodeId + " nodeId: " + nodeId + " allNodesVisitedNumberNewTemp: " + allNodesVisitedNumberNewTemp)
+                  println("464 starQueryGraphbfsTraverse: "  + specificNodeId + " nodeId: " + nodeId + " allNodesVisitedNumberNewTemp: ")
                   val spDistance = nodeNewMap(specificNodeId).spDistance
                   val spNumber = nodeNewMap(specificNodeId).spNumber
                   val newhierLevelDifference =  nodeNewMap(specificNodeId).hierLevelDifference        //(-1) x hierLevelDifference； downward inheritance
