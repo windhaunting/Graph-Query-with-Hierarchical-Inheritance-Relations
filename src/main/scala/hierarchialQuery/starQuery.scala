@@ -367,7 +367,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
     var iterationCount = 0
     var currentSatisfiedNodesNumber: Long = 0L                   //number of dest type nodes that visited
     var allNodesVisitedNumber: Long = 0L                         // all nodes visited at current iteration
-    var allNodesVisitedNumberNewTemp: Long = 0L                     //temp allNodesVisitedNumber
+    var allNodesVisitedNumberNewTemp: Long = specificNodeIdLst.length // 0L                     //temp allNodesVisitedNumber
     var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
    // var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
     
@@ -536,12 +536,14 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           // {
               if (nodeNewMap(specificNodeId).spDistance < nodeOldMap(specificNodeId).spDistance)        //<  or <=
               {
-                println("464 starQueryGraphbfsTraverse: "  + specificNodeId + " nodeId: " + nodeId)
+                //println("464 starQueryGraphbfsTraverse: "  + specificNodeId + " nodeId: " + nodeId)
                   if (allNodesVisitedNumberNewTempFlag)
                   {
                     allNodesVisitedNumberNewTemp += 1
                     allNodesVisitedNumberNewTempFlag = false
                   }
+                  
+                  println("464 starQueryGraphbfsTraverse: "  + specificNodeId + " nodeId: " + nodeId + " allNodesVisitedNumberNewTemp: " + allNodesVisitedNumberNewTemp)
                   val spDistance = nodeNewMap(specificNodeId).spDistance
                   val spNumber = nodeNewMap(specificNodeId).spNumber
                   val newhierLevelDifference =  nodeNewMap(specificNodeId).hierLevelDifference        //(-1) x hierLevelDifference； downward inheritance
