@@ -388,7 +388,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
   //no value change or all the destination node has been visited
   //while (twoPreviousOldAllNodesVisitedNumber != oldAllNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
   //while (currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
-  while (oldAllNodesVisitedNumber != allNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
+  while (currentSatisfiedNodesNumber <=TOPK && oldAllNodesVisitedNumber != allNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
 
   {
       //println("412 starQueryGraphbfsTraverse iterationCount: ", iterationCount)
@@ -661,7 +661,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       
       //how many nodes have been visited from all specific nodes
       allNodesVisitedNumber =  allNodesVisitedParts.count()
-     // print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ",iterationCount, allNodesVisitedNumber, oldAllNodesVisitedNumber, currentSatisfiedNodesNumber, topKKthLowerBoundScore, " \n")
+      print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ",iterationCount, allNodesVisitedNumber, oldAllNodesVisitedNumber, currentSatisfiedNodesNumber, topKKthLowerBoundScore, " \n")
       
       //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber
       //statisitics of iteration number
