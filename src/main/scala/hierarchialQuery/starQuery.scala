@@ -323,11 +323,11 @@ def setnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, Map[VertexId,
         
         if (matchingScoreUpperBound != 0 && matchingScoreUpperBound <= topKKthLowerBoundScore)          //upperbound less than the kth lowerbound score
         {
-          var newMap = Map[VertexId, NodeInfo]()
+           var newMap = Map[VertexId, NodeInfo]()
 
           for ((specNodeId, nodeInfo) <- nodeMap){
-            val tmpNodeInfo = nodeMap(specNodeId).copy(visitedColor = RED.id)  //update color visited
-            newMap += (specNodeId -> tmpNodeInfo)
+             val tmpNodeInfo = nodeMap(specNodeId).copy(visitedColor = RED.id)  //update color visited
+             newMap += (specNodeId -> tmpNodeInfo)
           }
           (nodeId, (nodeIdType, newMap))       
         }
@@ -388,7 +388,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
   //no value change or all the destination node has been visited
   //while (twoPreviousOldAllNodesVisitedNumber != oldAllNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
   //while (currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
-  while (currentSatisfiedNodesNumber <= TOPK && oldAllNodesVisitedNumber != allNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
+  while (oldAllNodesVisitedNumber != allNodesVisitedNumber && currentSatisfiedNodesNumber < dstNodesNumberGraph.count && allNodesVisitedNumber < graph.ops.numVertices) //currentSatisfiedNodesNumber < TOPK &&; find top k or whole graph iteration end    {
 
   {
       //println("412 starQueryGraphbfsTraverse iterationCount: ", iterationCount)
@@ -652,7 +652,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
      // print ("649: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ", allNodesVisitedNumber, currentSatisfiedNodesNumber)
       
       
-     g = setnodeIdColorForBound(g.vertices, g)                 //update bounding nodes color
+     g = setnodeIdColorForBound(allNodesVisitedParts, g)                 //update bounding nodes color
       
       oldAllNodesVisitedNumber = allNodesVisitedNumber
       //print ("604: starQueryGraphbfsTraverseWithBoundPruning twoPreviousOldAllNodesVisitedNumber oldAllNodesVisitedNumber: ", allNodesVisitedNumber, twoPreviousOldAllNodesVisitedNumber, oldAllNodesVisitedNumber)
@@ -661,7 +661,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
       
       //how many nodes have been visited from all specific nodes
       allNodesVisitedNumber =  allNodesVisitedParts.count()
-      print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ",iterationCount, allNodesVisitedNumber, oldAllNodesVisitedNumber, currentSatisfiedNodesNumber, topKKthLowerBoundScore, " \n")
+     // print ("562: starQueryGraphbfsTraverseWithBoundPruning currentIterateNodeResult: ",iterationCount, allNodesVisitedNumber, oldAllNodesVisitedNumber, currentSatisfiedNodesNumber, topKKthLowerBoundScore, " \n")
       
       //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber
       //statisitics of iteration number
@@ -687,7 +687,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           topKKthLowerBoundScore = topKResultRddArray.sortBy(x=>x._2._2).head._2._2       //sorted by lower bound matching score
            
           topKResultRdd = sc.parallelize(topKResultRddArray)                //transfer to RDD data structure
-          print ("598: starQueryGraphbfsTraverseWithBoundPruning topKResultRdd: "+ TOPK + "----" + topKResultRdd.count, topKKthLowerBoundScore)
+         // print ("598: starQueryGraphbfsTraverseWithBoundPruning topKResultRdd: "+ TOPK + "----" + topKResultRdd.count, topKKthLowerBoundScore)
         //  
          pathAnswerRdd = getPathforAnswers(sc, topKResultRdd, g)
         //  topKResultRdd
