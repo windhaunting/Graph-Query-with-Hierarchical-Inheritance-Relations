@@ -149,7 +149,7 @@ object testCiscoGraphData {
     
     val hierarchialRelation = true
 
-    val outputFilePath = "../output/ciscoProduct/starQueryOutput/starOutputFilePath" + runTimeFileIndex
+    val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
     
