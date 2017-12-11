@@ -28,17 +28,18 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")            // override output with the same path
     val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
-    //executeProductDatabase(args, sc)
-   // println("executeProductDatabase: done")
+
    // executeDblpGraphData(args, sc)
    // println("executeDblpGraphData: done")
    
-    testSyntheticGraph.executeSyntheticDatabase(args, sc)
-    println("executeSyntheticDatabase: done") 
+  //  testSyntheticGraph.executeSyntheticDatabase(args, sc)
+  //  println("executeSyntheticDatabase: done") 
     
    // testSyntheticGraph.testTinyGraphData(args, sc)
    // println("testSyntheticGraph: done")
-    
+   
+     testCiscoGraphData.executeProductDatabase(args, sc)
+     println("executeProductDatabase: done") 
     
   }
   

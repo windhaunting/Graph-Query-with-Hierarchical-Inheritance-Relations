@@ -4,43 +4,16 @@
  * and open the template in the editor.
  */
 
-
 package main.scala.hierarchialQuery
-import org.apache.spark.SparkContext
 
+import org.apache.spark.SparkContext
 
 object testCiscoGraphData {
   
- 
   //product database execution -- main entry
   def executeProductDatabase(args: Array[String], sc: SparkContext) = {
     
-     // val file = "hdfs://localhost:8070/testEdgeListFile2")
-   //val file = "hdfs://192.168.0.52:8070/testEdgeListFile2"
-   
-
-    val inputEdgeListfilePath = "../../Data/ciscoProductVulnerability/ciscoDataGraph/ciscoDataGraphInfo1.0/edgeListPart1.0"
-    val inputNodeInfoFilePath = "../../Data/ciscoProductVulnerability/ciscoDataGraph/ciscoDataGraphInfo1.0/nodeInfoPart1.0"
-    
-      //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-
-    val dstTypeId = 0                    //0 hierarchical node   or 1
-    val topK = args(0).toInt
-    starQuery.TOPK = topK
-    
-    val databaseType = 0              //Cisco data graph database   0
-    val runTimeFileIndex = args(1)
-    
-    val specificReadLst = List()        // three or more query graph size
-    
-    val hierarchialRelation = true
-
-    val outputFilePath = "../output/ciscoProduct/starQueryOutput/starOutputFilePath" + runTimeFileIndex
-    val runTimeoutputFilePath = "../output/starQueryOutput/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
-    
-    
+    starQueryCiscoData(args, sc)
     
     //val outputFileNode = "/home/fubao/workDir/ResearchProjects/GraphQuerySearchRelatedPractice/SparkDistributedPractice/output/ciscoProduct/starQueryOutput/starQueryoutNode"
     //args [0] is TOPK number
@@ -155,8 +128,33 @@ object testCiscoGraphData {
     
   }
   
-  
-  
+   def starQueryCiscoData(args: Array[String], sc: SparkContext) = {
+    
+    // val file = "hdfs://localhost:8070/testEdgeListFile2")
+    //val file = "hdfs://192.168.0.52:8070/testEdgeListFile2"
+    val inputEdgeListfilePath = "../../Data/ciscoDataGraph/ciscoDataGraphInfo1.0/edgeListPart1.0"
+    val inputNodeInfoFilePath = "../../Data/ciscoDataGraph/ciscoDataGraphInfo1.0/nodeInfoPart1.0"
+    
+    //read edge list to graphX graph
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+
+    val dstTypeId = 0                    //0 hierarchical node   or 1
+    val topK = args(0).toInt
+    starQuery.TOPK = topK
+    
+    val databaseType = 0              //Cisco data graph database   0
+    val runTimeFileIndex = args(1)
+    
+    val specificReadLst = List((3237L, 1), (5446L, 1))        // three or more query graph size
+    
+    val hierarchialRelation = true
+
+    val outputFilePath = "../output/ciscoProduct/starQueryOutput/starOutputFilePath" + runTimeFileIndex
+    val runTimeoutputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
+    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
+    
+ 
+   }
   
 }
 
