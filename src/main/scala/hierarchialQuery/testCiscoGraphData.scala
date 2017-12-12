@@ -149,8 +149,11 @@ object testCiscoGraphData {
     
     //val specificReadLst = List((2020L, 1), (9021L, 4))        // three or more query graph size
     
-    val specificReadLst = List((3237L, 1), (5446L, 1), (3243L, 1))        // three or more query graph size
+    //val specificReadLst = List((3237L, 1), (5446L, 1), (3243L, 1))        // three or more query graph size
 
+    val specificReadLst = List((2020L, 1), (9021L, 4), (9024L, 4))        // three or more query graph size
+
+    
     val hierarchialRelation = true
 
     val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryOutputFilePath" + runTimeFileIndex
