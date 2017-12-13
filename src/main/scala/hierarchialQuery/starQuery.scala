@@ -493,7 +493,13 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               //combine the new key->value pair into the nodeMapA；  update spDistance, hierarchicalLevelDistance, spNumber
               val newSpDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)               
               val newHierLevelDistance = math.max(nodeMapA(specificNodeId).hierLevelDifference, nodeMapB(specificNodeId).hierLevelDifference)
-              val newSpNumber = nodeMapA(specificNodeId).spNumber +1       //+1
+              
+              var newSpNumber = nodeMapA(specificNodeId).spNumber       //+1
+
+              if (nodeMapA(specificNodeId).spDistance == nodeMapB(specificNodeId).spDistance)
+              {
+                  newSpNumber = nodeMapA(specificNodeId).spNumber +1       //+1
+              }
               
               val tmpNodeInfo = nodeMapA(specificNodeId).copy(spDistance = newSpDistance, spNumber = newSpNumber, hierLevelDifference = newHierLevelDistance)
               newMap += (specificNodeId -> tmpNodeInfo)
