@@ -440,6 +440,12 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                   //    println("295 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: ", specificNodeIdType, dstTypeId)
                }
                
+              if ((triplet.dstId == 162456) || (triplet.dstId == 120096) || (triplet.dstId == 51308))
+              {
+                 println("401 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
+ 
+              }
+               
               //get current lowerbounds that is actually the previous iteration's lower bound  t-1
               val neighborNodehierLevelDifference = BETA*math.abs(triplet.attr.toString.toInt)              //edge hierarchical level difference between srcId and dstId
 
@@ -468,6 +474,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           var newMap = Map[VertexId, NodeInfo]()
           var prevIterParentNodeLowerBoundsMapNew = Map[VertexId, (Double, Double)]() 
           var prevIterCurrentLowerBoundsMapNew = Map[VertexId, Double]()
+          
          // print ("409: starQueryGraphbfsTraverseWithBoundPruning a : "+a + " b:   " + b + " done \n")
 
             //  print ("410: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+prevIterLowerBoundsMapA + "    " + prevIterLowerBoundsMapB + " ")
@@ -482,7 +489,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               //combine the new key->value pair into the nodeMapA；  update spDistance, hierarchicalLevelDistance, spNumber
               val newSpDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)               
               val newHierLevelDistance = math.max(nodeMapA(specificNodeId).hierLevelDifference, nodeMapB(specificNodeId).hierLevelDifference)
-              val newSpNumber = nodeMapA(specificNodeId).spNumber + 1
+              val newSpNumber = nodeMapA(specificNodeId).spNumber 
               
               val tmpNodeInfo = nodeMapA(specificNodeId).copy(spDistance = newSpDistance, spNumber = newSpNumber, hierLevelDifference = newHierLevelDistance)
               newMap += (specificNodeId -> tmpNodeInfo)
