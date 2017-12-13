@@ -392,7 +392,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
 
   {
       //println("412 starQueryGraphbfsTraverse iterationCount: ", iterationCount)
-      val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo], Map[VertexId, (Double, Double)], Map[VertexId, Double])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo],  Map[VertexId, (Double, Double)], Map[VertexId, Double])](
+      val msgs = g.aggregateMessages[(VD, Map[VertexId, NodeInfo],  Map[VertexId, (Double, Double)], Map[VertexId, Double], VertexId)](
         triplet => {
           val srcNodeMap = triplet.srcAttr._2
           //println("266 starQueryGraphbfsTraverse srcNodeMap: ", srcNodeMap)
@@ -453,7 +453,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               prevIterCurrentNodeLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)  //check
               //println("403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
               
-              triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap))
+              triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap, triplet.dstId))
      
             }
           )
@@ -469,14 +469,18 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           
           var prevIterCurrentLowerBoundsMapA = a._4              //Map[VertexId, Double]()
           val prevIterCurrentLowerBoundsMapB = b._4
+          val dstId = a._5
+          
           //var prevIterParentNodeLowerBoundsMap = Map[VertexId, (Double, Double)]()
           //var prevIterLowerBoundsMapNew =  Map[VertexId, Double]()   
           var newMap = Map[VertexId, NodeInfo]()
           var prevIterParentNodeLowerBoundsMapNew = Map[VertexId, (Double, Double)]() 
           var prevIterCurrentLowerBoundsMapNew = Map[VertexId, Double]()
-          
-         // print ("409: starQueryGraphbfsTraverseWithBoundPruning a : "+a + " b:   " + b + " done \n")
 
+          if ((dstId == 162456) || (dstId == 120096) || (dstId == 51308))
+          {
+             print ("444444444444444444444444409: starQueryGraphbfsTraverseWithBoundPruning a : " + "dstId: "+ dstId + " "+nodeMapA(188421) + " done \n")
+          }
             //  print ("410: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+prevIterLowerBoundsMapA + "    " + prevIterLowerBoundsMapB + " ")
               
          // prevIterLowerBoundsMapA.keys.foreach{(specificNodeId) =>
@@ -489,7 +493,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
               //combine the new key->value pair into the nodeMapA；  update spDistance, hierarchicalLevelDistance, spNumber
               val newSpDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)               
               val newHierLevelDistance = math.max(nodeMapA(specificNodeId).hierLevelDifference, nodeMapB(specificNodeId).hierLevelDifference)
-              val newSpNumber = nodeMapA(specificNodeId).spNumber 
+              val newSpNumber = nodeMapA(specificNodeId).spNumber +1       //+1
               
               val tmpNodeInfo = nodeMapA(specificNodeId).copy(spDistance = newSpDistance, spNumber = newSpNumber, hierLevelDifference = newHierLevelDistance)
               newMap += (specificNodeId -> tmpNodeInfo)
@@ -518,7 +522,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
             
           }
         // print ("504: starQueryGraphbfsTraverseWithBoundPruning: ", newMap)
-        (nodeTypeId, newMap, prevIterParentNodeLowerBoundsMapNew, prevIterCurrentLowerBoundsMapNew)
+        (nodeTypeId, newMap, prevIterParentNodeLowerBoundsMapNew, prevIterCurrentLowerBoundsMapNew, dstId)
         
         }
     ).cache()
