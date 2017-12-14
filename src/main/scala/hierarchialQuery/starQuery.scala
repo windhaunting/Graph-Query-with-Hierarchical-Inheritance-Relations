@@ -459,7 +459,11 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           )
           
           if (sendMsgFlag)
-          {
+          {   
+               if ((triplet.dstId == 162456) || (triplet.dstId == 120096) || (triplet.dstId == 51308))
+              {
+                  println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: " + " dstId: " +triplet.dstId)
+              }
               triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap, triplet.srcId, triplet.dstId))
               sendMsgFlag = false
           }
@@ -502,26 +506,35 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
             if (nodeMapA.contains(specificNodeId) && nodeMapB.contains(specificNodeId)) {
               
               //combine the new key->value pair into the nodeMapA；  update spDistance, hierarchicalLevelDistance, spNumber
-              val newSpDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)               
-              val newHierLevelDistance = math.max(nodeMapA(specificNodeId).hierLevelDifference, nodeMapB(specificNodeId).hierLevelDifference)
-              
-              var newSpNumber = nodeMapA(specificNodeId).spNumber       //+1
-
-              if (nodeMapA(specificNodeId).spDistance == nodeMapB(specificNodeId).spDistance)
+              if (srcId1 != srcId2)             //need to judege here, because triplet.sendToDst may send mutliple time by different cpu cores or partitons
               {
-                  newSpNumber = nodeMapA(specificNodeId).spNumber +1       //+1
-              }
-              
-              val tmpNodeInfo = nodeMapA(specificNodeId).copy(spDistance = newSpDistance, spNumber = newSpNumber, hierLevelDifference = newHierLevelDistance)
-              newMap += (specificNodeId -> tmpNodeInfo)
-              
-              //update prevIterParentNodeLowerBoundsMap
-              val newprevIterParentNodeLowerBound =  prevIterParentNodeLowerBoundsMapA(specificNodeId)._1 + prevIterParentNodeLowerBoundsMapB(specificNodeId)._1
-              val newNeighborNodehierLevelDifference = math.max(prevIterParentNodeLowerBoundsMapA(specificNodeId)._2, prevIterParentNodeLowerBoundsMapB(specificNodeId)._2)
-              prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> (newprevIterParentNodeLowerBound, newNeighborNodehierLevelDifference))
-              
-             //update prevIterCurrentLowerBoundsMap  the same as prevIterCurrentLowerBoundsMapA
-             prevIterCurrentLowerBoundsMapNew  += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
+                 val newSpDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)               
+                 val newHierLevelDistance = math.max(nodeMapA(specificNodeId).hierLevelDifference, nodeMapB(specificNodeId).hierLevelDifference)
+
+                 var newSpNumber = nodeMapB(specificNodeId).spNumber       //+1
+
+
+                 newSpNumber = nodeMapB(specificNodeId).spNumber +1       //+1
+                
+             
+                 val tmpNodeInfo = nodeMapA(specificNodeId).copy(spDistance = newSpDistance, spNumber = newSpNumber, hierLevelDifference = newHierLevelDistance)
+                 newMap += (specificNodeId -> tmpNodeInfo)
+                 
+                 //update prevIterParentNodeLowerBoundsMap
+                //update prevIterCurrentLowerBoundsMap  the same as prevIterCurrentLowerBoundsMapA
+                val newprevIterParentNodeLowerBound =  prevIterParentNodeLowerBoundsMapA(specificNodeId)._1 + prevIterParentNodeLowerBoundsMapB(specificNodeId)._1
+                val newNeighborNodehierLevelDifference = math.max(prevIterParentNodeLowerBoundsMapA(specificNodeId)._2, prevIterParentNodeLowerBoundsMapB(specificNodeId)._2)
+                prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> (newprevIterParentNodeLowerBound, newNeighborNodehierLevelDifference))
+                prevIterCurrentLowerBoundsMapNew  += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
+
+               }
+               else
+               {
+                  newMap += (specificNodeId -> nodeMapA(specificNodeId))
+                  prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> prevIterParentNodeLowerBoundsMapA(specificNodeId))
+                  prevIterCurrentLowerBoundsMapNew  += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
+               }
+               
              
             }
             else if (nodeMapA.contains(specificNodeId)){        //only in b, put into A, because we want to return A
