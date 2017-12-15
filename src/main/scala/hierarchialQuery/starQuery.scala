@@ -30,7 +30,7 @@ object starQuery {
  
   var TOPK = 0                 //top K candidate answer, set by main function parameter
   val ALPHA = 0.9               //propagation factor
-  val N = 1/ALPHA       //1.05
+  val N = math.pow(ALPHA, (-1)*ALPHA)   //1/ALPHA1.05
   val numTasks = 8                   //how many task for one core can execute in parallell
   val BETA = 0.8                    //attenutation for hierarchical level difference causing the score reduction.
   var topKKthLowerBoundScore = 0.0        // the smallest (kth) lowest upper bound score in the k list
@@ -460,10 +460,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           
           if (sendMsgFlag)
           {   
-               if ((triplet.dstId == 162456) || (triplet.dstId == 120096) || (triplet.dstId == 51308))
-              {
-                  println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: " + " dstId: " +triplet.dstId)
-              }
+             //  if ((triplet.dstId == 162456) || (triplet.dstId == 120096) || (triplet.dstId == 51308))
+             // {
+             //     println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx403 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: " + " dstId: " +triplet.dstId)
+             // }
               triplet.sendToDst((currentNodeType, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap, triplet.srcId, triplet.dstId))
               sendMsgFlag = false
           }
