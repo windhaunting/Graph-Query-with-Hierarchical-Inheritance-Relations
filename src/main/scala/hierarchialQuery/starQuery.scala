@@ -492,10 +492,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           var prevIterParentNodeLowerBoundsMapNew = Map[VertexId, (Double, Double)]() 
           var prevIterCurrentLowerBoundsMapNew = Map[VertexId, Double]()
 
-          if ((dstId1 == 162456) || (dstId1 == 120096) || (dstId1 == 51308))
-          {
-             print ("444444444444444444444444409: starQueryGraphbfsTraverseWithBoundPruning a : " + "srcId: " + srcId1 +" " + srcId2 + " dstId: "+ dstId1 + " " + dstId2 + " nodeMapA: "+nodeMapA + " nodeMapB "+nodeMapB + " done \n")
-          }
+         // if ((dstId1 == 162456) || (dstId1 == 120096) || (dstId1 == 51308))
+         // {
+         //    print ("444444444444444444444444409: starQueryGraphbfsTraverseWithBoundPruning a : " + "srcId: " + srcId1 +" " + srcId2 + " dstId: "+ dstId1 + " " + dstId2 + " nodeMapA: "+nodeMapA + " nodeMapB "+nodeMapB + " done \n")
+         // }
             //  print ("410: starQueryGraphbfsTraverseWithBoundPruning updatedLowerBoundCloseScore : "+prevIterLowerBoundsMapA + "    " + prevIterLowerBoundsMapB + " ")
               
          // prevIterLowerBoundsMapA.keys.foreach{(specificNodeId) =>
