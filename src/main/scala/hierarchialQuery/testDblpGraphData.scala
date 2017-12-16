@@ -149,8 +149,9 @@ object testDblpGraphData {
     val databaseType = 1              //dblp data graph database   1
     val runTimeFileIndex = args(1)
     
-    val specificReadLst = List((188421L, 3), (188806L, 3))        // three or more query graph size
-     
+    //val specificReadLst = List((188421L, 3), (188806L, 3))        // three or more query graph size
+    
+    val specificReadLst = List((188912L, 3), (188400L, 3), (188914L, 3))        // three or more query graph size
     val hierarchialRelation = true
    
     val outputFilePath = "../output/dblpData/starQueryOutput/starQueryOutputFilePath" + runTimeFileIndex

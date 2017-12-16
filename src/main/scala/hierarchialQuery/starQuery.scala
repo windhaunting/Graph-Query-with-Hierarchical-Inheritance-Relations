@@ -440,11 +440,10 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                   //    println("295 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: ", specificNodeIdType, dstTypeId)
                }
                
-              if ((triplet.dstId == 162456) || (triplet.dstId == 120096) || (triplet.dstId == 51308))
-              {
-                 println("401 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
- 
-              }
+             // if ((triplet.dstId == 162456) || (triplet.dstId == 120096) || (triplet.dstId == 51308))
+             // {
+              //   println("401 starQueryGraphbfsTraverseWithBoundPruning newdstNodeMap: "+ specificNodeId+" srcId: "+triplet.srcId+" dstId: "+  triplet.dstId+ " srcMap: "+ triplet.srcAttr._2 + " newdstMap:" + newdstNodeMap)
+              //}
                
               //get current lowerbounds that is actually the previous iteration's lower bound  t-1
               val neighborNodehierLevelDifference = BETA*math.abs(triplet.attr.toString.toInt)              //edge hierarchical level difference between srcId and dstId
