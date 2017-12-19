@@ -44,13 +44,16 @@ object testSyntheticGraph {
     
   }
   
-  
+    def executeSyntheticDatabase(args: Array[String], sc: SparkContext) = {
+        executeStarQuerySyntheticDatabase(args, sc)
+    
+    
+    }
   
   //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
-  //product database execution -- main entry
-  def executeSyntheticDatabase(args: Array[String], sc: SparkContext) = {
+  //start query synthetic database execution -- main entry
+  def executeStarQuerySyntheticDatabase(args: Array[String], sc: SparkContext) = {
    
-    
      val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
      val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
         
@@ -86,5 +89,19 @@ object testSyntheticGraph {
        
   }
 
+  
+   // general star query entry
+  def executeStarQuerySyntheticDatabase(args: Array[String], sc: SparkContext) = {
+   
+     val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
+     val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
+        
+    //read edge list to graphX graph
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+
+    
+    
+  }
+  
 
 }
