@@ -167,7 +167,6 @@ object QueryMain {
         runTimeoutputFilePath = "../output/ciscoProduct/nonStarQueryOutput/testNoHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
     
-    
     var i = 0 
     var tmpRunTimeoutputFilePath = ""
     for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)

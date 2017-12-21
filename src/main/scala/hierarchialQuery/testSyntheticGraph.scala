@@ -90,8 +90,8 @@ object testSyntheticGraph {
   }
 
   
-   // general star query entry
-  def executeStarQuerySyntheticDatabase(args: Array[String], sc: SparkContext) = {
+   // general general query entry (non-star query) for synthetic graph
+  def executeGeneralQuerySyntheticDatabase(args: Array[String], sc: SparkContext) = {
    
      val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
      val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
@@ -99,6 +99,17 @@ object testSyntheticGraph {
     //read edge list to graphX graph
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
+    val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputGeneralQueryRead)
+   
+    //print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
+    //for varing query graph size
+    var runTimeoutputFilePath = ""
+    if (hierarchialRelation){
+        runTimeoutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
+    }
+    else{
+        runTimeoutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
+    }
     
     
   }
