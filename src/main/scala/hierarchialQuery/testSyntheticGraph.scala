@@ -47,8 +47,9 @@ object testSyntheticGraph {
     def executeSyntheticDatabase(args: Array[String], sc: SparkContext) = {
         executeStarQuerySyntheticDatabase(args, sc)
     
-        val inputGeneralQueryRead
-    
+        val inputGeneralQueryGraph = ""
+        
+        executeGeneralQuerySyntheticDatabase(args, sc, inputGeneralQueryGraph)
     }
   
   //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
@@ -92,7 +93,7 @@ object testSyntheticGraph {
 
   
    // general general query entry (non-star query) for synthetic graph
-  def executeGeneralQuerySyntheticDatabase(args: Array[String], sc: SparkContext, String: inputGeneralQueryRead) = {
+  def executeGeneralQuerySyntheticDatabase(args: Array[String], sc: SparkContext, String: inputGeneralQueryGraph) = {
    
      val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
      val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
@@ -100,9 +101,9 @@ object testSyntheticGraph {
     //read edge list to graphX graph
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
     
-    val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryRead)
+    val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
    
-    //print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
+    print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
     //for varing query graph size
     var runTimeoutputFilePath = ""
     if (hierarchialRelation){

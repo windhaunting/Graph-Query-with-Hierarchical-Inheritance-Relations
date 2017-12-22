@@ -44,7 +44,6 @@ object QueryMain {
   }
   
   
-    
   
   //function for testing varing graphData in dblp data
   def testVaringGraphDataDblp (sc: SparkContext, topK: Int, runTimeFileIndex: String, graphSizeRatio: Int, databaseType: Int, hierarchialRelation: Boolean) = {
