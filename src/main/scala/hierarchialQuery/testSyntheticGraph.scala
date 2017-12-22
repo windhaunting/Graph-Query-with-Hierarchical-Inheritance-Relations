@@ -11,7 +11,7 @@ import org.apache.spark.SparkContext
 object testSyntheticGraph {
   
   //test tiny graph to verify the score and bounding
-  def testTinyGraphData(args: Array[String], sc: SparkContext) ={
+  def testTinyGraphData(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) ={
     //val inputEdgeListfilePath = "../../Data/testInput/testEdgeListFile01"
     // val inputNodeInfoFilePath = "../../Data/testInput/testNodeInfo01"
 
@@ -35,7 +35,6 @@ object testSyntheticGraph {
     // val specificReadLst =  List((1L, 2)) //, (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
     //  val specificReadLst =  List((1L, 2), (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
 
-    val hierarchialRelation = true
 
     val outputFilePath = "../output/testInput/starQueryOutput/starOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/testInput/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
@@ -44,12 +43,12 @@ object testSyntheticGraph {
     
   }
   
-    def executeSyntheticDatabase(args: Array[String], sc: SparkContext) = {
-        executeStarQuerySyntheticDatabase(args, sc)
+    def executeSyntheticDatabase(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
+        //executeStarQuerySyntheticDatabase(args, sc, hierarchialRelation)
     
-        val inputGeneralQueryGraph = ""
+        val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
         
-        executeGeneralQuerySyntheticDatabase(args, sc, inputGeneralQueryGraph)
+        executeGeneralQuerySyntheticDatabase(args, sc, inputGeneralQueryGraph, hierarchialRelation)
     }
   
   //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
@@ -93,7 +92,7 @@ object testSyntheticGraph {
 
   
    // general general query entry (non-star query) for synthetic graph
-  def executeGeneralQuerySyntheticDatabase(args: Array[String], sc: SparkContext, String: inputGeneralQueryGraph) = {
+  def executeGeneralQuerySyntheticDatabase(args: Array[String], sc: SparkContext, inputGeneralQueryGraph: String, hierarchialRelation: Boolean) = {
    
      val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
      val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
@@ -113,8 +112,12 @@ object testSyntheticGraph {
         runTimeoutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
     }
     
+    for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
+    {
+      
+    }
+    
     
   }
   
-
 }

@@ -28,8 +28,10 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")            // override output with the same path
     val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
-  //  testSyntheticGraph.executeSyntheticDatabase(args, sc)
-  //  println("executeSyntheticDatabase: done") 
+    val hierarchialRelation = true
+
+    testSyntheticGraph.executeSyntheticDatabase(args, sc, hierarchialRelation)
+    println("executeSyntheticDatabase: done") 
     
    // testSyntheticGraph.testTinyGraphData(args, sc)
    // println("testSyntheticGraph: done")
@@ -37,8 +39,8 @@ object QueryMain {
    //   testCiscoGraphData.executeProductDatabase(args, sc)
    //  println("executeProductDatabase: done") 
     
-    testDblpGraphData.executeDblpGraphData(args, sc)
-    println("executeDblpGraphData: done")
+   // testDblpGraphData.executeDblpGraphData(args, sc)
+   // println("executeDblpGraphData: done")
    
     
   }
@@ -230,7 +232,7 @@ object QueryMain {
         runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/testNoHierarchiOutputVaryingQuerySize/" + "queryGraphSize"
     }
     
-     var i = 0 
+    var i = 0 
     var tmpRunTimeoutputFilePath = ""
     for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
     {
