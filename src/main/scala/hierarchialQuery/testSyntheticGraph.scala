@@ -118,6 +118,8 @@ object testSyntheticGraph {
        val starQueryNodeLst = specNodelistStarQueryLst(0)
        val dstTypeLst = specNodelistStarQueryLst(1)
 
+      print ("starQueryNodeLst： " + starQueryNodeLst + " " + dstTypeLst+  "\n")
+      //general query 
       
     }
     
