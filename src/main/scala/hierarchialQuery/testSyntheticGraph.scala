@@ -120,6 +120,7 @@ object testSyntheticGraph {
 
       print ("starQueryNodeLst： " + starQueryNodeLst + " " + dstTypeLst+  "\n")
       //general query 
+
       
     }
     
