@@ -112,8 +112,12 @@ object testSyntheticGraph {
         runTimeoutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
     }
     
-    for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
+    for (specNodelistStarQueryLst <- allquerySizeLsts)
     {
+       val nonStarQueryTOPK = starQuery.TOPK
+       val starQueryNodeLst = specNodelistStarQueryLst(0)
+       val dstTypeLst = specNodelistStarQueryLst(1)
+
       
     }
     
