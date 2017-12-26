@@ -771,14 +771,13 @@ object nonStarQuery {
 
        //var topKResultRdd: RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))] = sc.emptyRDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
        
-
       var allNodesVisitedNumber: Long = 0L                         // all nodes visited
       var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
      // var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
     
-      var allNodesVisitedAllSpecificsNumber = 0L
+      var allNextDestNodesVisitedNumber = 0L            //all the next destNode visited
        //aggregate the message 
-       while (nextUnknownDestNodeIdLst.size != allNodesVisitedAllSpecificsNumber && oldAllNodesVisitedNumber != allNodesVisitedNumber && allNodesVisitedNumber < graph.ops.numVertices)
+       while (nextUnknownDestNodeIdLst.size != allNextDestNodesVisitedNumber && oldAllNodesVisitedNumber != allNodesVisitedNumber && allNodesVisitedNumber < graph.ops.numVertices)
        {
          val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo])](
          triplet => {
@@ -822,7 +821,7 @@ object nonStarQuery {
                //update visit color,  lowerBoundCloseness Score
                val updatedLowerBoundCloseScore = 0 // starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapA)
 
-               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
+               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(d, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
                newMap += (specificNodeIdType._1 -> tmpNodeInfo)       //update key -> value
                //key -> value
              }
@@ -929,7 +928,6 @@ object nonStarQuery {
 
          //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber        //update the previous previous visited nodes number from previous nodes
 
-
          //val anotherUnknownDestNodeIdHashMap = nextUnknownDestNodeIdLst.map{s => (s._1, (s._2, s._3))}
 
          val visitedDestinationRdd = allNodesVisitedAnyOne.filter{
@@ -950,7 +948,7 @@ object nonStarQuery {
 
          //another termination condition: if all nextUnknownDestNodeIdLst are all visited, then the recycle termination
          //get the visited nodes for all the specific nodes
-         val allNodesVisitedAllSpecifics =  g.vertices.filter{ case x=>
+         val allNextDestNodesVisitedRdd =  g.vertices.filter{ case x=>
            val nodeMap = x._2._2
 
           def getAllVisiteFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
@@ -975,7 +973,7 @@ object nonStarQuery {
 
          }
 
-          allNodesVisitedAllSpecificsNumber = allNodesVisitedAllSpecifics.count()
+          allNextDestNodesVisitedNumber = allNextDestNodesVisitedRdd.count()
 
           //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " " + currentNonStarResultRdd.count() + " " + topKNonStarResultRdd.count() + "\n")  
 
@@ -1015,7 +1013,7 @@ object nonStarQuery {
         
       }
       
-      
+      //for the next iteration of next specific node
       val visitedDestinationEndRdd = g.vertices.filter{
          case x=> 
 
