@@ -740,7 +740,7 @@ object nonStarQuery {
     //print ("nonStarQueryGraphbfsTraverseAnyQueryNodes starQueryNodeHashMap: ", starQueryNodeHashMap)
     var i = 0
     
-    var topKNonStarResultRdd: RDD[(List[VertexId], Double)] = sc.emptyRDD[(List[VertexId], Double)]          //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
+    var topKNonStarResultRdd: RDD[(List[VertexId], Double)] = sc.emptyRDD[(List[VertexId], Double)]      //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeIdType, nodeMap)
 
     //record each iteration of non star query  unknown nodes traversal result
     var previousNonStarQueryRdd: RDD[(VertexId, (List[VertexId], Double))] = sc.emptyRDD[(VertexId, (List[VertexId], Double))]
@@ -748,16 +748,14 @@ object nonStarQuery {
     while (i < topKStarRstLstBuffer.length-1)      //  
     {
       
-      
       var topKKthLowerBoundScore = 0.0        //initialize for each candidate embedding enumeration traverse bounds
        //initialize the source list, as the new specificNodeIdLst
-        val specificNodeIdLst = topKStarRstLstBuffer(i).map{x => (x._1, x._2._4, x._2._1)}         // => (nodeId, nodeTypeId, node matchingScore)
+        val specificNodeIdLst = topKStarRstLstBuffer(i).map{x => (x._1, x._2._4, x._2._1)}         // dstId node becomes new's specific node,  => (nodeId, nodeTypeId, node matchingScore)
          .collect().toList.sortBy(x=>x._3)            // sorted by node matching score
 
         //val specificNodeIdLstHashMap = specificNodeIdLst.map{s => (s._1, (s._2, s._3))}
 
-
-        //check the visited nodes have the another unkown  destination candidates nodes; that is in the topKStarRstLst(i+1) 
+        //check the visited nodes to have the another unkown  destination candidates nodes; that is in the topKStarRstLst(i+1) 
         val nextUnknownDestNodeIdLst = topKStarRstLstBuffer(i+1).map{x => (x._1, x._2._4, x._2._1)}         // => (nodeId, nodeTypeId, node matchingScore)
            .collect().toList.sortBy(x=>x._3)            // sorted by node matching score
         
@@ -766,7 +764,7 @@ object nonStarQuery {
        var g: Graph[(VD, Map[VertexId, NodeInfo]), ED] =
        graph.mapVertices((id, nodeIdType) => (nodeIdType, 
                                               specificNodeIdLst.map(specificNodeIdType=> specificNodeIdType._1-> NodeInfo(specificNodeIdType._1, 
-                                                                                                                          specificNodeIdType._2, if (id == specificNodeIdType._1) 0 else Long.MaxValue, if (id == specificNodeIdType._1) 1 else 0, 0, 0.0, 0, if (id == specificNodeIdType._1) GREY.id else WHITE.id, if (id == specificNodeIdType._1) 1.0 else 0.0,  if (id == specificNodeIdType._1) 1 else {starQuery.N*scala.math.pow(starQuery.ALPHA, 1)})).toMap
+                                                                                                                          specificNodeIdType._2, if (id == specificNodeIdType._1) 0 else Long.MaxValue, if (id == specificNodeIdType._1) 1 else 0, 0.0, 0.0, 0, if (id == specificNodeIdType._1) GREY.id else WHITE.id, if (id == specificNodeIdType._1) 1.0 else 0.0, if (id == specificNodeIdType._1) 1.0 else 1.0)).toMap
        )).cache()
 
       // val dstTypeId = dstTypeIdLstBuffer(i+1)              //updated the dstTypeId
@@ -776,18 +774,19 @@ object nonStarQuery {
 
       var allNodesVisitedNumber: Long = 0L                         // all nodes visited
       var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
-      var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
+     // var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
     
       var allNodesVisitedAllSpecificsNumber = 0L
        //aggregate the message 
-       while (nextUnknownDestNodeIdLst.size != allNodesVisitedAllSpecificsNumber && twoPreviousOldAllNodesVisitedNumber != oldAllNodesVisitedNumber && allNodesVisitedNumber < graph.ops.numVertices)
+       while (nextUnknownDestNodeIdLst.size != allNodesVisitedAllSpecificsNumber && oldAllNodesVisitedNumber != allNodesVisitedNumber && allNodesVisitedNumber < graph.ops.numVertices)
        {
          val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo])](
          triplet => {
            val srcNodeMap = triplet.srcAttr._2
            //println("266 starQueryGraphbfsTraverse srcNodeMap: ", srcNodeMap)
            var dstNodeMap = triplet.dstAttr._2
-           var newdstNodeMap = dstNodeMap
+           var sendMsgFlag = false          //sendMsgFlag
+           var newdstNodeMap = Map[VertexId, NodeInfo]()            // not dstNodeMap any more, empty first, only updated vertexId part need to be sent (message)
 
            specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int, Double)) => 
                if (srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance)
@@ -801,9 +800,14 @@ object nonStarQuery {
                    newdstNodeMap += (specificNodeId -> tmpNodeInfo)              
 
                    val currentNodeTypeId = triplet.dstAttr._1 
-                   triplet.sendToDst((currentNodeTypeId, newdstNodeMap))
+                   sendMsgFlag = true
                }
            )
+           
+           if (sendMsgFlag){
+            triplet.sendToDst((currentNodeTypeId, newdstNodeMap))
+
+           }
          },
 
           (a, b) => {      
@@ -916,12 +920,14 @@ object nonStarQuery {
 
         //update bounds of each node in graph g  
         g = starQuery.setnodeIdColorForBound(allNodesVisitedAnyOne, g)                 //update bounding nodes color
+        
+        
+          oldAllNodesVisitedNumber = allNodesVisitedNumber           //update previous as the current
 
-
-         val allNodesVisitedNumber = allNodesVisitedAnyOne.count()
+         allNodesVisitedNumber = allNodesVisitedAnyOne.count()
          //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes allNodesVisitedNumber: " + allNodesVisitedNumber + "\n")  
 
-         twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber        //update the previous previous visited nodes number from previous nodes
+         //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber        //update the previous previous visited nodes number from previous nodes
 
 
          //val anotherUnknownDestNodeIdHashMap = nextUnknownDestNodeIdLst.map{s => (s._1, (s._2, s._3))}
@@ -974,7 +980,6 @@ object nonStarQuery {
           //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " " + currentNonStarResultRdd.count() + " " + topKNonStarResultRdd.count() + "\n")  
 
           // visitedDestinationRdd.take(5).foreach(println)
-          oldAllNodesVisitedNumber = allNodesVisitedNumber           //update previous as the current
 
          //update topKKthLowerBoundScore;        how?
          val currentIterateNodeResult = visitedDestinationRdd.map{
