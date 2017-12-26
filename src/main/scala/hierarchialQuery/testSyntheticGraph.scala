@@ -7,6 +7,8 @@
 package main.scala.hierarchialQuery
 
 import org.apache.spark.SparkContext
+import org.apache.spark.graphx._
+import org.apache.spark.rdd.RDD
 
 object testSyntheticGraph {
   
@@ -44,23 +46,26 @@ object testSyntheticGraph {
   }
   
     def executeSyntheticDatabase(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
-        //executeStarQuerySyntheticDatabase(args, sc, hierarchialRelation)
-    
-        val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
+      
+      val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
+      val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
         
-        executeGeneralQuerySyntheticDatabase(args, sc, inputGeneralQueryGraph, hierarchialRelation)
+      //read edge list to graphX graph
+      val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+
+       //executeStarQuerySyntheticDatabase(args, sc, hierGraphRdd, inputNodeInfoFilePath, hierarchialRelation)
+        
+       val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
+    
+       executeGeneralQuerySyntheticDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, hierarchialRelation)
+       
     }
   
   //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
   //start query synthetic database execution -- main entry
-  def executeStarQuerySyntheticDatabase(args: Array[String], sc: SparkContext) = {
+  def executeStarQuerySyntheticDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
    
-     val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
-     val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
-        
-    //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-
+    
     val dstTypeId = 0                    //0 hierarchical node   or 1
     val topK = args(0).toInt
     starQuery.TOPK = topK
@@ -81,25 +86,18 @@ object testSyntheticGraph {
     val specificReadLst = List((695138L, 2), (655399L, 2), (621354L, 2))        // three or more query graph size
     //val specificReadLst = List((698890L, 2), (631375L, 2), (664113L, 2))        // three or more query graph size
     
-    val hierarchialRelation = true
 
     val outputFilePath = "../output/syntheticData/starQueryOutput/starOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/syntheticData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
+    starQuery.starQueryExeute(sc, dataGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
     
        
   }
 
   
    // general general query entry (non-star query) for synthetic graph
-  def executeGeneralQuerySyntheticDatabase(args: Array[String], sc: SparkContext, inputGeneralQueryGraph: String, hierarchialRelation: Boolean) = {
-   
-     val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
-     val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
-        
-    //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-    
+  def executeGeneralQuerySyntheticDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputGeneralQueryGraph: String, hierarchialRelation: Boolean) = {
+ 
     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
    
     print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
@@ -115,10 +113,10 @@ object testSyntheticGraph {
     for (specNodelistStarQueryLst <- allquerySizeLsts)
     {
        val nonStarQueryTOPK = starQuery.TOPK
-       val starQueryNodeLst = specNodelistStarQueryLst(0)
-       val dstTypeLst = specNodelistStarQueryLst(1)
+       //val starQueryNodeLst = specNodelistStarQueryLst[0]
+       //val dstTypeLst = specNodelistStarQueryLst(1)
 
-      print ("starQueryNodeLst： " + starQueryNodeLst + " " + dstTypeLst+  "\n")
+      //print ("starQueryNodeLst： " + starQueryNodeLst + " " + dstTypeLst+  "\n")
       //general query 
 
       

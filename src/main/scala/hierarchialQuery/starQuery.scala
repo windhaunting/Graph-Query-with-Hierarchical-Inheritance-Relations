@@ -23,7 +23,6 @@ import main.scala.hierarchialQuery.nodeTypeSyntheticGraphEnum._
 
 import scala.reflect.ClassTag
 import scala.util.control.Breaks._
-
 import java.io._
 
 object starQuery {
