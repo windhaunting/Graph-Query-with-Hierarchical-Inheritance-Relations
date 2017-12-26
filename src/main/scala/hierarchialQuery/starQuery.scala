@@ -92,7 +92,7 @@ object starQuery {
         false
     }
     else{
-      
+        //cisco product dataset
         if (databaseType == 0){
           if ((nodeIdType1 == PRODUCT.id && nodeIdType2 == VULNERABILITY.id) || (nodeIdType1 == VULNERABILITY.id && nodeIdType2 == PRODUCT.id)){
             true
@@ -101,7 +101,7 @@ object starQuery {
             false
           } 
         }
-        else if (databaseType == 1){
+        else if (databaseType == 1){      //extended dblp dataset
           if (nodeIdType1 == TOPIC.id || nodeIdType2 == TOPIC.id){
             true
           }
@@ -109,7 +109,7 @@ object starQuery {
             false
           } 
         }
-        else if (databaseType == 2){
+        else if (databaseType == 2){      //synthetic dataset
           if (nodeIdType1 == TYPE0INHERIT.id || nodeIdType2 == TYPE1INHERIT.id || nodeIdType1 == TYPE1INHERIT.id || nodeIdType2 == TYPE0INHERIT.id){
             true
           }
@@ -420,7 +420,6 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                  val tmpNodeInfo = dstNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1,
                                    hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, spNumber= srcNodeMap(specificNodeId).spNumber,  parentId = triplet.srcId)  
                
-                
                  //update dstNodeMap 
                  newdstNodeMap += (specificNodeId -> tmpNodeInfo)
                 //  if (changedEdgeLevel !=0 ){

@@ -99,9 +99,11 @@ object testSyntheticGraph {
   def executeGeneralQuerySyntheticDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
  
     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
-    val topK = args(0).toInt
+    val topK = args(0).toInt      //topK
     starQuery.TOPK = topK
     val databaseType = 2              //synthetic graph database   2
+    
+    val runTimeFileIndex = args(1)
     
     print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
     //for varing query graph size
@@ -121,19 +123,19 @@ object testSyntheticGraph {
     for (specNodelistStarQueryLst <- allquerySizeLsts)
     {
        //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
-       val nonStarQueryTOPK = starQuery.TOPK
        val starQueryNodeLst = specNodelistStarQueryLst._1
        val dstTypeLst = specNodelistStarQueryLst._2
 
       print ("starQueryNodeLst： " + starQueryNodeLst + " " + dstTypeLst+  "\n")
-      //general query 
-      runTimeOutputFilePath = runTimeOutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_times" + runTimeFileIndex
       val nonStarQueryTOPK = starQuery.TOPK
-      outputResultFilePath = outputResultFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_times" + runTimeFileIndex
+
+      //general query 
+      runTimeOutputFilePath = runTimeOutputFilePath + count.toString + "_top" + nonStarQueryTOPK.toString + "_times" + runTimeFileIndex
+      outputResultFilePath = outputResultFilePath + count.toString + "_top" + nonStarQueryTOPK.toString + "_times" + runTimeFileIndex
       
       //general non-star query execution
-      nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, tmpRunTimeoutputFilePath, hierarchialRelation)     //execute non star query
-  
+      nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
+      count += 1
     }
     
     

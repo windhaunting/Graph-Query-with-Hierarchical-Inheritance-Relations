@@ -732,7 +732,7 @@ object nonStarQuery {
    //non Star query with two or more unknown nodes
   //input: previous star query results
   //output: final unknown query tuples and the final scores
-  def nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds[VD, ED](sc: SparkContext, graph: Graph[VD, ED], topKStarRstLstBuffer: ListBuffer[RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]], dstTypeIdLst: List[Int]) = {
+  def nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds[VD, ED](sc: SparkContext, graph: Graph[VD, ED], topKStarRstLstBuffer: ListBuffer[RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]], dstTypeIdLst: List[Int], databaseType: Int, hierarchialRelation: Boolean) = {
     
     val startTime = System.currentTimeMillis()              //System.nanoTime()
 
@@ -767,9 +767,10 @@ object nonStarQuery {
                                                                                                                           specificNodeIdType._2, if (id == specificNodeIdType._1) 0 else Long.MaxValue, if (id == specificNodeIdType._1) 1 else 0, 0.0, 0.0, 0, if (id == specificNodeIdType._1) GREY.id else WHITE.id, if (id == specificNodeIdType._1) 1.0 else 0.0, if (id == specificNodeIdType._1) 1.0 else 1.0)).toMap
        )).cache()
 
-      // val dstTypeId = dstTypeIdLstBuffer(i+1)              //updated the dstTypeId
+       val dstTypeId = dstTypeIdLst(i+1)              //updated the dstTypeId
        //var topKResultRdd: RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))] = sc.emptyRDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+                         
+      var visitedDestinationRdd =  sc.emptyRDD[(VertexId, (VD, Map[VertexId, NodeInfo]))]      // RDD for next destination node visited
       var allNodesVisitedNumber: Long = 0L                         // all nodes visited
       var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
      // var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
@@ -785,26 +786,49 @@ object nonStarQuery {
            var dstNodeMap = triplet.dstAttr._2
            var sendMsgFlag = false          //sendMsgFlag
            var newdstNodeMap = Map[VertexId, NodeInfo]()            // not dstNodeMap any more, empty first, only updated vertexId part need to be sent (message)
-
+           val dstNodeTypeId = triplet.dstAttr._1 
+           
+           var prevIterParentNodeLowerBoundsMap = Map[VertexId, (Double, Double)]()  
+           var  prevIterCurrentNodeLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
+       
            specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int, Double)) => 
                if (srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance)
                {
                    val specificNodeId = specificNodeIdType._1
-                   //val specNodeIdType = specificNodeIdType._2  
+                   val specNodeIdType = specificNodeIdType._2 
+                   
+                   //check whether it's hierarchical relations
+                   if (getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType, hierarchialRelation)){
 
-                  //update spDist and parentId only
-                   val tmpNodeInfo = srcNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, parentId = triplet.srcId)  
-                   //update dstNodeMap 
-                   newdstNodeMap += (specificNodeId -> tmpNodeInfo)              
+                     //update hierarchical level, spDist, spNumber, and parentId 
+                      val changedEdgeLevel: Double = BETA*math.abs(triplet.attr.toString.toInt)
+                      
+                      val tmpNodeInfo = dstNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, 
+                                                         spNumber= srcNodeMap(specificNodeId).spNumber,
+                                                         hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference + changedEdgeLevel, parentId = triplet.srcId)  
+                      //update dstNodeMap 
+                      newdstNodeMap += (specificNodeId -> tmpNodeInfo) 
+                      
+                   }
+                   else{
+                      //update  spDist, spNumber, and parentId 
+                      val tmpNodeInfo = dstNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, 
+                                                          spNumber= srcNodeMap(specificNodeId).spNumber, 
+                                                          hierLevelDifference = srcNodeMap(specificNodeId).hierLevelDifference, parentId = triplet.srcId)  
+        
+                      newdstNodeMap += (specificNodeId -> tmpNodeInfo) 
+                   }
+                   
+                   //get current lowerbounds that is actually the previous iteration's lower bound  t-1
+                   val neighborNodehierLevelDifference = BETA*math.abs(triplet.attr.toString.toInt)              //edge hierarchical level difference between srcId and dstId
+                   prevIterParentNodeLowerBoundsMap += (specificNodeIdType._1-> (srcNodeMap(specificNodeIdType._1).lowerBoundCloseScore, neighborNodehierLevelDifference))    //double check                   sendMsgFlag = true
+                   prevIterCurrentNodeLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)  //check
 
-                   val currentNodeTypeId = triplet.dstAttr._1 
-                   sendMsgFlag = true
                }
            )
            
            if (sendMsgFlag){
-            triplet.sendToDst((currentNodeTypeId, newdstNodeMap))
-
+            triplet.sendToDst((dstNodeTypeId, newdstNodeMap))
            }
          },
 
@@ -820,7 +844,7 @@ object nonStarQuery {
                //update visit color,  lowerBoundCloseness Score
                val updatedLowerBoundCloseScore = 0 // starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapA)
 
-               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(d, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
+               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
                newMap += (specificNodeIdType._1 -> tmpNodeInfo)       //update key -> value
                //key -> value
              }
@@ -929,7 +953,7 @@ object nonStarQuery {
 
          //val anotherUnknownDestNodeIdHashMap = nextUnknownDestNodeIdLst.map{s => (s._1, (s._2, s._3))}
 
-         val visitedDestinationRdd = allNodesVisitedAnyOne.filter{
+         visitedDestinationRdd = allNodesVisitedAnyOne.filter{
            case x=> 
 
             def getVisitedDestFlag(inputVal: VertexId) = {
@@ -942,7 +966,6 @@ object nonStarQuery {
             }
 
             getVisitedDestFlag(x._1)
-
          }
 
          //another termination condition: if all nextUnknownDestNodeIdLst are all visited, then the recycle termination
@@ -1013,6 +1036,7 @@ object nonStarQuery {
       }
       
       //begin the next iteration of next specific node
+      /*
       //get the visited destination node Id
       val visitedDestinationEndRdd = g.vertices.filter{
          case x=> 
@@ -1029,9 +1053,9 @@ object nonStarQuery {
           getVisitedDestFlag(x._1)
 
        }
-       
+      */
       //get candidateTuple number and their matching score from candidate nodes number
-      val candidateTupleRdd = visitedDestinationEndRdd.map{
+      val candidateTupleRdd = visitedDestinationRdd.map{
         case x=>
 
           def getVisitedCandidatesNodesTuple(destNodeId: VertexId, nodeMap: Map[VertexId, NodeInfo]) = {
@@ -1170,7 +1194,7 @@ object nonStarQuery {
     //print ("size: " + topKStarRstLst.size +  " \n")
     //begin executing candiate selection phase
     // val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseTwoQueryNodes(sc, graph, topKStarRstLst, dstTypeIdLst)
-    val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds(sc, graph, topKStarRstLst, dstTypeIdLst)
+    val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds(sc, graph, topKStarRstLst, dstTypeIdLst, databaseType,  hierarchialRelation)
     
     val endTime = System.currentTimeMillis()   
     //println("nonStarQueryExecute whole runtime: "+ (endTime-startTime) + " ms") 

@@ -80,7 +80,7 @@ object QueryMain {
     
     
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute star query
+  //  nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute star query
     
   
   }
@@ -121,7 +121,7 @@ object QueryMain {
     }
     
     print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute star query
+  //  nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute star query
     
     
   }
@@ -185,7 +185,7 @@ object QueryMain {
       val nonStarQueryTOPK = starQuery.TOPK
       i += 1
       tmpRunTimeoutputFilePath = tmpRunTimeoutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
-      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeoutputFilePath, hierarchialRelation)     //execute non star query
+    //  nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeoutputFilePath, hierarchialRelation)     //execute non star query
       
     }
     
