@@ -768,9 +768,8 @@ object nonStarQuery {
        )).cache()
 
       // val dstTypeId = dstTypeIdLstBuffer(i+1)              //updated the dstTypeId
-
        //var topKResultRdd: RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))] = sc.emptyRDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
-       
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
       var allNodesVisitedNumber: Long = 0L                         // all nodes visited
       var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
      // var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
@@ -1013,7 +1012,8 @@ object nonStarQuery {
         
       }
       
-      //for the next iteration of next specific node
+      //begin the next iteration of next specific node
+      //get the visited destination node Id
       val visitedDestinationEndRdd = g.vertices.filter{
          case x=> 
 
@@ -1065,13 +1065,11 @@ object nonStarQuery {
             
             starQueryPrevScoreSum            // only 2 here
         }
-
-        (x._1._1, (x._1._2, getmatchingScoreTuple(x._1._1)))       //（specnodeId, (destNodeId, score))
+        (x._1._1, (x._1._2, getmatchingScoreTuple(specNodeId)))       //（specnodeId, (destNodeId, score))
 
       }       // .takeOrdered(nonStarQuery_TOPK)(Ordering[Double].reverse.on(x=>x._2))
 
       //get the current top-k result
-
       if (0 == i)
       {
           previousNonStarQueryRdd = currentNonStarResultRdd.map{ x => 
@@ -1108,7 +1106,8 @@ object nonStarQuery {
       //keep the current star query list visited result
       i = i + 1               //？ i = i + 1
              
-    }
+    }           //end while (i < topKStarRstLstBuffer.length-1)  
+    
     
     if (previousNonStarQueryRdd.count() < nonStarQuery_TOPK)
     {
