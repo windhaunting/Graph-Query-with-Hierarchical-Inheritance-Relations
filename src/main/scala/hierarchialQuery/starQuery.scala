@@ -355,7 +355,7 @@ def setnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, Map[VertexId,
 // starQueryGraphbfsTraverseWithBoundPruning
 def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdLst: List[(VertexId, Int)], dstTypeId: Int, databaseType: Int, runTimeoutputFilePath: String, hierarchialRelation: Boolean) = {
      
-    //Vertex's  property is (VD, Map[VertexId, NodeInfo]) ; VD is the node property-- nodeIdType here; Map's key: specificNodeId, value is NodeInfo
+    //Vertex's  property is (VD, Map[VertexId, NodeInfo]) ; VD is the node property-- nodeIdType here; Map's key: specificNodeId, value is NodeInfo; ED is edge property
     var g: Graph[(VD, Map[VertexId, NodeInfo]), ED] =
       graph.mapVertices((id, nodeIdType) => (nodeIdType, 
                                              specificNodeIdLst.map(specificNodeIdType=> specificNodeIdType._1-> NodeInfo(specificNodeIdType._1, 
@@ -373,7 +373,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
 
     var pathAnswerRdd: RDD[(VertexId, Map[VertexId, ListBuffer[VertexId]])]  = sc.emptyRDD[(VertexId, Map[VertexId, ListBuffer[VertexId]])]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
 
-    val dstNodesNumberGraph = graph.vertices.filter(x=>x._2 == dstTypeId)
+    val dstNodesNumberGraph = graph.vertices.filter(x=>x._2 == dstTypeId)            
     //println("504 starQueryGraphbfsTraverseWithBoundPruning :  ", dstNodesNumberGraph.count)
    
      var currentSatisfiedNodesNumber: Long = 0L                   //number of dest type nodes that visited
@@ -509,12 +509,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
                  val newSpDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)               
                  val newHierLevelDistance = math.max(nodeMapA(specificNodeId).hierLevelDifference, nodeMapB(specificNodeId).hierLevelDifference)
 
-                 var newSpNumber = nodeMapB(specificNodeId).spNumber       //+1
-
-
-                 newSpNumber = nodeMapB(specificNodeId).spNumber +1       //+1
+                 //val newSpNumber = nodeMapB(specificNodeId).spNumber       //no change
+                 val newSpNumber = nodeMapB(specificNodeId).spNumber +1       //+1
                 
-             
                  val tmpNodeInfo = nodeMapA(specificNodeId).copy(spDistance = newSpDistance, spNumber = newSpNumber, hierLevelDifference = newHierLevelDistance)
                  newMap += (specificNodeId -> tmpNodeInfo)
                  

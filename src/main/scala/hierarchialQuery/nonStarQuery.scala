@@ -732,7 +732,7 @@ object nonStarQuery {
    //non Star query with two or more unknown nodes
   //input: previous star query results
   //output: final unknown query tuples and the final scores
-  def nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds[VD, ED](sc: SparkContext, graph: Graph[VD, ED], topKStarRstLstBuffer: ListBuffer[RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]], dstTypeIdLstBuffer: ListBuffer[Int]) = {
+  def nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds[VD, ED](sc: SparkContext, graph: Graph[VD, ED], topKStarRstLstBuffer: ListBuffer[RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]], dstTypeIdLst: List[Int]) = {
     
     val startTime = System.currentTimeMillis()              //System.nanoTime()
 
@@ -1138,18 +1138,19 @@ object nonStarQuery {
   }
 
   
-  //entry to execute non star query 
-  def nonStarQueryExecute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdTwoDimensionLst: List[List[(VertexId,Int)]], dstTypeIdLstBuffer: ListBuffer[Int], nonStarQueryTOPK: Int, databaseType: Int, inputFileNodeInfoPath: String, outputFilePath: String, runTimeoutputFilePath: String, hierarchialRelation: Boolean) = {
+  //entry to execute general non star query 
+  def nonStarQueryExecute[VD, ED](sc: SparkContext, graph: Graph[VD, ED], specificNodeIdTwoDimensionLst: List[List[(VertexId,Int)]], dstTypeIdLst: List[Int], nonStarQueryTOPK: Int, databaseType: Int, inputFileNodeInfoPath: String, outputFilePath: String, runTimeoutputFilePath: String, hierarchialRelation: Boolean) = {
       
     nonStarQuery_TOPK = nonStarQueryTOPK
     
+    //phas1: decompose star query and execute star query
     var topKStarRstLst = new ListBuffer[RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]]()
     var i = 0
     val startTime = System.currentTimeMillis()              //System.nanoTime()
     //print ("specificNodeIdTwoDimensionLst size: " + specificNodeIdTwoDimensionLst(0) + " " + i + " \n")
     while(i < specificNodeIdTwoDimensionLst.size)
     {
-        val dstTypeId = dstTypeIdLstBuffer(i)
+        val dstTypeId = dstTypeIdLst(i)
         //val topKResultRdd = starQuery.starQueryGraphbfsTraverseWithBoundPruning(sc, graph, specificNodeIdTwoDimensionLst(i), dstTypeId, databaseType, null, hierarchialRelation)
        
         //when return paths
@@ -1165,9 +1166,9 @@ object nonStarQuery {
     }
     
     //print ("size: " + topKStarRstLst.size +  " \n")
-    
+    //begin executing candiate selection phase
     // val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseTwoQueryNodes(sc, graph, topKStarRstLst, dstTypeIdLst)
-    val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds(sc, graph, topKStarRstLst, dstTypeIdLstBuffer)
+    val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds(sc, graph, topKStarRstLst, dstTypeIdLst)
     
     val endTime = System.currentTimeMillis()   
     //println("nonStarQueryExecute whole runtime: "+ (endTime-startTime) + " ms") 
