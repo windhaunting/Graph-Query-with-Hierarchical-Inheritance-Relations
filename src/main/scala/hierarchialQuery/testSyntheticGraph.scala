@@ -104,12 +104,12 @@ object testSyntheticGraph {
    
     print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
     //for varing query graph size
-    var runTimeoutputFilePath = ""
+    var runTimeOutputFilePath = ""
     if (hierarchialRelation){
-        runTimeoutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
+        runTimeOutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
     }
     else{
-        runTimeoutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
+        runTimeOutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
     }
     
     for (specNodelistStarQueryLst <- allquerySizeLsts)
