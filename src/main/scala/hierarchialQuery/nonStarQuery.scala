@@ -1148,12 +1148,11 @@ object nonStarQuery {
     }
 
     //topKNonStarResultRdd.take(5).foreach(println)
-       
     //println("nonStarQueryGraphbfsTraverseTwoQueryNodes ppppppppppreviousNonStarQueryRdd result i: ", previousNonStarQueryRdd.count()) 
     //previousNonStarQueryRdd. take(5).foreach(println)
     
     val endTime = System.currentTimeMillis()   
-    //println("nonStarQueryGraphbfsTraverseTwoQueryNodes runtime: "+ (endTime-startTime) + " ms") 
+    println("1156 only nonStarQueryGraphbfsTraverseQueryNodes runtime: "+ (endTime-startTime) + " ms") 
  
     topKNonStarResultRdd
     
@@ -1181,8 +1180,8 @@ object nonStarQuery {
         val pathAnswerRdd = answers._2
         //topKResultRdd.take(5).foreach(println)
         //print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
-        //print ("pathAnswerRdd  star query " + i.toString + " pathAnswerRdd: " + " \n")
-        //pathAnswerRdd.take(5).foreach(println)
+        print ("pathAnswerRdd  star query " + i.toString + " pathAnswerRdd: " + " \n")
+        pathAnswerRdd.take(5).foreach(println)
 
         topKStarRstLst  += topKResultRdd
         i = i + 1
@@ -1194,7 +1193,7 @@ object nonStarQuery {
     val topKNonStarResultRdd = nonStarQueryGraphbfsTraverseAnyQueryNodesWithPruningBounds(sc, graph, topKStarRstLst, dstTypeIdLst, databaseType,  hierarchialRelation)
     
     val endTime = System.currentTimeMillis()   
-    //println("nonStarQueryExecute whole runtime: "+ (endTime-startTime) + " ms") 
+    println("nonStarQueryExecute whole runtime: "+ (endTime-startTime) + " ms") 
     print ("topKNonStarResultRdd size: " +  topKNonStarResultRdd.count() + " \n")
     if (outputFilePath != null)
     {
