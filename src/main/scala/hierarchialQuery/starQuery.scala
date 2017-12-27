@@ -337,7 +337,6 @@ def setnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, Map[VertexId,
         {
           (nodeId, (nodeIdType, nodeMap))       
         }
-        
   }
     
   val newG = g.ops.joinVertices(updatedNodeRdd) {

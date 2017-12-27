@@ -759,7 +759,7 @@ object nonStarQuery {
         val nextUnknownDestNodeIdLst = topKStarRstLstBuffer(i+1).map{x => (x._1, x._2._4, x._2._1)}         // => (nodeId, nodeTypeId, node matchingScore)
            .collect().toList.sortBy(x=>x._3)            // sorted by node matching score
         
-        //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes specificNodeIdLsts: " + specificNodeIdLst +  "nextUnknownDestNodeIdLst "+ nextUnknownDestNodeIdLst + " " + i + "\n")  
+        print ("762 nonStarQueryGraphbfsTraverseTwoQueryNodes specificNodeIdLsts: " + specificNodeIdLst +  "nextUnknownDestNodeIdLst "+ nextUnknownDestNodeIdLst + " " + i + "\n")  
        //initialize from first topKStarQuery as specificNodeList
        var g: Graph[(VD, Map[VertexId, NodeInfo]), ED] =
        graph.mapVertices((id, nodeIdType) => (nodeIdType, 
@@ -777,8 +777,8 @@ object nonStarQuery {
     
       var allNextDestNodesVisitedNumber = 0L            //all the next destNode visited
        //aggregate the message 
-       while (nextUnknownDestNodeIdLst.size != allNextDestNodesVisitedNumber && oldAllNodesVisitedNumber != allNodesVisitedNumber && allNodesVisitedNumber < graph.ops.numVertices)
-       {
+      while (nextUnknownDestNodeIdLst.size != allNextDestNodesVisitedNumber && oldAllNodesVisitedNumber != allNodesVisitedNumber && allNodesVisitedNumber < graph.ops.numVertices)
+      {
          val msgs = g.aggregateMessages[(VD, Map[VertexId, NodeInfo],  Map[VertexId, (Double, Double)], Map[VertexId, Double], VertexId, VertexId)](
          triplet => {
            val srcNodeMap = triplet.srcAttr._2
@@ -823,13 +823,15 @@ object nonStarQuery {
                    val neighborNodehierLevelDifference = starQuery.BETA*math.abs(triplet.attr.toString.toInt)              //edge hierarchical level difference between srcId and dstId
                    prevIterParentNodeLowerBoundsMap += (specificNodeIdType._1-> (srcNodeMap(specificNodeIdType._1).lowerBoundCloseScore, neighborNodehierLevelDifference))    //double check                   sendMsgFlag = true
                    prevIterCurrentNodeLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)  //check
-
+                   sendMsgFlag = true
                }
            )
            
            if (sendMsgFlag){
            // triplet.sendToDst((dstNodeTypeId, newdstNodeMap))
               triplet.sendToDst((dstNodeTypeId, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap, triplet.srcId, triplet.dstId))
+              sendMsgFlag = false
+
            }
          },
 
@@ -944,7 +946,6 @@ object nonStarQuery {
                   newMap += (specificNodeId -> tmpNodeInfo)
                   
              }
-            
           }
 
          (nodeTypeId, newMap)
@@ -956,7 +957,7 @@ object nonStarQuery {
            val nodeMap = x._2._2
 
            //judge the nodes is visited from any one of the specific nodes
-           def getAllVisiteFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
+           def getAnyVisitedFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
              var visitedFlag = false
              for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
                  if (nodeInfo.spDistance != Long.MaxValue)        //any one exist
@@ -975,24 +976,21 @@ object nonStarQuery {
             }
           */
           //  (getAllVisiteFlag(nodeMap) && excludeFromSpecificNodes(x._1))    //
-           getAllVisiteFlag(nodeMap)         //
+           getAnyVisitedFlag(nodeMap)         //
 
          }
 
         //update bounds of each node in graph g  
         g = starQuery.setnodeIdColorForBound(allNodesVisitedAnyOne, g)                 //update bounding nodes color
         
-        
         oldAllNodesVisitedNumber = allNodesVisitedNumber           //update previous as the current
 
         allNodesVisitedNumber = allNodesVisitedAnyOne.count()
-         //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes allNodesVisitedNumber: " + allNodesVisitedNumber + "\n")  
+        print ("987 nonStarQueryGraphbfsTraverseTwoQueryNodes allNodesVisitedNumber: " + allNodesVisitedNumber + " " + oldAllNodesVisitedNumber + "\n")  
+        //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber        //update the previous previous visited nodes number from previous nodes
+        //val anotherUnknownDestNodeIdHashMap = nextUnknownDestNodeIdLst.map{s => (s._1, (s._2, s._3))}
 
-         //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber        //update the previous previous visited nodes number from previous nodes
-
-         //val anotherUnknownDestNodeIdHashMap = nextUnknownDestNodeIdLst.map{s => (s._1, (s._2, s._3))}
-
-         visitedDestinationRdd = allNodesVisitedAnyOne.filter{
+        visitedDestinationRdd = allNodesVisitedAnyOne.filter{
            case x=> 
 
             def getVisitedDestFlag(inputVal: VertexId) = {
@@ -1009,10 +1007,10 @@ object nonStarQuery {
 
          //another termination condition: if all nextUnknownDestNodeIdLst are all visited, then the recycle termination
          //get the visited nodes for all the specific nodes
-         val allNextDestNodesVisitedRdd =  g.vertices.filter{ case x=>
+        val allNextDestNodesVisitedRdd =  g.vertices.filter{ case x=>
            val nodeMap = x._2._2
 
-           def getAllVisiteFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
+           def getAllVisitedFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
              var visitedFlag = true
              for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
                  if (nodeInfo.spDistance == Long.MaxValue)          //any one exist
@@ -1030,13 +1028,13 @@ object nonStarQuery {
                flag
             }
 
-            (getAllVisiteFlag(nodeMap) && getVisitedDestFlag(x._1))    //
+            (getAllVisitedFlag(nodeMap) && getVisitedDestFlag(x._1))    //
          }
 
-         allNextDestNodesVisitedNumber = allNextDestNodesVisitedRdd.count()
+        allNextDestNodesVisitedNumber = allNextDestNodesVisitedRdd.count()
 
-          //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " " + currentNonStarResultRdd.count() + " " + topKNonStarResultRdd.count() + "\n")  
-          // visitedDestinationRdd.take(5).foreach(println)
+        print ("1034 nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " "  + " " + allNextDestNodesVisitedNumber + " " + topKNonStarResultRdd.count() + "\n")  
+        // visitedDestinationRdd.take(5).foreach(println)
 
          //update topKKthLowerBoundScore;        how?
          val currentIterateNodeResult = visitedDestinationRdd.map{
@@ -1070,7 +1068,7 @@ object nonStarQuery {
 
         }  
         
-      }
+      }        // end aggregateMessage;  while (nextUnknownDestNodeIdLst.size != allNextDestNodesVisitedNumber ... 
       
       //begin the next iteration of next specific node
       /*
