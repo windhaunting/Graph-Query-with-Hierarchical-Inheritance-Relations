@@ -1072,46 +1072,6 @@ object nonStarQuery {
       }        // end aggregateMessage;  while (nextUnknownDestNodeIdLst.size != allNextDestNodesVisitedNumber ... 
       
       //begin the next iteration of next specific node
-      /*
-      //get the visited destination node Id
-      val visitedDestinationEndRdd = g.vertices.filter{
-         case x=> 
-
-          def getVisitedDestFlag(inputVal: VertexId) = {
-             var flag = false
-             if (nextUnknownDestNodeIdLst.map(_._1).contains(inputVal))
-             {
-               flag = true 
-             }
-             flag
-          }
-
-          getVisitedDestFlag(x._1)
-
-       }
-      
-      //get candidateTuple number and their matching score from candidate nodes number
-      val candidateTupleRdd = visitedDestinationRdd.map{
-        case x=>
-
-          def getVisitedCandidatesNodesTuple(destNodeId: VertexId, nodeMap: Map[VertexId, NodeInfo]) = {
-            val candidateTupleLstBuffer = new ListBuffer[((VertexId, VertexId), Double)]()        //nodeId1, nodeId2, closeness score
-            for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
-             // if (nodeInfo.closenessNodeScore != 0)
-             //   {
-                  candidateTupleLstBuffer += (((specNodeId, destNodeId), nodeInfo.closenessNodeScore))
-             //   }
-            }
-           // println("nonStarQueryGraphbfsTraverseTwoQueryNodes candidateTupleLstBuffer ii: " + i + " " + candidateTupleLstBuffer.length + "\n") 
-            candidateTupleLstBuffer 
-          }
-
-          getVisitedCandidatesNodesTuple(x._1, x._2._2)       //RDD's each element is a list
-      }.flatMap(x => x)                                      //flatten the list
-      */
-      
-      //  println("nonStarQueryGraphbfsTraverseTwoQueryNodes ttttttttttttt i: " + i + " " + visitedDestinationEndRdd.count() + " " + candidateTupleRdd.count() + "\n") 
-
       //get the candidate pairs final matching score
       val count = i          //necessary, in case of parallelling, i has updated outside, but we dont need to the value i outside
       val currentNonStarResultRdd = currentIterateTupleNodeResult.map{x =>
@@ -1128,13 +1088,13 @@ object nonStarQuery {
         (x._1._1, (x._1._2, getmatchingScoreTuple(specNodeId)))       //（specnodeId, (destNodeId, score))
 
       }       // .takeOrdered(nonStarQuery_TOPK)(Ordering[Double].reverse.on(x=>x._2))
-
+      println("1075 nonStarQueryGraphbfsTraverseTwoQueryNodes ttttttttttttt i: " + i + " " + visitedDestinationRdd.count() + " " + currentIterateTupleNodeResult.count() + " " + currentNonStarResultRdd.count() + "\n") 
       //get the current top-k result
-      if (0 == i)
+      if (0 == count)
       {
           previousNonStarQueryRdd = currentNonStarResultRdd.map{ x => 
                 (x._2._1, (List(x._1), x._2._2))
-            }
+          }
           //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes previousNonStarQueryRddwwwwwwwwwwwwww: " + i + " " +previousNonStarQueryRdd.count() +  " " + candidateTupleRdd.count() + " \n")
           //previousNonStarQueryRdd.take(10).foreach(println)
       }
