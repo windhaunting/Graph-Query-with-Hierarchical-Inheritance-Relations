@@ -983,9 +983,9 @@ object nonStarQuery {
         g = starQuery.setnodeIdColorForBound(allNodesVisitedAnyOne, g)                 //update bounding nodes color
         
         
-          oldAllNodesVisitedNumber = allNodesVisitedNumber           //update previous as the current
+        oldAllNodesVisitedNumber = allNodesVisitedNumber           //update previous as the current
 
-         allNodesVisitedNumber = allNodesVisitedAnyOne.count()
+        allNodesVisitedNumber = allNodesVisitedAnyOne.count()
          //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes allNodesVisitedNumber: " + allNodesVisitedNumber + "\n")  
 
          //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber        //update the previous previous visited nodes number from previous nodes
@@ -1012,7 +1012,7 @@ object nonStarQuery {
          val allNextDestNodesVisitedRdd =  g.vertices.filter{ case x=>
            val nodeMap = x._2._2
 
-          def getAllVisiteFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
+           def getAllVisiteFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
              var visitedFlag = true
              for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
                  if (nodeInfo.spDistance == Long.MaxValue)          //any one exist
@@ -1031,13 +1031,11 @@ object nonStarQuery {
             }
 
             (getAllVisiteFlag(nodeMap) && getVisitedDestFlag(x._1))    //
-
          }
 
-          allNextDestNodesVisitedNumber = allNextDestNodesVisitedRdd.count()
+         allNextDestNodesVisitedNumber = allNextDestNodesVisitedRdd.count()
 
           //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " " + currentNonStarResultRdd.count() + " " + topKNonStarResultRdd.count() + "\n")  
-
           // visitedDestinationRdd.take(5).foreach(println)
 
          //update topKKthLowerBoundScore;        how?
@@ -1175,13 +1173,13 @@ object nonStarQuery {
     if (previousNonStarQueryRdd.count() < nonStarQuery_TOPK)
     {
         topKNonStarResultRdd = previousNonStarQueryRdd.map{ x =>
-          (x._1::x._2._1, (x._2._2 + starQueryNodeHashMap((i, x._1)))/(2*topKStarRstLstBuffer.length-1))
+          (x._1::x._2._1, x._2._2 + starQueryNodeHashMap((i, x._1)))      ///(2*topKStarRstLstBuffer.length-1)
         }
     }
     else
     {
       val topKNonStarResultArray = previousNonStarQueryRdd.map{ x =>
-          (x._1::x._2._1, (x._2._2 + starQueryNodeHashMap((i, x._1)))/(2*topKStarRstLstBuffer.length-1))
+          (x._1::x._2._1, x._2._2 + starQueryNodeHashMap((i, x._1)))        ///(2*topKStarRstLstBuffer.length-1)
 
         }.takeOrdered(nonStarQuery_TOPK)(Ordering[Double].reverse.on(x=>x._2))
       //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes topKNonStarResultArray: " + nonStarQuery_TOPK + " " + topKNonStarResultArray.size + "\n")
@@ -1224,6 +1222,7 @@ object nonStarQuery {
         val pathAnswerRdd = answers._2
         //topKResultRdd.take(5).foreach(println)
         //print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
+        //print ("pathAnswerRdd  star query " + i.toString + " pathAnswerRdd: " + " \n")
         //pathAnswerRdd.take(5).foreach(println)
 
         topKStarRstLst  += topKResultRdd
