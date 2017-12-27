@@ -771,6 +771,7 @@ object nonStarQuery {
        //var topKResultRdd: RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))] = sc.emptyRDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]           //Return Result RDD, (nodeId, matchingScore, lowerBound, upperBound, nodeMap)
                          
       var visitedDestinationRdd =  sc.emptyRDD[(VertexId, (VD, Map[VertexId, NodeInfo]))]      // RDD for next destination node visited
+      var currentIterateTupleNodeResult = sc.emptyRDD[((VertexId, VertexId), Map[VertexId, NodeInfo])]         //Tuple result for general non-star query
       var allNodesVisitedNumber: Long = 0L                         // all nodes visited
       var oldAllNodesVisitedNumber: Long = -1L                     //previous iteration nodes visited
      // var twoPreviousOldAllNodesVisitedNumber: Long = -2L          //previous and previous iteration nodes visited
@@ -1037,13 +1038,13 @@ object nonStarQuery {
         // visitedDestinationRdd.take(5).foreach(println)
 
          //update topKKthLowerBoundScore;        how?
-         val currentIterateNodeResult = visitedDestinationRdd.map{
+        currentIterateTupleNodeResult = visitedDestinationRdd.map{
             case x=>
 
             def getVisitedCandidatesNodesTuple(destNodeId: VertexId, nodeMap: Map[VertexId, NodeInfo]) = {
               val candidateTupleLstBuffer = new ListBuffer[((VertexId, VertexId), Map[VertexId, NodeInfo])]()        //nodeId1, nodeId2, closeness score
               for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
-                if (nodeInfo.closenessNodeScore != 0)
+                if (nodeInfo.spDistance != Long.MaxValue)
                   {
                     candidateTupleLstBuffer += (((specNodeId, destNodeId), nodeMap))
                   }
@@ -1054,10 +1055,10 @@ object nonStarQuery {
              getVisitedCandidatesNodesTuple(x._1, x._2._2)       //RDD's each element is a list
          }.flatMap(x => x)              
 
-        if (currentIterateNodeResult.count > nonStarQuery_TOPK)
+        if (currentIterateTupleNodeResult.count > nonStarQuery_TOPK)
         {
           
-          val topKResultRddArray =  currentIterateNodeResult.map(x=>
+          val topKResultRddArray =  currentIterateTupleNodeResult.map(x=>
           starQuery.calculateMatchingScoreLowerBound(x._2)
           ).takeOrdered(nonStarQuery_TOPK)(Ordering[Double].on(x=>x))    //sort by matching score calculateNodeScoreStarquery result
        
@@ -1088,7 +1089,7 @@ object nonStarQuery {
           getVisitedDestFlag(x._1)
 
        }
-      */
+      
       //get candidateTuple number and their matching score from candidate nodes number
       val candidateTupleRdd = visitedDestinationRdd.map{
         case x=>
@@ -1107,20 +1108,20 @@ object nonStarQuery {
 
           getVisitedCandidatesNodesTuple(x._1, x._2._2)       //RDD's each element is a list
       }.flatMap(x => x)                                      //flatten the list
-
-
-    //  println("nonStarQueryGraphbfsTraverseTwoQueryNodes ttttttttttttt i: " + i + " " + visitedDestinationEndRdd.count() + " " + candidateTupleRdd.count() + "\n") 
+      */
+      
+      //  println("nonStarQueryGraphbfsTraverseTwoQueryNodes ttttttttttttt i: " + i + " " + visitedDestinationEndRdd.count() + " " + candidateTupleRdd.count() + "\n") 
 
       //get the candidate pairs final matching score
       val count = i          //necessary, in case of parallelling, i has updated outside, but we dont need to the value i outside
-      val currentNonStarResultRdd = candidateTupleRdd.map{x =>
+      val currentNonStarResultRdd = currentIterateTupleNodeResult.map{x =>
          val specNodeId = x._1._1
 
          def getmatchingScoreTuple(specinodeId: VertexId) = {
             var starQueryPrevScoreSum = 0.0
             //println("nonStarQueryGraphbfsTraverseTwoQueryNodes ssssssssssssss i: " + i + " " + count +" " + specinodeId + "\n") 
             starQueryPrevScoreSum += starQueryNodeHashMap((count, specinodeId)) //candidateNodeRDD.filter(x => x._1 == nodeId).take(1).head._2
-            starQueryPrevScoreSum += x._2       
+            starQueryPrevScoreSum += x._2(specinodeId).closenessNodeScore     
             
             starQueryPrevScoreSum            // only 2 here
         }
@@ -1140,7 +1141,7 @@ object nonStarQuery {
       else        // if(topKStarRstLstBuffer.length-1 != i)
       {
 
-            //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes currentNonStarResultRddxxxxxxxxxxx: " + i + " \n" )
+           //print ("nonStarQueryGraphbfsTraverseTwoQueryNodes currentNonStarResultRddxxxxxxxxxxx: " + i + " \n" )
             //currentNonStarResultRdd.take(10).foreach(println)
            // print ("nonStarQueryGraphbfsTraverseTwoQueryNodes previousNonStarQueryRddxxxxxxxxxxx: " + i + " \n")
            // previousNonStarQueryRdd.take(10).foreach(println)
@@ -1165,7 +1166,7 @@ object nonStarQuery {
       //keep the current star query list visited result
       i = i + 1               //？ i = i + 1
              
-    }           //end while (i < topKStarRstLstBuffer.length-1)  
+    }     //end while (i < topKStarRstLstBuffer.length-1)  
     
     
     if (previousNonStarQueryRdd.count() < nonStarQuery_TOPK)

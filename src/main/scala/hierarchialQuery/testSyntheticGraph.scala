@@ -112,11 +112,11 @@ object testSyntheticGraph {
     var outputResultFilePath = ""
     if (hierarchialRelation){
         runTimeOutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
-        outputResultFilePath = "../output/syntheticData/starQueryOutput/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
+        outputResultFilePath = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
     }
     else{
         runTimeOutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
-        outputResultFilePath = "../output/syntheticData/starQueryOutput/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
+        outputResultFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
     }
     
     var count = 1
@@ -138,9 +138,7 @@ object testSyntheticGraph {
       nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
       count += 1
     }
-    
-    
-    
+        
   }
   
 }
