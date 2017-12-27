@@ -325,7 +325,7 @@ def setnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, Map[VertexId,
         
         if (matchingScoreUpperBound != 0 && matchingScoreUpperBound <= topKKthLowerBoundScore)          //upperbound less than the kth lowerbound score
         {
-           var newMap = Map[VertexId, NodeInfo]()
+          var newMap = Map[VertexId, NodeInfo]()
 
           for ((specNodeId, nodeInfo) <- nodeMap){
              val tmpNodeInfo = nodeMap(specNodeId).copy(visitedColor = RED.id)  //update color visited
