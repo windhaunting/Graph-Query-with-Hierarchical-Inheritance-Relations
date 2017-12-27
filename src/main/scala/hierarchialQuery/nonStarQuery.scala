@@ -779,7 +779,7 @@ object nonStarQuery {
        //aggregate the message 
        while (nextUnknownDestNodeIdLst.size != allNextDestNodesVisitedNumber && oldAllNodesVisitedNumber != allNodesVisitedNumber && allNodesVisitedNumber < graph.ops.numVertices)
        {
-         val msgs: VertexRDD[(VD, Map[VertexId, NodeInfo])] = g.aggregateMessages[(VD, Map[VertexId, NodeInfo])](
+         val msgs = g.aggregateMessages[(VD, Map[VertexId, NodeInfo],  Map[VertexId, (Double, Double)], Map[VertexId, Double], VertexId, VertexId)](
          triplet => {
            val srcNodeMap = triplet.srcAttr._2
            //println("266 starQueryGraphbfsTraverse srcNodeMap: ", srcNodeMap)
@@ -792,16 +792,16 @@ object nonStarQuery {
            var  prevIterCurrentNodeLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
        
            specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int, Double)) => 
-               if (srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance)
+               if (dstNodeMap(specificNodeIdType._1).visitedColor != GREY.id && srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance)
                {
                    val specificNodeId = specificNodeIdType._1
                    val specNodeIdType = specificNodeIdType._2 
                    
                    //check whether it's hierarchical relations
-                   if (getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType, hierarchialRelation)){
+                   if (starQuery.getHierarchicalInheritance(specNodeIdType, dstTypeId, databaseType, hierarchialRelation)){
 
                      //update hierarchical level, spDist, spNumber, and parentId 
-                      val changedEdgeLevel: Double = BETA*math.abs(triplet.attr.toString.toInt)
+                      val changedEdgeLevel: Double = starQuery.BETA*math.abs(triplet.attr.toString.toInt)
                       
                       val tmpNodeInfo = dstNodeMap(specificNodeId).copy(spDistance = srcNodeMap(specificNodeId).spDistance+1, 
                                                          spNumber= srcNodeMap(specificNodeId).spNumber,
@@ -820,7 +820,7 @@ object nonStarQuery {
                    }
                    
                    //get current lowerbounds that is actually the previous iteration's lower bound  t-1
-                   val neighborNodehierLevelDifference = BETA*math.abs(triplet.attr.toString.toInt)              //edge hierarchical level difference between srcId and dstId
+                   val neighborNodehierLevelDifference = starQuery.BETA*math.abs(triplet.attr.toString.toInt)              //edge hierarchical level difference between srcId and dstId
                    prevIterParentNodeLowerBoundsMap += (specificNodeIdType._1-> (srcNodeMap(specificNodeIdType._1).lowerBoundCloseScore, neighborNodehierLevelDifference))    //double check                   sendMsgFlag = true
                    prevIterCurrentNodeLowerBoundsMap += (specificNodeIdType._1-> dstNodeMap(specificNodeIdType._1).lowerBoundCloseScore)  //check
 
@@ -828,7 +828,8 @@ object nonStarQuery {
            )
            
            if (sendMsgFlag){
-            triplet.sendToDst((dstNodeTypeId, newdstNodeMap))
+           // triplet.sendToDst((dstNodeTypeId, newdstNodeMap))
+              triplet.sendToDst((dstNodeTypeId, newdstNodeMap, prevIterParentNodeLowerBoundsMap, prevIterCurrentNodeLowerBoundsMap, triplet.srcId, triplet.dstId))
            }
          },
 
@@ -836,43 +837,54 @@ object nonStarQuery {
             val nodeTypeId = a._1
             val nodeMapA = a._2
             val nodeMapB = b._2
+            var prevIterParentNodeLowerBoundsMapA = a._3
+            val prevIterParentNodeLowerBoundsMapB = b._3
+          
+            var prevIterCurrentLowerBoundsMapA = a._4              //Map[VertexId, Double]()
+            val prevIterCurrentLowerBoundsMapB = b._4
+            val srcId1 = a._5
+            val srcId2 = b._5
+            val dstId1 = a._6
+            val dstId2 = b._6
+          
             var newMap = Map[VertexId, NodeInfo]()
-            specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int, Double)) =>
+            var prevIterParentNodeLowerBoundsMapNew = Map[VertexId, (Double, Double)]() 
+            var prevIterCurrentLowerBoundsMapNew = Map[VertexId, Double]()
+          
+            specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int, Double)) =>
               
-               //keep current specificNodeId's map value
-             if (nodeMapA(specificNodeIdType._1).spDistance < nodeMapB(specificNodeIdType._1).spDistance){  
-               //update visit color,  lowerBoundCloseness Score
-               val updatedLowerBoundCloseScore = 0 // starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapA)
+              val specificNodeId = specificNodeIdType._1
+               if (nodeMapA.contains(specificNodeId) && nodeMapB.contains(specificNodeId)) {
+              
+              //combine the new key->value pair into the nodeMapA；  update spDistance, hierarchicalLevelDistance, spNumber
+                  if (srcId1 != srcId2)             //need to judege here, because triplet.sendToDst may send mutliple time by different cpu cores or partitons
+                  {
+                     val newSpDistance = math.min(nodeMapA(specificNodeId).spDistance, nodeMapA(specificNodeId).spDistance)               
+                     val newHierLevelDistance = math.max(nodeMapA(specificNodeId).hierLevelDifference, nodeMapB(specificNodeId).hierLevelDifference)
 
-               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
-               newMap += (specificNodeIdType._1 -> tmpNodeInfo)       //update key -> value
-               //key -> value
-             }
-             else if (nodeMapA(specificNodeIdType._1).spDistance == nodeMapB(specificNodeIdType._1).spDistance){   
-               //update bound
-               val updatedLowerBoundCloseScoreA = 0  // starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapA)
-               val updatedLowerBoundCloseScoreB = 0 //  starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapB)
+                     //val newSpNumber = nodeMapB(specificNodeId).spNumber       //no change
+                     val newSpNumber = nodeMapB(specificNodeId).spNumber +1       //+1
 
-               val updatedLowerBoundCloseScore =  updatedLowerBoundCloseScoreA + updatedLowerBoundCloseScoreB
-               val tmpNodeInfo = nodeMapA(specificNodeIdType._1).copy(spNumber = nodeMapA(specificNodeIdType._1).spNumber+1, visitedColor = GREY.id, 
-                                                                      lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update spNumber
-               newMap += (specificNodeIdType._1 -> tmpNodeInfo)
+                     val tmpNodeInfo = nodeMapA(specificNodeId).copy(spDistance = newSpDistance, spNumber = newSpNumber, hierLevelDifference = newHierLevelDistance)
+                     newMap += (specificNodeId -> tmpNodeInfo)
 
-           }
-           else
-             {
-               //nodeMapB(specificNodeIdType._1).lowerBoundCloseScore + ....
-               val updatedLowerBoundCloseScore = 0 // starQuery.calculateLowerBound(specificNodeIdType._1, nodeMapB)
+                     //update prevIterParentNodeLowerBoundsMap
+                    //update prevIterCurrentLowerBoundsMap  the same as prevIterCurrentLowerBoundsMapA
+                    val newprevIterParentNodeLowerBound =  prevIterParentNodeLowerBoundsMapA(specificNodeId)._1 + prevIterParentNodeLowerBoundsMapB(specificNodeId)._1
+                    val newNeighborNodehierLevelDifference = math.max(prevIterParentNodeLowerBoundsMapA(specificNodeId)._2, prevIterParentNodeLowerBoundsMapB(specificNodeId)._2)
+                    prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> (newprevIterParentNodeLowerBound, newNeighborNodehierLevelDifference))
+                    prevIterCurrentLowerBoundsMapNew  += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
 
-               val tmpNodeInfo = nodeMapB(specificNodeIdType._1).copy(visitedColor = GREY.id, lowerBoundCloseScore = updatedLowerBoundCloseScore)  //update color visited
-               newMap += (specificNodeIdType._1 -> tmpNodeInfo)
-             }
+                  }
+                  
+               }
              
-           )
+          }
 
-          (nodeTypeId, newMap)
-
-         }                
+          (nodeTypeId, newMap, prevIterParentNodeLowerBoundsMapNew, prevIterCurrentLowerBoundsMapNew, srcId1, dstId1)
+        
+         }
+         
        ).cache()
 
        //no updated messages
@@ -885,27 +897,40 @@ object nonStarQuery {
            val nodeOldMap = oldAttr._2
            val nodeNewMap = newAttr._2
            val nodeTypeId = newAttr._1
-           var newMap = Map[VertexId, NodeInfo]()           //initialization 
+           val prevIterParentNodeLowerBoundsMap = newAttr._3       //Map[VertexId, Double]()       neighbor node parent node
+           val prevIterCurrentNodeLowerBoundsMap = newAttr._4              //Map[VertexId, Double]()          current node's previous iteration'
+              
+           var newMap = nodeOldMap    //Map[VertexId, NodeInfo]()           //initialization 
 
-           specificNodeIdLst.foreach{(specificNodeIdType: (VertexId, Int, Double)) =>
-             if (nodeNewMap(specificNodeIdType._1).spDistance <= nodeOldMap(specificNodeIdType._1).spDistance)
+           nodeNewMap.keys.foreach{(specificNodeId) =>
+            
+             if (nodeNewMap(specificNodeId).spDistance <= nodeOldMap(specificNodeId).spDistance)
              {
-                 val spDistance = nodeNewMap(specificNodeIdType._1).spDistance
-                 val spNumber = nodeNewMap(specificNodeIdType._1).spNumber
-                 val newhierLevelDifference =  0       //nodeNewMap(specificNodeIdType._1).hierLevelDifference*(-1)          //-1*hierLevelDifference； downward inheritance
-                 val newClosenessScore = -1    //-1 is for debugging only starQuery.calculateClosenessScore(spDistance, spNumber, newhierLevelDifference)
-                 val newLowerBoundCScore =  math.min(starQuery.N*scala.math.pow(starQuery.ALPHA, (spDistance-newhierLevelDifference)), nodeNewMap(specificNodeIdType._1).lowerBoundCloseScore)
+                  // println("464 starQueryGraphbfsTraverse: "  + specificNodeId + " nodeId: " + nodeId)
+                  val spDistance = nodeNewMap(specificNodeId).spDistance
+                  val spNumber = nodeNewMap(specificNodeId).spNumber
+                  val newhierLevelDifference =  nodeNewMap(specificNodeId).hierLevelDifference        //(-1) x hierLevelDifference； downward inheritance
 
-                 val newUpperBoundCScore = -100   //modify later starQuery.calculateUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
-                 val tmpNodeInfo = nodeNewMap(specificNodeIdType._1).copy(closenessNodeScore = newClosenessScore,
-                                                                    lowerBoundCloseScore = newLowerBoundCScore, upperBoundCloseScore = newUpperBoundCScore)      //update closenessNodeScore 
-                 newMap += (specificNodeIdType._1 -> tmpNodeInfo)
-             }
-             else
-             {
-                 newMap += (specificNodeIdType._1 -> nodeOldMap(specificNodeIdType._1))
-             }
+                  //update closeness score from this sepcific nodeId
+                  val parentNodeHierarchicalLevel = newhierLevelDifference - prevIterParentNodeLowerBoundsMap(specificNodeId)._2         //parent node max hierarchical level difference
+                  val newClosenessScore = starQuery.calculateClosenessScore(spDistance, spNumber, parentNodeHierarchicalLevel, newhierLevelDifference)      //node similarity score
 
+                  //update lower bound score from this specific nodeId
+                  // val updatedLowerBoundCloseScore = calculateLowerBound(specificNodeId, nodeNewMap, prevIterLowerBoundsMapA(specificNodeId))
+                  val prevIterCurrentNodeLowerScore = prevIterCurrentNodeLowerBoundsMap(specificNodeId)
+                  val parentNodePrevIterLowerScore = prevIterParentNodeLowerBoundsMap(specificNodeId)._1
+                  val neighborNodehierLevelDifference = prevIterParentNodeLowerBoundsMap(specificNodeId)._2
+                 // val parentNodeHierarchicalLeve = newhierLevelDifference - prevIterParentNodeLowerBoundsMap(specificNodeId)._2
+
+                  val newLowerBoundCScore = starQuery.calculateNodeSimilarityLowerBound(spDistance, parentNodeHierarchicalLevel, prevIterCurrentNodeLowerScore,  parentNodePrevIterLowerScore, neighborNodehierLevelDifference)
+                  val newUpperBoundCScore = starQuery.calculateNodeSimilarityUpperBound(newLowerBoundCScore, spDistance, newhierLevelDifference)
+
+                  val tmpNodeInfo = nodeNewMap(specificNodeId).copy(visitedColor = GREY.id, spNumber = spNumber, hierLevelDifference = newhierLevelDifference, closenessNodeScore = newClosenessScore,
+                                                                     lowerBoundCloseScore = newLowerBoundCScore, upperBoundCloseScore = newUpperBoundCScore)  //update closenessNodeScore  etc
+                  newMap += (specificNodeId -> tmpNodeInfo)
+                  
+             }
+            
           }
 
          (nodeTypeId, newMap)
