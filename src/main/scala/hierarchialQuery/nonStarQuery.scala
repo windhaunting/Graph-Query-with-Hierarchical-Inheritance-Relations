@@ -855,7 +855,6 @@ object nonStarQuery {
               
               val specificNodeId = specificNodeIdType._1
                if (nodeMapA.contains(specificNodeId) && nodeMapB.contains(specificNodeId)) {
-              
               //combine the new key->value pair into the nodeMapA；  update spDistance, hierarchicalLevelDistance, spNumber
                   if (srcId1 != srcId2)             //need to judege here, because triplet.sendToDst may send mutliple time by different cpu cores or partitons
                   {
@@ -874,11 +873,26 @@ object nonStarQuery {
                     val newNeighborNodehierLevelDifference = math.max(prevIterParentNodeLowerBoundsMapA(specificNodeId)._2, prevIterParentNodeLowerBoundsMapB(specificNodeId)._2)
                     prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> (newprevIterParentNodeLowerBound, newNeighborNodehierLevelDifference))
                     prevIterCurrentLowerBoundsMapNew  += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
-
-                  }
-                  
+                 }
+                 else
+                 {
+                   newMap += (specificNodeId -> nodeMapA(specificNodeId))
+                   prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> prevIterParentNodeLowerBoundsMapA(specificNodeId))
+                   prevIterCurrentLowerBoundsMapNew  += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
+                 }                  
                }
-             
+               else if (nodeMapA.contains(specificNodeId)){        //only in b, put into A, because we want to return A
+                  newMap += (specificNodeId -> nodeMapA(specificNodeId))
+                  prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> prevIterParentNodeLowerBoundsMapA(specificNodeId))
+                  prevIterCurrentLowerBoundsMapNew += (specificNodeId -> prevIterCurrentLowerBoundsMapA(specificNodeId))
+              
+              }
+              else if (nodeMapB.contains(specificNodeId)){        //only in b, put into A, because we want to return A
+                newMap += (specificNodeId -> nodeMapB(specificNodeId))
+                prevIterParentNodeLowerBoundsMapNew += (specificNodeId -> prevIterParentNodeLowerBoundsMapB(specificNodeId))
+                prevIterCurrentLowerBoundsMapNew += (specificNodeId -> prevIterCurrentLowerBoundsMapB(specificNodeId))
+            }
+               
           }
 
           (nodeTypeId, newMap, prevIterParentNodeLowerBoundsMapNew, prevIterCurrentLowerBoundsMapNew, srcId1, dstId1)
@@ -950,8 +964,8 @@ object nonStarQuery {
              }
              visitedFlag
            }
-
-          /* def excludeFromSpecificNodes(inputVal: VertexId)  = {        //exclude specificNodeIdLst
+          /*
+          def excludeFromSpecificNodes(inputVal: VertexId)  = {        //exclude specificNodeIdLst
               var flag = false
                if (!specificNodeIdLst.map(_._1).contains(inputVal))
                {
