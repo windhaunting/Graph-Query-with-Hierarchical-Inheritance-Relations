@@ -785,7 +785,7 @@ object nonStarQuery {
            val srcNodeMap = triplet.srcAttr._2
            //println("266 starQueryGraphbfsTraverse srcNodeMap: ", srcNodeMap)
            var dstNodeMap = triplet.dstAttr._2
-           var sendMsgFlag = false          //sendMsgFlag
+           var sendMsgFlag = false             //sendMsgFlag false
            var newdstNodeMap = Map[VertexId, NodeInfo]()            // not dstNodeMap any more, empty first, only updated vertexId part need to be sent (message)
            val dstNodeTypeId = triplet.dstAttr._1 
            
@@ -955,8 +955,6 @@ object nonStarQuery {
 
    
         val allNodesVisitedAnyOne = g.vertices.filter{ case x=>
-           val nodeMap = x._2._2
-
            //judge the nodes is visited from any one of the specific nodes
            def getAnyVisitedFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
              var visitedFlag = false
@@ -966,18 +964,7 @@ object nonStarQuery {
              }
              visitedFlag
            }
-          /*
-          def excludeFromSpecificNodes(inputVal: VertexId)  = {        //exclude specificNodeIdLst
-              var flag = false
-               if (!specificNodeIdLst.map(_._1).contains(inputVal))
-               {
-                 flag = true 
-               }
-             flag
-            }
-          */
-          //  (getAllVisiteFlag(nodeMap) && excludeFromSpecificNodes(x._1))    //
-           getAnyVisitedFlag(nodeMap)         //
+           getAnyVisitedFlag(x._2._2)         //nodeMap
 
          }
 
@@ -994,9 +981,9 @@ object nonStarQuery {
         visitedDestinationRdd = allNodesVisitedAnyOne.filter{
            case x=> 
 
-            def getVisitedDestFlag(inputVal: VertexId) = {
+            def getVisitedDestFlag(inputNode: VertexId) = {
                var flag = false
-               if (nextUnknownDestNodeIdLst.map(_._1).contains(inputVal))
+               if (nextUnknownDestNodeIdLst.map(_._1).contains(inputNode))
                {
                  flag = true 
                }
@@ -1007,32 +994,20 @@ object nonStarQuery {
          }
 
          //another termination condition: if all nextUnknownDestNodeIdLst are all visited, then the recycle termination
-         //get the visited nodes for all the specific nodes
-        val allNextDestNodesVisitedRdd =  g.vertices.filter{ case x=>
-           val nodeMap = x._2._2
-
-           def getAllVisitedFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
-             var visitedFlag = true
+         //get the visited nodes for all the specific nodes and also in the next destination nodeId
+        allNextDestNodesVisitedNumber =  visitedDestinationRdd.filter{ case x=>
+            
+           def getAllVisitedFlag(nodeMap: Map[VertexId, NodeInfo]) = {             //define function
+             var visitedAllFlag = true
              for ((specNodeId, nodeInfo) <- nodeMap){               //from every specific node
                  if (nodeInfo.spDistance == Long.MaxValue)          //any one exist
-                     visitedFlag = false
+                     visitedAllFlag = false
              }
-             visitedFlag
+              visitedAllFlag
            }
 
-            def getVisitedDestFlag(inputVal: VertexId) = {
-               var flag = false
-               if (nextUnknownDestNodeIdLst.map(_._1).contains(inputVal))
-               {
-                 flag = true 
-               }
-               flag
-            }
-
-            (getAllVisitedFlag(nodeMap) && getVisitedDestFlag(x._1))    //
-         }
-
-        allNextDestNodesVisitedNumber = allNextDestNodesVisitedRdd.count()
+            getAllVisitedFlag(x._2._2)   // nodeMap, nodeId
+         }.count()
 
         print ("1034 nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " "  + " " + allNextDestNodesVisitedNumber + " " + topKNonStarResultRdd.count() + "\n")  
         // visitedDestinationRdd.take(5).foreach(println)
