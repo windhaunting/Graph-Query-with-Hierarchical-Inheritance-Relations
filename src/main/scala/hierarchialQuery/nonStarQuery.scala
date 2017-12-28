@@ -386,7 +386,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
         {
           
           val topKResultRddArray =  currentIterateTupleNodeResult.map(x=>
-            starQuery.calculateMatchingScoreLowerBound(x._2)
+            (starQuery.calculateMatchingScoreLowerBound(x._2) + starQueryNodeHashMap((i, x._1._1)))                  // consider previous star query score result starQueryNodeHashMap 
           ).takeOrdered(nonStarQuery_TOPK)(Ordering[Double].on(x=>x))    //sort by matching score calculateNodeScoreStarquery result
        
           //get the kth smallest lower bound score in the topKResultRddArray
