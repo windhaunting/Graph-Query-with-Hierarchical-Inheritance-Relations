@@ -53,7 +53,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
 
         var matchingScoreUpperBound = starQuery.calculateMatchingScoreUpperBound(nodeMap) 
         for ((specNodeId, nodeInfo) <- nodeMap){
-          matchingScoreUpperBound = matchingScoreUpperBound + starQueryNodeHashMap((candidateIterNo, specNodeId))   //add the previous star query candidate score
+          matchingScoreUpperBound = matchingScoreUpperBound // + starQueryNodeHashMap((candidateIterNo, specNodeId))   //add the previous star query candidate score
           if (matchingScoreUpperBound != 0 && matchingScoreUpperBound <= topKKthLowerBoundScore)          //upperbound less than the kth lowerbound score
           {
              val tmpNodeInfo = nodeMap(specNodeId).copy(visitedColor = RED.id)  //update color visited
