@@ -55,9 +55,7 @@ object testSyntheticGraph {
       val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
        //executeStarQuerySyntheticDatabase(args, sc, hierGraphRdd, inputNodeInfoFilePath, hierarchialRelation)
-        
       val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
-    
       executeGeneralQuerySyntheticDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath: String, hierarchialRelation)
        
   }
@@ -66,7 +64,6 @@ object testSyntheticGraph {
   //start query synthetic database execution -- main entry
   def executeStarQuerySyntheticDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
    
-    
     val dstTypeId = 0                    //0 hierarchical node   or 1
     val topK = args(0).toInt
     starQuery.TOPK = topK
@@ -87,7 +84,6 @@ object testSyntheticGraph {
     val specificReadLst = List((695138L, 2), (655399L, 2), (621354L, 2))        // three or more query graph size
     //val specificReadLst = List((698890L, 2), (631375L, 2), (664113L, 2))        // three or more query graph size
     
-
     val outputFilePath = "../output/syntheticData/starQueryOutput/starOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/syntheticData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
     starQuery.starQueryExeute(sc, dataGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
