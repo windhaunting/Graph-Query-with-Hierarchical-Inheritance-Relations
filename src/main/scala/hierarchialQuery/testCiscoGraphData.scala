@@ -7,6 +7,9 @@
 package main.scala.hierarchialQuery
 
 import org.apache.spark.SparkContext
+import org.apache.spark.graphx._
+import org.apache.spark.rdd.RDD
+
 
 object testCiscoGraphData {
   
@@ -18,9 +21,9 @@ object testCiscoGraphData {
     val inputNodeInfoFilePath = "../../Data/ciscoDataGraph/ciscoDataGraphInfo1.0/nodeInfoPart1.0"
     
     //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+    val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
-    //starQueryCiscoData(args, sc， hierGraph, hierarchialRelation)
+    //starQueryCiscoData(args, sc， hierGraph, inputNodeInfoFilePath, hierarchialRelation)
     
     val inputGeneralQueryGraph = "../../Data/ciscoDataGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
 
@@ -29,7 +32,7 @@ object testCiscoGraphData {
     
   }
   
-   def starQueryCiscoData(args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], hierarchialRelation: Boolean) = {
+   def starQueryCiscoData[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
     
     // val file = "hdfs://localhost:8070/testEdgeListFile2")
     //val file = "hdfs://192.168.0.52:8070/testEdgeListFile2"
@@ -49,7 +52,7 @@ object testCiscoGraphData {
 
     val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
+    starQuery.starQueryExeute(sc, dataGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
     
  
    }
@@ -58,6 +61,7 @@ object testCiscoGraphData {
   // general general query entry (non-star query) for synthetic graph
   def executeGeneralQueryCiscoDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
+    
     val topK = args(0).toInt      //topK
     starQuery.TOPK = topK
     val databaseType = 2              //synthetic graph database   2
