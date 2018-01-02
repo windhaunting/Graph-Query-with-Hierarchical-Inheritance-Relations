@@ -41,7 +41,7 @@ object QueryMain {
      testCiscoGraphData.executeProductDatabase(args, sc, hierarchialRelation)
      println("executeProductDatabase: done") 
     
-   // testDblpGraphData.executeDblpGraphData(args, sc)
+   // testDblpGraphData.executeDblpGraphData(args, sc, hierarchialRelation)
    // println("executeDblpGraphData: done")
    
     
