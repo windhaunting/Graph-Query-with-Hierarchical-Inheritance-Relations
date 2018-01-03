@@ -7,141 +7,33 @@
 package main.scala.hierarchialQuery
 
 import org.apache.spark.SparkContext
+import org.apache.spark.graphx._
+import org.apache.spark.rdd.RDD
 
 
 object testDblpGraphData {
   
   
 //dblp data base execute --main entry
-  def executeDblpGraphData(args: Array[String], sc: SparkContext) = {
-      
-    starQueryDblpData(args, sc)
-    
-    
-    //val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
-    //val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
-        
-    //read edge list to graphX graph
-    //val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-
-    // val dstTypeId = 1                     //1: people
-   // val topK = args(0).toInt
-   // starQuery.TOPK = topK
-    
-   // val databaseType = 1              //DBLP database
-   // val runTimeFileIndex = args(1)
-
-    //val specificReadLst = List((188470L, 3), (10821L,1))
-    //val specificReadLst = List((189059L, 3), (10821L,1))
-     //val specificReadLst = List((189015L, 3), (10821L,1))
-    // val specificReadLst = List((188857L, 3))
-    
-    
-    /*
-    val outputFilePath = "../output/dblpData/starQueryOutput/starOutputFilePath" + runTimeFileIndex
-    val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath)     //execute star query
-    */
-  
-    /*
-    //start non-star query
-    val runTimeoutputFilePath = "../output/dblpData/nonStarQueryOutput/nonStarQueryoutRuntime" + runTimeFileIndex
-    val outputFilePath =  "../output/dblpData/nonStarQueryOutput/nonStarQueryOutputFilePath" + runTimeFileIndex
-    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)))
-    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3)), List((189086L, 3)),List((188857L, 3)))
-
-    var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
-    for (specNodeLst <- specNodelistStarQueryTwoDimension)
-    {
-         
-        dstTypeIdLstBuffer += (1)
-    }
-    print ("main dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
-    val nonStarQueryTOPK = starQuery.TOPK
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeoutputFilePath)     //execute star query
-    
-    */
-    
-    
-    //begin topK K varing test
-    /*
-    val specificReadLst = List((189015L, 3), (10821L,1))
-    val runTimeOutputFilePath = "../output/dblpData/starQueryOutput/varingTopKOneMachine/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  null, runTimeOutputFilePath)     //execute star query
-    */
-   
-    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3), (10821L,1)), List((189059L, 3), (189086L, 3)))
-    //val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3), (189086L, 3)))
-
-    /* 
-    val specNodelistStarQueryTwoDimension: List[List[(VertexId, Int)]] = List(List((189059L, 3), (10821L,1)), List((189059L, 3), (189086L, 3)), List((188857L, 3), (189086L, 3)))
-    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varingTopKOneMachine/nonStarQueryoutRuntime" + runTimeFileIndex
-    val outputFilePath = null      //"../output/dblpData/nonStarQueryOutput/varingTopKOneMachine/nonStarQueryOutputFilePath" + runTimeFileIndex
-
-    var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
-    for (specNodeLst <- specNodelistStarQueryTwoDimension)
-    {
-         
-        dstTypeIdLstBuffer += (1)
-    }
-    
-    val nonStarQueryTOPK = starQuery.TOPK
-    nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputFilePath, runTimeoutputFilePath)     //execute star query
-    
-    */
-  
-    /*
-    //begin testing varying graph query size
-    val inputFileSpecificStarQueryPath = "../../Data/extractSubgraph/output/extractDblpQuerySizeGraph/dblpDataExtractQueryGraph.tsv"
-    
-    val allquerySizeLsts = inputQueryRead.getQuerySizeNumber(sc, inputFileSpecificStarQueryPath)         //read query 
-    val runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/varyingQueryGraphSize_singleMachine/nonStarQueryOutRuntime" + runTimeFileIndex
-
-    
-    var i = 0 
-    var tmpRunTimeOutputFilePath = ""
-    //set destination noe type
-    for (specNodelistStarQueryTwoDimension <- allquerySizeLsts)
-    {
-      
-      tmpRunTimeOutputFilePath = runTimeOutputFilePath
-
-      var dstTypeIdLstBuffer: ListBuffer[Int] = new ListBuffer[(Int)]
-      for (specNodeLst <- specNodelistStarQueryTwoDimension)
-      {
-
-          dstTypeIdLstBuffer += (1)
-      }
-      
-      print ("main  dblp dstTypeIdLstBuffer： " + dstTypeIdLstBuffer + "\n")
-      val nonStarQueryTOPK = starQuery.TOPK
-      i += 1
-      tmpRunTimeOutputFilePath = tmpRunTimeOutputFilePath + i.toString + "_top" + nonStarQueryTOPK.toString + "_counts"  + runTimeFileIndex
-      nonStarQuery.nonStarQueryExecute(sc, hierGraph, specNodelistStarQueryTwoDimension, dstTypeIdLstBuffer, 
-                                   nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, null, tmpRunTimeOutputFilePath)     //execute non star query
-    
-    }
-   */
-  
-    //test varing graphData in dblp data
-    //val graphSizeRatio = args(2).toInt
-    //val hierarchialRelation = true
-    //testVaringGraphDataDblp( sc, topK, runTimeFileIndex,  graphSizeRatio, databaseType, hierarchialRelation)
-    
-   // val hierarchialRelation = false
-   // testHierarchicalRelationDblpData (sc, topK, runTimeFileIndex, databaseType, hierarchialRelation)
-    
-  }
-  
-
-  def starQueryDblpData(args: Array[String], sc: SparkContext) = {
+  def executeDblpGraphData(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
       
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
     val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
         
     //read edge list to graphX graph
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+    val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
+    //starQueryDblpData(args, sc, hierGraphRdd, inputNodeInfoFilePath, hierarchialRelation)
+    
+    val inputGeneralQueryGraph = "../../Data/dblpParserGraph/output/inputDblpQueryGraph/generalQueryGraph/generateQuerygraphInput"
+
+    executeGeneralQueryDblpDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+
+  }
+  
+  //entry for star query for dblp data
+  def starQueryDblpData[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
+      
     val dstTypeId = 1                    //0 hierarchical node   or 1
     val topK = args(0).toInt
     starQuery.TOPK = topK
@@ -156,10 +48,52 @@ object testDblpGraphData {
    
     val outputFilePath = "../output/dblpData/starQueryOutput/starQueryOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
+    starQuery.starQueryExeute(sc, dataGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
     
   
-}
+ }
+  //entry for generic graph query for dblp Data
+  def executeGeneralQueryDblpDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
+    val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
+    
+    val topK = args(0).toInt      //topK
+    starQuery.TOPK = topK
+    val databaseType = 1             //dblp graph database   1
+    
+    val runTimeFileIndex = args(1)
+    
+    print ("executeGeneralQueryDblpDatabase main allquerySizeLsts： " + allquerySizeLsts + "\n")
+    //for varing query graph size
+    var runTimeOutputFilePath = ""
+    var outputResultFilePath = ""
+    if (hierarchialRelation){
+        runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
+        outputResultFilePath = "../output/dblpData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
+    }
+    else{
+        runTimeOutputFilePath = "../output/dblpData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
+        outputResultFilePath = "../output/dblpData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
+    }
+    
+    var count = 1
+    for (specNodelistStarQueryLst <- allquerySizeLsts)
+    {
+       //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
+       val starQueryNodeLst = specNodelistStarQueryLst._1
+       val dstTypeLst = specNodelistStarQueryLst._2
 
+      print ("executeGeneralQueryDblpDatabase starQueryNodeLst： " + starQueryNodeLst + " " + dstTypeLst+  "\n")
+      val nonStarQueryTOPK = starQuery.TOPK
+
+      //general query 
+      runTimeOutputFilePath = runTimeOutputFilePath + count.toString + "_top" + nonStarQueryTOPK.toString + "_times" + runTimeFileIndex
+      outputResultFilePath = outputResultFilePath + count.toString + "_top" + nonStarQueryTOPK.toString + "_times" + runTimeFileIndex
+      
+      //general non-star query execution
+      nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
+      count += 1
+    }
+  
+  }
   
 }

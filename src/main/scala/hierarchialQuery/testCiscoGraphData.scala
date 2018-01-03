@@ -23,15 +23,16 @@ object testCiscoGraphData {
     //read edge list to graphX graph
     val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
-    //starQueryCiscoData(args, sc， hierGraph, inputNodeInfoFilePath, hierarchialRelation)
+    //starQueryCiscoData(args, sc， hierGraphRdd, inputNodeInfoFilePath, hierarchialRelation)
     
     val inputGeneralQueryGraph = "../../Data/ciscoDataGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
 
-    executeGeneralQueryCiscoDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath: String, hierarchialRelation)
+    executeGeneralQueryCiscoDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
 
     
   }
   
+    //entry for star query for cisco data
    def starQueryCiscoData[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
     
     // val file = "hdfs://localhost:8070/testEdgeListFile2")
@@ -64,7 +65,7 @@ object testCiscoGraphData {
     
     val topK = args(0).toInt      //topK
     starQuery.TOPK = topK
-    val databaseType = 2              //synthetic graph database   2
+    val databaseType = 0             //cisco graph database   2
     
     val runTimeFileIndex = args(1)
     
@@ -101,9 +102,6 @@ object testCiscoGraphData {
       count += 1
     }
         
-    
-    
-    
   }
   
 }
