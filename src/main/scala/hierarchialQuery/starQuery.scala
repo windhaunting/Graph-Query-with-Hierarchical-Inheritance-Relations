@@ -33,7 +33,7 @@ object starQuery {
   val numTasks = 8                   //how many task for one core can execute in parallell
   val BETA = 0.8                    //attenutation for hierarchical level difference causing the score reduction.
   var topKKthLowerBoundScore = 0.0        // the smallest (kth) lowest upper bound score in the k list
- 
+  var topKKthSmallestScore =  -1     //0.0          // the smallest score in the candidate k list 
   //one source bfs from one src to dst
   def bfs[VD, ED](graph: Graph[VD, ED], src: VertexId, dst: VertexId): Seq[VertexId] = {
     if (src == dst) return List(src)
@@ -407,7 +407,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int)) => 
             //val sourceIdType = triplet.srcAttr._1
             //consider bound with RED.id 
-            if (dstNodeMap(specificNodeIdType._1).visitedColor != GREY.id && srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance)
+            if (dstNodeMap(specificNodeIdType._1).visitedColor != GREY.id && srcNodeMap(specificNodeIdType._1).visitedColor != RED.id 
+                && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance && srcNodeMap(specificNodeIdType._1).closenessNodeScore > topKKthSmallestScore)
             {
               
                val specificNodeId = specificNodeIdType._1
@@ -718,7 +719,8 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
        
           //get the kth smallest lower bound score in the topKResultRddArray
           topKKthLowerBoundScore = topKResultRddArray.sortBy(x=>x._2._2).head._2._2       //sorted by lower bound matching score
-           
+          topKKthSmallestScore = topKResultRddArray.sortBy(x=>x._2._1).head._2._1         //get the smallest matching score
+          
           topKResultRdd = sc.parallelize(topKResultRddArray)                //transfer to RDD data structure
          // print ("598: starQueryGraphbfsTraverseWithBoundPruning topKResultRdd: "+ TOPK + "----" + topKResultRdd.count, topKKthLowerBoundScore)
         //  

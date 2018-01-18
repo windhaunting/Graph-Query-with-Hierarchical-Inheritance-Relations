@@ -23,7 +23,7 @@ import java.io._
 object nonStarQuery {
     
   var nonStarQuery_TOPK = 0
-  
+
   //get every node's matching score from step 1's star query result
   def getStarQueryCandidateScoreHashMap(topKStarRstLstBuffer: ListBuffer[RDD[(VertexId, (Double, Double, Double, Int, Map[VertexId, NodeInfo]))]]) = {
     
@@ -99,6 +99,8 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
     var previousNonStarQueryRdd: RDD[(VertexId, (List[VertexId], Double))] = sc.emptyRDD[(VertexId, (List[VertexId], Double))]
     
     var topKKthLowerBoundScore = 0.0        //initialize for each candidate embedding enumeration traverse bounds
+    var topKKthSmallestScore = -1     //0.0          // the smallest score in the candidate k list for candidate selection phase
+
     while (i < topKStarRstLstBuffer.length-1)      //  
     {
        //initialize the source list, as the new specificNodeIdLst
@@ -145,7 +147,9 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
            var  prevIterCurrentNodeLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
        
            specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int, Double)) => 
-               if (dstNodeMap(specificNodeIdType._1).visitedColor != GREY.id && srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance)
+               if (dstNodeMap(specificNodeIdType._1).visitedColor != GREY.id && srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && 
+                   srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance
+                  && srcNodeMap(specificNodeIdType._1).closenessNodeScore > topKKthSmallestScore)
                {
                    val specificNodeId = specificNodeIdType._1
                    val specNodeIdType = specificNodeIdType._2 
@@ -305,7 +309,6 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
 
         }.cache()
 
-   
         val allNodesVisitedAnyOne = g.vertices.filter{ case x=>
            //judge the nodes is visited from any one of the specific nodes
            def getAnyVisitedFlag(nodeMap: Map[VertexId, NodeInfo]) ={             //define function
@@ -364,7 +367,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
         print ("364 nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " "  + " " + allNextDestNodesVisitedNumber + " " + topKNonStarResultRdd.count() + "\n")  
         // visitedDestinationRdd.take(5).foreach(println)
 
-         //update topKKthLowerBoundScore;        how?
+        //update topKKthLowerBoundScore;        how?
         currentIterateTupleNodeResult = visitedDestinationRdd.map{
             case x=>
 
@@ -391,8 +394,12 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
        
           //get the kth smallest lower bound score in the topKResultRddArray
           topKKthLowerBoundScore = topKResultRddArray.head    //.sortBy(x=>x)
-          
-        //  println("395 nonStarQueryGraphbfsTraverseTwoQueryNodes topKKthLowerBoundScore tttt i: " + topKResultRddArray.toList +" " + topKKthLowerBoundScore + "\n") 
+
+          //get smallest score in the nonStarQuery_TOPK more list
+          topKKthSmallestScore = currentIterateTupleNodeResult.map(x=>         // ((specNodeId, destNodeId), nodeMap) 
+           (x._2(x._1).closenessNodeScore)).takeOrdered(nonStarQuery_TOPK)(Ordering[Double].on(x=>x)).head
+           
+          //  println("395 nonStarQueryGraphbfsTraverseTwoQueryNodes topKKthLowerBoundScore tttt i: " + topKResultRddArray.toList +" " + topKKthLowerBoundScore + "\n") 
 
         }  
         
