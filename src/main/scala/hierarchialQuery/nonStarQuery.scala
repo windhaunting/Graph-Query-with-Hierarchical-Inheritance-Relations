@@ -143,13 +143,22 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
            var newdstNodeMap = Map[VertexId, NodeInfo]()            // not dstNodeMap any more, empty first, only updated vertexId part need to be sent (message)
            val dstNodeTypeId = triplet.dstAttr._1 
            
+          var aggregatedCurrentNodeSimilarityScore = 0.0
+          var visitedAllFlag = true                                  //only a node all from specific node is visited, we can check aggregatedCurrentNodeSimilarityScore
+          for (specificNodeIdType <- specificNodeIdLst){
+              if (srcNodeMap(specificNodeIdType._1).spDistance == Long.MaxValue){
+                visitedAllFlag = false
+              }
+                aggregatedCurrentNodeSimilarityScore += srcNodeMap(specificNodeIdType._1).closenessNodeScore
+          }
+          
            var prevIterParentNodeLowerBoundsMap = Map[VertexId, (Double, Double)]()  
            var  prevIterCurrentNodeLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
        
            specificNodeIdLst.foreach((specificNodeIdType: (VertexId, Int, Double)) => 
                if (dstNodeMap(specificNodeIdType._1).visitedColor != GREY.id && srcNodeMap(specificNodeIdType._1).visitedColor != RED.id && 
                    srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance
-                  && srcNodeMap(specificNodeIdType._1).closenessNodeScore > topKKthSmallestScore)
+                  && (!visitedAllFlag || aggregatedCurrentNodeSimilarityScore > topKKthSmallestScore))
                {
                    val specificNodeId = specificNodeIdType._1
                    val specNodeIdType = specificNodeIdType._2 
