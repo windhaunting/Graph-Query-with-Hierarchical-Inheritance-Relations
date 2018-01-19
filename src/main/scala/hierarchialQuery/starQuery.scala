@@ -405,7 +405,7 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           var  prevIterCurrentNodeLowerBoundsMap = Map[VertexId, Double]()            //lower bound similarity score at previous iteration t-1
           
           var aggregatedCurrentNodeSimilarityScore = 0.0
-          val visitedAllFlag = true                                  //only a node all from specific node is visited, we can check aggregatedCurrentNodeSimilarityScore
+          var visitedAllFlag = true                                  //only a node all from specific node is visited, we can check aggregatedCurrentNodeSimilarityScore
           for (specificNodeIdType <- specificNodeIdLst){
               if (srcNodeMap(specificNodeIdType._1).spDistance == Long.MaxValue){
                 visitedAllFlag = false
