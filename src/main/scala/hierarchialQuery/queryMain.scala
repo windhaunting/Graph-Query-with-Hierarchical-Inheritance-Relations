@@ -34,15 +34,15 @@ object QueryMain {
     // println("testSyntheticGraph: done")
     
    
-   // testSyntheticGraph.executeSyntheticDatabase(args, sc, hierarchialRelation)
-   // println("executeSyntheticDatabase: done") 
+    testSyntheticGraph.executeSyntheticDatabase(args, sc, hierarchialRelation)
+    println("executeSyntheticDatabase: done") 
     
    
    // testCiscoGraphData.executeProductDatabase(args, sc, hierarchialRelation)
    //  println("executeProductDatabase: done") 
     
-    testDblpGraphData.executeDblpGraphData(args, sc, hierarchialRelation)
-    println("executeDblpGraphData: done")
+   // testDblpGraphData.executeDblpGraphData(args, sc, hierarchialRelation)
+   // println("executeDblpGraphData: done")
    
     
   }
