@@ -408,7 +408,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
             //val sourceIdType = triplet.srcAttr._1
             //consider bound with RED.id 
             if (dstNodeMap(specificNodeIdType._1).visitedColor != GREY.id && srcNodeMap(specificNodeIdType._1).visitedColor != RED.id 
-                && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance && srcNodeMap(specificNodeIdType._1).closenessNodeScore > topKKthSmallestScore)
+                && srcNodeMap(specificNodeIdType._1).spDistance != Long.MaxValue && srcNodeMap(specificNodeIdType._1).spDistance + 1  < dstNodeMap(specificNodeIdType._1).spDistance 
+                )
+                //&& srcNodeMap(specificNodeIdType._1).closenessNodeScore > topKKthSmallestScore)
             {
               
                val specificNodeId = specificNodeIdType._1
