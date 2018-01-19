@@ -113,7 +113,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
         val nextUnknownDestNodeIdLst = topKStarRstLstBuffer(i+1).map{x => (x._1, x._2._4, x._2._1)}         // => (nodeId, nodeTypeId, node matchingScore)
            .collect().toList.sortBy(x=>x._3)            // sorted by node matching score
         
-        print ("762 nonStarQueryGraphbfsTraverseTwoQueryNodes specificNodeIdLsts: " + specificNodeIdLst +  "nextUnknownDestNodeIdLst "+ nextUnknownDestNodeIdLst + " " + i + "\n")  
+       // print ("762 nonStarQueryGraphbfsTraverseTwoQueryNodes specificNodeIdLsts: " + specificNodeIdLst +  "nextUnknownDestNodeIdLst "+ nextUnknownDestNodeIdLst + " " + i + "\n")  
        //initialize from first topKStarQuery as specificNodeList
        var g: Graph[(VD, Map[VertexId, NodeInfo]), ED] =
        graph.mapVertices((id, nodeIdType) => (nodeIdType, 
@@ -338,7 +338,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
         oldAllNodesVisitedNumber = allNodesVisitedNumber           //update previous as the current
 
         allNodesVisitedNumber = allNodesVisitedAnyOne.count()
-        print ("329 nonStarQueryGraphbfsTraverseTwoQueryNodes allNodesVisitedNumber: " + allNodesVisitedNumber + " " + oldAllNodesVisitedNumber + "\n")  
+        //print ("329 nonStarQueryGraphbfsTraverseTwoQueryNodes allNodesVisitedNumber: " + allNodesVisitedNumber + " " + oldAllNodesVisitedNumber + "\n")  
         //twoPreviousOldAllNodesVisitedNumber = oldAllNodesVisitedNumber        //update the previous previous visited nodes number from previous nodes
         //val anotherUnknownDestNodeIdHashMap = nextUnknownDestNodeIdLst.map{s => (s._1, (s._2, s._3))}
 
@@ -373,7 +373,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
             getAllVisitedFlag(x._2._2)   // nodeMap, nodeId
          }.count()
 
-        print ("364 nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " "  + " " + allNextDestNodesVisitedNumber + " " + topKNonStarResultRdd.count() + "\n")  
+        //print ("364 nonStarQueryGraphbfsTraverseTwoQueryNodes visitedDestinationRdd count: " + nonStarQuery_TOPK + " " +visitedDestinationRdd.count() + " "  + " " + allNextDestNodesVisitedNumber + " " + topKNonStarResultRdd.count() + "\n")  
         // visitedDestinationRdd.take(5).foreach(println)
 
         //update topKKthLowerBoundScore;        how?
@@ -495,7 +495,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
     //previousNonStarQueryRdd. take(5).foreach(println)
     
     val endTime = System.currentTimeMillis()   
-    println("482 only nonStarQueryGraphbfsTraverseQueryNodes runtime: "+ (endTime-startTime) + " ms") 
+    //println("482 only nonStarQueryGraphbfsTraverseQueryNodes runtime: "+ (endTime-startTime) + " ms") 
  
     topKNonStarResultRdd
     
@@ -523,8 +523,8 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
         val pathAnswerRdd = answers._2
         //topKResultRdd.take(5).foreach(println)
         //print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
-        print ("star query " + i.toString + " pathAnswerRdd: " + " \n")
-        pathAnswerRdd.take(5).foreach(println)
+       // print ("star query " + i.toString + " pathAnswerRdd: " + " \n")
+       // pathAnswerRdd.take(5).foreach(println)
 
         topKStarRstLst  += topKResultRdd
         i = i + 1

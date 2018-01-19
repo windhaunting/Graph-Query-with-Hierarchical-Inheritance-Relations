@@ -154,15 +154,15 @@ object testSyntheticGraph {
     
     print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
     //for varing query graph size
-    var runTimeOutputFilePath = ""
-    var outputResultFilePath = ""
+    var runTimeOutputFilePathOrigin = ""
+    var outputResultFilePathOrigin = ""
     if (hierarchialRelation){
-        runTimeOutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
-        outputResultFilePath = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
+        runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
     }
     else{
-        runTimeOutputFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
-        outputResultFilePath = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
+        runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
     }
     
     var count = 1
@@ -179,8 +179,8 @@ object testSyntheticGraph {
           val nonStarQueryTOPK = starQuery.TOPK
 
           //general query 
-          runTimeOutputFilePath = runTimeOutputFilePath + count.toString + "_top" + nonStarQueryTOPK.toString + "_queryGRaphSizeNo" + runTimeFileIndex
-          outputResultFilePath = outputResultFilePath + count.toString + "_top" + nonStarQueryTOPK.toString + "_queryGRaphSizeNo" + runTimeFileIndex
+          val runTimeOutputFilePath = runTimeOutputFilePathOrigin + count.toString + "_top" + nonStarQueryTOPK.toString + "_queryGRaphSizeNo" + runTimeFileIndex
+          val outputResultFilePath = outputResultFilePathOrigin + count.toString + "_top" + nonStarQueryTOPK.toString + "_queryGRaphSizeNo" + runTimeFileIndex
 
           //general non-star query execution
           nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
