@@ -99,7 +99,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
     var previousNonStarQueryRdd: RDD[(VertexId, (List[VertexId], Double))] = sc.emptyRDD[(VertexId, (List[VertexId], Double))]
     
     var topKKthLowerBoundScore = 0.0        //initialize for each candidate embedding enumeration traverse bounds
-    var topKKthSmallestScore = -1     //0.0          // the smallest score in the candidate k list for candidate selection phase
+    var topKKthSmallestScore = -1.0     //0.0          // the smallest score in the candidate k list for candidate selection phase
 
     while (i < topKStarRstLstBuffer.length-1)      //  
     {
@@ -397,7 +397,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
 
           //get smallest score in the nonStarQuery_TOPK more list
           topKKthSmallestScore = currentIterateTupleNodeResult.map(x=>         // ((specNodeId, destNodeId), nodeMap) 
-           (x._2(x._1).closenessNodeScore)).takeOrdered(nonStarQuery_TOPK)(Ordering[Double].on(x=>x)).head
+           (x._2(x._1._1).closenessNodeScore)).takeOrdered(nonStarQuery_TOPK)(Ordering[Double].on(x=>x)).head
            
           //  println("395 nonStarQueryGraphbfsTraverseTwoQueryNodes topKKthLowerBoundScore tttt i: " + topKResultRddArray.toList +" " + topKKthLowerBoundScore + "\n") 
 
@@ -514,7 +514,7 @@ def nonStarQuerySetnodeIdColorForBound[VD, ED](allNodesVisited: VertexRDD[(VD, M
         val pathAnswerRdd = answers._2
         //topKResultRdd.take(5).foreach(println)
         //print ("i: " + specificNodeIdTwoDimensionLst(i) + " " + i + " \n")
-        print ("pathAnswerRdd  star query " + i.toString + " pathAnswerRdd: " + " \n")
+        print ("star query " + i.toString + " pathAnswerRdd: " + " \n")
         pathAnswerRdd.take(5).foreach(println)
 
         topKStarRstLst  += topKResultRdd

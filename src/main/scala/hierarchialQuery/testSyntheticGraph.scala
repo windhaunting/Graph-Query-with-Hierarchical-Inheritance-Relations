@@ -172,8 +172,8 @@ object testSyntheticGraph {
        //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
        val starQueryNodeLst = specNodelistStarQueryLst._1
        val dstTypeLst = specNodelistStarQueryLst._2
+        print ("starQueryNodeLst： " + starQueryNodeLst + "dstTypeLst: " + dstTypeLst+ "nonStarQueryTOPK:  " + varingTokList +"\n")
 
-      print ("starQueryNodeLst： " + starQueryNodeLst + "dstTypeLst: " + dstTypeLst+ "nonStarQueryTOPK:  " + nonStarQueryTOPK +"\n")
       for(topk <- varingTokList) {
           starQuery.TOPK = topk
           val nonStarQueryTOPK = starQuery.TOPK

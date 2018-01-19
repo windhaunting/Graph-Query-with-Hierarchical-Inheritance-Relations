@@ -33,7 +33,7 @@ object starQuery {
   val numTasks = 8                   //how many task for one core can execute in parallell
   val BETA = 0.8                    //attenutation for hierarchical level difference causing the score reduction.
   var topKKthLowerBoundScore = 0.0        // the smallest (kth) lowest upper bound score in the k list
-  var topKKthSmallestScore =  -1     //0.0          // the smallest score in the candidate k list 
+  var topKKthSmallestScore =  -1.0     //0.0          // the smallest score in the candidate k list 
   //one source bfs from one src to dst
   def bfs[VD, ED](graph: Graph[VD, ED], src: VertexId, dst: VertexId): Seq[VertexId] = {
     if (src == dst) return List(src)
