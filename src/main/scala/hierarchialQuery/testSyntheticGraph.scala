@@ -41,9 +41,7 @@ object testSyntheticGraph {
     val runTimeoutputFilePath = "../output/testInput/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
     //starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
     
-          
-
-   
+             
   }
   
   //  main entries for synthetic graph test
@@ -127,7 +125,7 @@ object testSyntheticGraph {
        val starQueryNodeLst = specNodelistStarQueryLst._1
        val dstTypeLst = specNodelistStarQueryLst._2
 
-      print ("starQueryNodeLst： " + starQueryNodeLst + " " + dstTypeLst+  "\n")
+      print ("starQueryNodeLst：  " + starQueryNodeLst + "  " + dstTypeLst +  " \n")
       val nonStarQueryTOPK = starQuery.TOPK
 
       //general query 
@@ -166,21 +164,21 @@ object testSyntheticGraph {
     }
     
     var count = 1
-    val varingTokList = List(1)   //  [1, 2, 5, 10, 15, 20, 25, 30] 
+    val varingTokList = List(1, 2, 5, 10, 15, 20, 25, 30)       //  List(1)
     for (specNodelistStarQueryLst <- allquerySizeLsts)
     {
        //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
        val starQueryNodeLst = specNodelistStarQueryLst._1
        val dstTypeLst = specNodelistStarQueryLst._2
-        print ("starQueryNodeLst： " + starQueryNodeLst + "dstTypeLst: " + dstTypeLst+ "nonStarQueryTOPK:  " + varingTokList +"\n")
+        print ("starQueryNodeLst： " + starQueryNodeLst + " dstTypeLst: " + dstTypeLst+ " nonStarQueryTOPK:  " + varingTokList +"\n")
 
       for(topk <- varingTokList) {
           starQuery.TOPK = topk
           val nonStarQueryTOPK = starQuery.TOPK
 
           //general query 
-          val runTimeOutputFilePath = runTimeOutputFilePathOrigin + count.toString + "_top" + nonStarQueryTOPK.toString + "_queryGRaphSizeNo" + runTimeFileIndex
-          val outputResultFilePath = outputResultFilePathOrigin + count.toString + "_top" + nonStarQueryTOPK.toString + "_queryGRaphSizeNo" + runTimeFileIndex
+          val runTimeOutputFilePath = runTimeOutputFilePathOrigin  + "_top" + nonStarQueryTOPK.toString + "_queryGRaphSizeNo" + count.toString + "_" + runTimeFileIndex
+          val outputResultFilePath = outputResultFilePathOrigin  + "_top" + nonStarQueryTOPK.toString + "_queryGRaphSizeNo" + count.toString + "_" + runTimeFileIndex
 
           //general non-star query execution
           nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
