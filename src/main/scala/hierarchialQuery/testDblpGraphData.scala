@@ -27,8 +27,10 @@ object testDblpGraphData {
     
     val inputGeneralQueryGraph = "../../Data/dblpParserGraph/output/inputDblpQueryGraph/generalQueryGraph/generateQuerygraphInput"
 
-    executeGeneralQueryDblpDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+    // executeGeneralQueryDblpDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
 
+    executeGeneralQueryDblpDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+           
   }
   
   //entry for star query for dblp data
@@ -112,16 +114,16 @@ object testDblpGraphData {
     var runTimeOutputFilePathOrigin = ""
     var outputResultFilePathOrigin = ""
     if (hierarchialRelation){
-        runTimeOutputFilePathOrigin = "../output/ciscoProduct/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
-        outputResultFilePathOrigin = "../output/ciscoProduct/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
+        runTimeOutputFilePathOrigin = "../output/dblpData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/dblpData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
     }
     else{
-        runTimeOutputFilePathOrigin = "../output/ciscoProduct/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
-        outputResultFilePathOrigin = "../output/ciscoProduct/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
+        runTimeOutputFilePathOrigin = "../output/dblpData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/dblpData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
     }
     
     var count = 1
-    val varingTokList = List(1, 2, 5, 10, 15, 20, 25, 30)   //List(1)       // List(1, 2, 5, 10, 15, 20, 25, 30)       //  List(1)
+    val varingTokList =  List(1)   // List(1, 2, 5, 10, 15, 20, 25, 30)   //List(1)       // List(1, 2, 5, 10, 15, 20, 25, 30)       //  List(1)
     for (specNodelistStarQueryLst <- allquerySizeLsts)
     {
        //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
