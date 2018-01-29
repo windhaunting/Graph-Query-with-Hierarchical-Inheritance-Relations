@@ -132,7 +132,7 @@ object testCiscoGraphData {
     }
     
     var count = 1
-    val varingTokList = List(1)       // List(1, 2, 5, 10, 15, 20, 25, 30)       //  List(1)
+    val varingTokList = List(1, 2, 5, 10, 15, 20, 25, 30)   //List(1)       // List(1, 2, 5, 10, 15, 20, 25, 30)       //  List(1)
     for (specNodelistStarQueryLst <- allquerySizeLsts)
     {
        //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")

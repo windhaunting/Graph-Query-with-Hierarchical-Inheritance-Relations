@@ -59,7 +59,7 @@ object testSyntheticGraph {
        
       //test different top-k
       val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
-      executeGeneralQuerySyntheticDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath: String, hierarchialRelation)
+      executeGeneralQuerySyntheticDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
            
   }
   
