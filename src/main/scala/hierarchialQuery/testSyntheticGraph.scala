@@ -202,7 +202,7 @@ object testSyntheticGraph {
     
     val runTimeFileIndex = args(0)           
     
-    print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
+    print ("main allquerySizeLsts： " + allquerySizeLsts.size + "\n")
     //for varing query graph size
     var runTimeOutputFilePathOrigin = ""
     var outputResultFilePathOrigin = ""
@@ -215,13 +215,14 @@ object testSyntheticGraph {
         outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
     }
     
-    var count = 1
-    val varingTokList = List(1)   //List(2, 5, 10)    List(1, 2, 5, 10, 15, 20, 25, 30)       //  List(1)
+    val varingTokList = List(2, 5, 10)   //List(1)   //List(2, 5, 10)       
     
     for(topk <- varingTokList) {
         starQuery.TOPK = topk
         val nonStarQueryTOPK = starQuery.TOPK
         
+        var queryGraphSizeCount = 1
+
         for (specNodelistStarQueryLst <- allquerySizeLsts)
         {
            //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
@@ -230,16 +231,15 @@ object testSyntheticGraph {
            print ("starQueryNodeLst： " + starQueryNodeLst + " dstTypeLst: " + dstTypeLst+ " nonStarQueryTOPK:  " + topk +"\n")
          
           //general query 
-          val runTimeOutputFilePath = runTimeOutputFilePathOrigin  + "_top" + nonStarQueryTOPK.toString + "_varyingQueryGRaphSizeNo" + count.toString + "_" + runTimeFileIndex
-          val outputResultFilePath = outputResultFilePathOrigin  + "_top" + nonStarQueryTOPK.toString + "_varyingQueryGRaphSizeNo" + count.toString + "_" + runTimeFileIndex
+          val runTimeOutputFilePath = runTimeOutputFilePathOrigin  + "_top" + nonStarQueryTOPK.toString + "_varyingQueryGRaphSizeNo" + queryGraphSizeCount.toString + "_" + runTimeFileIndex
+          val outputResultFilePath = outputResultFilePathOrigin  + "_top" + nonStarQueryTOPK.toString + "_varyingQueryGRaphSizeNo" + queryGraphSizeCount.toString + "_" + runTimeFileIndex
 
           //general non-star query execution
           nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
+          queryGraphSizeCount += 1
+        }
       }
-      
-      count += 1
-    }
-      
+            
   }
   
   
