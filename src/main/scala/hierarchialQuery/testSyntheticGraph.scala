@@ -192,7 +192,7 @@ object testSyntheticGraph {
   }
   
   
-   // varing different query graph size test;  general general query entry (non-star query) for synthetic graph
+  // varing different query graph size test;  general general query entry (non-star query) for synthetic graph
   def executeGeneralQuerySyntheticDatabaseDifferentQuerySize[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
  
     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
