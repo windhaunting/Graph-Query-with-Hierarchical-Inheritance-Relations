@@ -243,4 +243,32 @@ object testSyntheticGraph {
   }
   
   
+  
+   // varing differentTopK test;  general general query entry (non-star query) for synthetic graph
+  def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphEdgeListFile: String, inputDataGraphNodeInfoFile: String, inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
+ 
+    val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
+    //val topK = args(0).toInt      //topK
+    //starQuery.TOPK = topK
+    val databaseType = 2              //synthetic graph database   2
+    
+    val runTimeFileIndex = args(0)           
+    
+    print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
+    //for varing query graph size
+    var runTimeOutputFilePathOrigin = ""
+    var outputResultFilePathOrigin = ""
+    if (hierarchialRelation){
+        runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
+    }
+    else{
+        runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
+    }
+    
+    
+  }
+  
+  
 }
