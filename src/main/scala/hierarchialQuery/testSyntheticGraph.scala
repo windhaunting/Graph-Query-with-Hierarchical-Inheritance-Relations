@@ -244,9 +244,13 @@ object testSyntheticGraph {
   
   
   
-   // varing differentTopK test;  general general query entry (non-star query) for synthetic graph
+   // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
   def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphEdgeListFile: String, inputDataGraphNodeInfoFile: String, inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
  
+    
+    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+
+    
     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
     //val topK = args(0).toInt      //topK
     //starQuery.TOPK = topK
