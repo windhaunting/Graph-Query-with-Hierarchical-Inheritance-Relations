@@ -61,8 +61,11 @@ object testSyntheticGraph {
       val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
       //executeGeneralQuerySyntheticDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
       
-    executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
-           
+     // executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+          
+    
+    executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, inputDataGraphEdgeListFile, inputDataGraphNodeInfoFile, inputGeneralQueryGraph, hierarchialRelation) = {
+ 
   }
   
   //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
@@ -247,7 +250,6 @@ object testSyntheticGraph {
    // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
   def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphEdgeListFile: String, inputDataGraphNodeInfoFile: String, inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
  
-    
     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
     
