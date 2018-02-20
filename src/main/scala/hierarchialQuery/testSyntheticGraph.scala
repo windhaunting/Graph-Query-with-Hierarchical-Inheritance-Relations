@@ -47,6 +47,7 @@ object testSyntheticGraph {
   //  main entries for synthetic graph test
   def executeSyntheticDatabase(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
       
+    /*
       val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
       val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
         
@@ -62,10 +63,16 @@ object testSyntheticGraph {
       //executeGeneralQuerySyntheticDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
       
      // executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
-          
-    
-    executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, inputDataGraphEdgeListFile, inputDataGraphNodeInfoFile, inputGeneralQueryGraph, hierarchialRelation) = {
- 
+     
+     */
+     // test different data graph
+     val dataGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/dataGraphInfo"
+     
+     val inputGeneralQueryGraph = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/"
+     
+     executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix inputGeneralQueryGraph, hierarchialRelation)
+
+        
   }
   
   //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
@@ -247,29 +254,64 @@ object testSyntheticGraph {
   
   
    // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
-  def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphEdgeListFile: String, inputDataGraphNodeInfoFile: String, inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
+  def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphPathPrefix: String, inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
  
-    val hierGraph = graphInputCommon.readEdgeListFile(sc, inputDataGraphEdgeListFile, inputDataGraphNodeInfoFile, "\t")
-
-    val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
-    //val topK = args(0).toInt      //topK
-    //starQuery.TOPK = topK
-    val databaseType = 2              //synthetic graph database   2
+     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
+     //val topK = args(0).toInt      //topK
+     //starQuery.TOPK = topK
+     val databaseType = 2              //synthetic graph database   2
     
-    val runTimeFileIndex = args(0)           
+     val runTimeFileIndex = args(0)           
     
     print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
     //for varing query graph size
     var runTimeOutputFilePathOrigin = ""
     var outputResultFilePathOrigin = ""
     if (hierarchialRelation){
-        runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "queryRuntime"
-        outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/" + "runResult"
+        runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWithHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "runResult"
     }
     else{
-        runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
-        outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
+        runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "runResult"
     }
+    
+     val nonStarQueryTOPK = 5
+    
+     val subfixs = List("0.1", "0.2", "0.5", "0.8", "1.0")
+     
+     for (subfix <- subfixs)
+     {
+        val inputEdgeListfilePathTmp =  inputDataGraphPathPrefix  + subfix + "edgeListPart" + subfix
+        val inputNodeInfoFilePathTmp = inputDataGraphPathPrefix  + subfix + "nodeInfoPart" + subfix
+        
+        val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePathTmp, inputNodeInfoFilePathTmp, "\t")
+
+        val queryGraphSizeCount = 1
+        for (specNodelistStarQueryLst <- allquerySizeLsts)
+        {
+           //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
+           val starQueryNodeLst = specNodelistStarQueryLst._1
+           val dstTypeLst = specNodelistStarQueryLst._2
+           print ("starQueryNodeLst： " + starQueryNodeLst + " dstTypeLst: " + dstTypeLst+ " dataGraphsubfix:  " + subfix +"\n")
+         
+          //general query 
+          val runTimeOutputFilePath = runTimeOutputFilePathOrigin  + "_dataGraphsubfix" + subfix.toString + "_varyingDataGRaphSizeNo" + queryGraphSizeCount.toString + "_" + runTimeFileIndex
+          val outputResultFilePath = outputResultFilePathOrigin  + "_dataGraphsubfix" + subfix.toString + "_varyingDataGRaphSizeNo" + queryGraphSizeCount.toString + "_" + runTimeFileIndex
+
+          //general non-star query execution
+          nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
+          queryGraphSizeCount += 1
+        }
+        
+      
+      
+     }
+     
+
+  
+    
+ 
     
     
   }
