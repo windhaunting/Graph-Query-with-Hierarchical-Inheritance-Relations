@@ -66,11 +66,11 @@ object testSyntheticGraph {
      
      */
      // test different data graph
-     val dataGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/dataGraphInfo"
+     val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/dataGraphInfo"
      
      val inputGeneralQueryGraph = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/"
      
-     executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix inputGeneralQueryGraph, hierarchialRelation)
+     executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraph, hierarchialRelation)
 
         
   }
@@ -254,9 +254,9 @@ object testSyntheticGraph {
   
   
    // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
-  def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphPathPrefix: String, inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
+  def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphPathPrefix: String, inputGeneralQueryGraphPath: String, hierarchialRelation: Boolean) = {
  
-     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
+     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraphPath)
      //val topK = args(0).toInt      //topK
      //starQuery.TOPK = topK
      val databaseType = 2              //synthetic graph database   2
@@ -287,7 +287,7 @@ object testSyntheticGraph {
         
         val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePathTmp, inputNodeInfoFilePathTmp, "\t")
 
-        val queryGraphSizeCount = 1
+        var queryGraphSizeCount = 1
         for (specNodelistStarQueryLst <- allquerySizeLsts)
         {
            //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
@@ -300,7 +300,7 @@ object testSyntheticGraph {
           val outputResultFilePath = outputResultFilePathOrigin  + "_dataGraphsubfix" + subfix.toString + "_varyingDataGRaphSizeNo" + queryGraphSizeCount.toString + "_" + runTimeFileIndex
 
           //general non-star query execution
-          nonStarQuery.nonStarQueryExecute(sc, dataGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePath, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
+          nonStarQuery.nonStarQueryExecute(sc, hierGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePathTmp, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
           queryGraphSizeCount += 1
         }
         
