@@ -27,7 +27,7 @@ import java.io._
 
 object starQuery {
  
-  var TOPK = 0                 //top K candidate answer, set by main function parameter
+  var TOPK = 5                 //top K candidate answer, set by main function parameter
   val ALPHA = 0.9               //propagation factor
   val N = math.pow(ALPHA, (-1)*ALPHA)   //1/ALPHA1.05
   val numTasks = 8                   //how many task for one core can execute in parallell
@@ -728,6 +728,9 @@ def starQueryGraphbfsTraverseWithBoundPruning[VD, ED](sc: SparkContext, graph: G
           val topKResultRddArray =  currentIterateNodeResult.map(x=>
           (x._1, (calculateNodeScoreStarquery(x._2._2), calculateMatchingScoreLowerBound(x._2._2),  calculateMatchingScoreUpperBound(x._2._2), x._2._1.toString.toInt, x._2._2))).takeOrdered(TOPK)(Ordering[Double].reverse.on(x=>x._2._1))    //sort by matching score calculateNodeScoreStarquery result
        
+           //print ("598: starQueryGraphbfsTraverseWithBoundPruning topKResultRddArray : ")
+           //topKResultRddArray.take(5).foreach(println)
+        
           //get the kth smallest lower bound score in the topKResultRddArray
           topKKthLowerBoundScore = topKResultRddArray.sortBy(x=>x._2._2).head._2._2       //sorted by lower bound matching score
           topKKthSmallestScore = topKResultRddArray.sortBy(x=>x._2._1).head._2._1         //get the smallest matching score

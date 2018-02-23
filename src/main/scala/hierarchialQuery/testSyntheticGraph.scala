@@ -275,9 +275,10 @@ object testSyntheticGraph {
         outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "runResult"
     }
     
-     val nonStarQueryTOPK = 5
+     starQuery.TOPK = 5
+     val nonStarQueryTOPK = starQuery.TOPK
     
-     val subfixs = List("0.1", "0.2", "0.5", "0.8", "1.0")
+     val subfixs = List("0.1", "0.2", "0.5", "0.8", "1.0") //List("0.1")  //
      
      for (subfix <- subfixs)
      {
