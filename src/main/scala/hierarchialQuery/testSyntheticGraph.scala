@@ -67,9 +67,9 @@ object testSyntheticGraph {
      */
      // test different data graph
      val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/dataGraphInfo"
-     val inputGeneralQueryGraph = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput0.1"
+     val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput"
      
-     executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraph, hierarchialRelation)
+     executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
 
         
   }
@@ -253,16 +253,14 @@ object testSyntheticGraph {
   
   
    // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
-  def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphPathPrefix: String, inputGeneralQueryGraphPath: String, hierarchialRelation: Boolean) = {
+  def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphPathPrefix: String, inputGeneralQueryGraphPrefix: String, hierarchialRelation: Boolean) = {
  
-     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraphPath)
      //val topK = args(0).toInt      //topK
      //starQuery.TOPK = topK
      val databaseType = 2              //synthetic graph database   2
     
      val runTimeFileIndex = args(0)           
     
-    print ("main allquerySizeLsts： " + allquerySizeLsts + "\n")
     //for varing query graph size
     var runTimeOutputFilePathOrigin = ""
     var outputResultFilePathOrigin = ""
@@ -287,6 +285,10 @@ object testSyntheticGraph {
         
         val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePathTmp, inputNodeInfoFilePathTmp, "\t")
 
+        val inputGeneralQueryGraphPath = inputGeneralQueryGraphPrefix + subfix
+        val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraphPath)
+
+      
         var queryGraphSizeCount = 1
         for (specNodelistStarQueryLst <- allquerySizeLsts)
         {
