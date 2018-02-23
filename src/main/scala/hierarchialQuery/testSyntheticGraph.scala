@@ -67,8 +67,7 @@ object testSyntheticGraph {
      */
      // test different data graph
      val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/dataGraphInfo"
-     
-     val inputGeneralQueryGraph = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/"
+     val inputGeneralQueryGraph = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput0.1"
      
      executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraph, hierarchialRelation)
 
@@ -282,8 +281,8 @@ object testSyntheticGraph {
      
      for (subfix <- subfixs)
      {
-        val inputEdgeListfilePathTmp =  inputDataGraphPathPrefix  + subfix + "edgeListPart" + subfix
-        val inputNodeInfoFilePathTmp = inputDataGraphPathPrefix  + subfix + "nodeInfoPart" + subfix
+        val inputEdgeListfilePathTmp =  inputDataGraphPathPrefix  + subfix + "/edgeListPart" + subfix
+        val inputNodeInfoFilePathTmp = inputDataGraphPathPrefix  + subfix + "/nodeInfoPart" + subfix
         
         val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePathTmp, inputNodeInfoFilePathTmp, "\t")
 
