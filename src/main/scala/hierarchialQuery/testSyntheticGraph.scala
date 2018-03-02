@@ -306,11 +306,7 @@ object testSyntheticGraph {
           queryGraphSizeCount += 1
         }
       
-     }
-     
-
-  
-     
+     }         
   }
   
   

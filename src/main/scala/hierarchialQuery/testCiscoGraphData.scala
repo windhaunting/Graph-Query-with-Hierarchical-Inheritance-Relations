@@ -245,7 +245,7 @@ object testCiscoGraphData {
      starQuery.TOPK = 5
      val nonStarQueryTOPK = starQuery.TOPK
     
-     val subfixs = List("0.1")    // List("0.1", "0.2", "0.5", "0.8", "1.0") //List("0.1")  //
+     val subfixs = List("0.1", "0.2", "0.5", "0.8", "1.0")   // List("0.1", "0.2", "0.5", "0.8", "1.0") //List("0.1")  //
      
      for (subfix <- subfixs)
      {
@@ -276,8 +276,8 @@ object testCiscoGraphData {
         }
       
      }
-     
-  
+  }
+
+
   
 }
-
