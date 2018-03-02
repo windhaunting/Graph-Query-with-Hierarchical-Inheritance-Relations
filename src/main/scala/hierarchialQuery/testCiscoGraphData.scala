@@ -36,10 +36,10 @@ object testCiscoGraphData {
     */
    
      // test different data graph
-     val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output//dataGraphInfo"
-     val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output//inputGeneralQueryGraph/queryGraphInput"
+     val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/ciscoDataGraphExtractOut/dataGraphInfo"
+     val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/ciscoDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput"
      
-     executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
+     executeGeneralQueryCiscoDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
 
     
     
