@@ -221,7 +221,7 @@ object testCiscoGraphData {
   
   
   
-  // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
+  // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for cisco graph
   def executeGeneralQueryCiscoDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphPathPrefix: String, inputGeneralQueryGraphPrefix: String, hierarchialRelation: Boolean) = {
  
      //val topK = args(0).toInt      //topK
