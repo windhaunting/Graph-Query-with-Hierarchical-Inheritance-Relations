@@ -16,7 +16,7 @@ object testCiscoGraphData {
   //product database execution -- main entry
   def executeProductDatabase(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
     
-    
+    /*
     val inputEdgeListfilePath = "../../Data/ciscoDataGraph/ciscoDataGraphInfo1.0/edgeListPart1.0"
     val inputNodeInfoFilePath = "../../Data/ciscoDataGraph/ciscoDataGraphInfo1.0/nodeInfoPart1.0"
     
@@ -32,6 +32,15 @@ object testCiscoGraphData {
     // executeGeneralQueryCiscoDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
     
     executeGeneralQueryCiscoDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+    
+    */
+   
+     // test different data graph
+     val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output//dataGraphInfo"
+     val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output//inputGeneralQueryGraph/queryGraphInput"
+     
+     executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
+
     
     
   }
@@ -209,6 +218,65 @@ object testCiscoGraphData {
       }
             
   }
+  
+  
+  
+  // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
+  def executeGeneralQueryCiscoDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphPathPrefix: String, inputGeneralQueryGraphPrefix: String, hierarchialRelation: Boolean) = {
+ 
+     //val topK = args(0).toInt      //topK
+     //starQuery.TOPK = topK
+     val databaseType = 0              //synthetic graph database   2
+    
+     val runTimeFileIndex = args(0)           
+    
+    //for varing query graph size
+    var runTimeOutputFilePathOrigin = ""
+    var outputResultFilePathOrigin = ""
+    if (hierarchialRelation){
+        runTimeOutputFilePathOrigin = "../output/ciscoProduct/nonStarQueryOutput/testWithHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/ciscoProduct/nonStarQueryOutput/testWithHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "runResult"
+    }
+    else{
+        runTimeOutputFilePathOrigin = "../output/ciscoProduct/nonStarQueryOutput/testWOHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "queryRuntime"
+        outputResultFilePathOrigin = "../output/ciscoProduct/nonStarQueryOutput/testWOHierarchiQueryOutput/varyingDataGraphSizeOneMachine/" + "runResult"
+    }
+    
+     starQuery.TOPK = 5
+     val nonStarQueryTOPK = starQuery.TOPK
+    
+     val subfixs = List("0.1")    // List("0.1", "0.2", "0.5", "0.8", "1.0") //List("0.1")  //
+     
+     for (subfix <- subfixs)
+     {
+        val inputEdgeListfilePathTmp =  inputDataGraphPathPrefix  + subfix + "/edgeListPart" + subfix
+        val inputNodeInfoFilePathTmp = inputDataGraphPathPrefix  + subfix + "/nodeInfoPart" + subfix
+        
+        val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePathTmp, inputNodeInfoFilePathTmp, "\t")
+
+        val inputGeneralQueryGraphPath = inputGeneralQueryGraphPrefix + subfix
+        val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraphPath)
+
+      
+        var queryGraphSizeCount = 1
+        for (specNodelistStarQueryLst <- allquerySizeLsts)
+        {
+           //print ("executeGeneralQuerySyntheticDatabase specNodelistStarQueryLst： " + specNodelistStarQueryLst + "\n")
+           val starQueryNodeLst = specNodelistStarQueryLst._1
+           val dstTypeLst = specNodelistStarQueryLst._2
+           print ("starQueryNodeLst： " + starQueryNodeLst + " dstTypeLst: " + dstTypeLst+ " dataGraphsubfix:  " + subfix +"\n")
+         
+          //general query 
+          val runTimeOutputFilePath = runTimeOutputFilePathOrigin  + "_dataGraphsubfix" + subfix.toString + "_varyingDataGRaphSizeNo" + queryGraphSizeCount.toString + "_" + runTimeFileIndex
+          val outputResultFilePath = outputResultFilePathOrigin  + "_dataGraphsubfix" + subfix.toString + "_varyingDataGRaphSizeNo" + queryGraphSizeCount.toString + "_" + runTimeFileIndex
+
+          //general non-star query execution
+          nonStarQuery.nonStarQueryExecute(sc, hierGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePathTmp, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
+          queryGraphSizeCount += 1
+        }
+      
+     }
+     
   
   
 }

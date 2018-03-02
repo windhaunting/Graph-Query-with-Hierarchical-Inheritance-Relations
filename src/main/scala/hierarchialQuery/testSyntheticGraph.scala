@@ -252,7 +252,7 @@ object testSyntheticGraph {
   
   
   
-   // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
+  // varing different data graph 10%, 20%, 50%, 80%, 100%;  genera query entry (non-star query) for synthetic graph
   def executeGeneralQuerySyntheticDatabaseDifferentDataSize[VD, ED](args: Array[String], sc: SparkContext, inputDataGraphPathPrefix: String, inputGeneralQueryGraphPrefix: String, hierarchialRelation: Boolean) = {
  
      //val topK = args(0).toInt      //topK
@@ -305,16 +305,12 @@ object testSyntheticGraph {
           nonStarQuery.nonStarQueryExecute(sc, hierGraph, starQueryNodeLst, dstTypeLst, nonStarQueryTOPK, databaseType, inputNodeInfoFilePathTmp, outputResultFilePath, runTimeOutputFilePath, hierarchialRelation)     //execute non star query
           queryGraphSizeCount += 1
         }
-        
       
      }
      
 
   
-    
- 
-    
-    
+     
   }
   
   
