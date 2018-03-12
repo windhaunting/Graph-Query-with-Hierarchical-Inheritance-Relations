@@ -72,7 +72,7 @@ object testCiscoGraphData {
    }
    
   
-  // general general query entry (non-star query) for synthetic graph
+  // general general query entry (non-star query) for cisco data graph
   def executeGeneralQueryCiscoDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
     
