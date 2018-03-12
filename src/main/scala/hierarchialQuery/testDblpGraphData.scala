@@ -17,14 +17,14 @@ object testDblpGraphData {
 //dblp data base execute --main entry
   def executeDblpGraphData(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
       
-    /*
+   
     val inputEdgeListfilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutEdgeListFile.tsv"
     val inputNodeInfoFilePath = "../../Data/dblpParserGraph/output/finalOutput/newOutNodeNameToIdFile.tsv"
         
     //read edge list to graphX graph
     val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
-    //starQueryDblpData(args, sc, hierGraphRdd, inputNodeInfoFilePath, hierarchialRelation)
+    starQueryDblpData(args, sc, hierGraphRdd, inputNodeInfoFilePath, hierarchialRelation)
     
     val inputGeneralQueryGraph = "../../Data/dblpParserGraph/output/inputDblpQueryGraph/generalQueryGraph/generateQuerygraphInput"
 
@@ -32,16 +32,16 @@ object testDblpGraphData {
 
     // executeGeneralQueryDblpDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
     
-    executeGeneralQueryDblpDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+    // executeGeneralQueryDblpDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
     
-    */
     
+     /*
      // test different data graph
      val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/dblpDataGraphExtractOut/dataGraphInfo"
      val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/dblpDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput"
      
      executeGeneralQueryDblpDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
-
+     */
     
    
   }
@@ -56,9 +56,9 @@ object testDblpGraphData {
     val databaseType = 1              //dblp data graph database   1
     val runTimeFileIndex = args(1)
     
-    //val specificReadLst = List((188421L, 3), (188806L, 3))        // three or more query graph size
+    val specificReadLst = List((188421L, 3), (188806L, 3))        // three or more query graph size
     
-    val specificReadLst = List((188912L, 3), (188400L, 3), (188914L, 3))        // three or more query graph size
+   // val specificReadLst = List((188912L, 3), (188400L, 3), (188914L, 3))        // three or more query graph size
     val hierarchialRelation = true
    
     val outputFilePath = "../output/dblpData/starQueryOutput/starQueryOutputFilePath" + runTimeFileIndex
