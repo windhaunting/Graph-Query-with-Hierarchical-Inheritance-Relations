@@ -16,7 +16,7 @@ object testCiscoGraphData {
   //product database execution -- main entry
   def executeProductDatabase(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
     
-    /*
+    
     val inputEdgeListfilePath = "../../Data/ciscoDataGraph/ciscoDataGraphInfo1.0/edgeListPart1.0"
     val inputNodeInfoFilePath = "../../Data/ciscoDataGraph/ciscoDataGraphInfo1.0/nodeInfoPart1.0"
     
@@ -27,20 +27,22 @@ object testCiscoGraphData {
     
     val inputGeneralQueryGraph = "../../Data/ciscoDataGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
 
-    //executeGeneralQueryCiscoDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+    executeGeneralQueryCiscoDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
 
-    // executeGeneralQueryCiscoDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
     
-    executeGeneralQueryCiscoDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+   // executeGeneralQueryCiscoDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
     
-    */
+   // executeGeneralQueryCiscoDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+    
+    
    
+     /*
      // test different data graph
      val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/ciscoDataGraphExtractOut/dataGraphInfo"
      val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/ciscoDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput"
      
      executeGeneralQueryCiscoDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
-
+    */
     
     
   }
@@ -74,6 +76,7 @@ object testCiscoGraphData {
   
   // general general query entry (non-star query) for cisco data graph
   def executeGeneralQueryCiscoDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
+    
     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
     
     val topK = args(0).toInt      //topK
