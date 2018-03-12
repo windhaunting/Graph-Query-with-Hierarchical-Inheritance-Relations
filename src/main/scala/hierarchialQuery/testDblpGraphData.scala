@@ -56,17 +56,17 @@ object testDblpGraphData {
     val databaseType = 1              //dblp data graph database   1
     val runTimeFileIndex = args(1)
     
-    val specificReadLst = List((188421L, 3), (188806L, 3))        // three or more query graph size
-    
+   // val specificReadLst = List((188421L, 3), (188806L, 3))        // three or more query graph size
+    val specificReadLst = List((188421L, 3), (162877L, 1))      
    // val specificReadLst = List((188912L, 3), (188400L, 3), (188914L, 3))        // three or more query graph size
-    val hierarchialRelation = true
+    val hierarchicalRelation = true
    
     val outputFilePath = "../output/dblpData/starQueryOutput/starQueryOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/dblpData/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, dataGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
-    
+    starQuery.starQueryExeute(sc, dataGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchicalRelation)     //execute star query
   
  }
+ 
   //entry for generic graph query for dblp Data
   def executeGeneralQueryDblpDatabase[VD, ED](args: Array[String], sc: SparkContext, dataGraph: Graph[VD, ED], inputGeneralQueryGraph: String, inputNodeInfoFilePath: String, hierarchialRelation: Boolean) = {
     val allquerySizeLsts = inputQueryRead.getDecomposedStarQuerySpecificNodes(sc, inputGeneralQueryGraph)
