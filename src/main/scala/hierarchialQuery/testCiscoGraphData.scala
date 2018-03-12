@@ -23,11 +23,11 @@ object testCiscoGraphData {
     //read edge list to graphX graph
     val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
 
-    //starQueryCiscoData(args, sc， hierGraphRdd, inputNodeInfoFilePath, hierarchialRelation)
+    starQueryCiscoData(args, sc, hierGraphRdd, inputNodeInfoFilePath, hierarchialRelation)
     
     val inputGeneralQueryGraph = "../../Data/ciscoDataGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
 
-    executeGeneralQueryCiscoDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+    //executeGeneralQueryCiscoDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
 
     
    // executeGeneralQueryCiscoDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
@@ -61,10 +61,10 @@ object testCiscoGraphData {
     val runTimeFileIndex = args(1)
     
     //val specificReadLst = List((3237L, 1), (5446L, 1))        // three or more query graph size
-    //val specificReadLst = List((2020L, 1), (9021L, 4))        // three or more query graph size
+    val specificReadLst = List((2020L, 1), (9021L, 4))        // three or more query graph size
     //val specificReadLst = List((3237L, 1), (5446L, 1), (3243L, 1))        // three or more query graph size
 
-    val specificReadLst = List((2020L, 1), (9021L, 4), (9024L, 4))        // three or more query graph size
+    //val specificReadLst = List((2020L, 1), (9021L, 4), (9024L, 4))        // three or more query graph size
 
     val outputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryOutputFilePath" + runTimeFileIndex
     val runTimeoutputFilePath = "../output/ciscoProduct/starQueryOutput/starQueryoutRuntime" + runTimeFileIndex
