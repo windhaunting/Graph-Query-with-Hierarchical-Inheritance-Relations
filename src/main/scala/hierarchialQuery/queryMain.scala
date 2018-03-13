@@ -28,7 +28,7 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")            // override output with the same path
     val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
-    val hierarchialRelation = true  // false      // true
+    val hierarchialRelation = false // true  // false      // true
    // testSyntheticGraph.testTinyGraphData(args, sc, hierarchialRelation)
    // println("testSyntheticGraph: done")
    
