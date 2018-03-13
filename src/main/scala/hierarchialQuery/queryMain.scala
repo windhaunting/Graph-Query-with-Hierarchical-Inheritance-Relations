@@ -28,7 +28,7 @@ object QueryMain {
       .set("spark.hadoop.validateOutputSpecs", "false")            // override output with the same path
     val sc = new SparkContext(conf)    //executeProductDatabase(args, sc)
     
-   // val hierarchialRelation = true
+    val hierarchialRelation = true  // false      // true
    // testSyntheticGraph.testTinyGraphData(args, sc, hierarchialRelation)
    // println("testSyntheticGraph: done")
    
@@ -38,16 +38,9 @@ object QueryMain {
    // testCiscoGraphData.executeProductDatabase(args, sc, hierarchialRelation)
    //  println("executeProductDatabase: done") 
     
-   //  testDblpGraphData.executeDblpGraphData(args, sc, hierarchialRelation)
-   //  println("executeDblpGraphData: done")
-   
-    
-    val hierarchialRelation = false
-  //  testCiscoGraphData.executeProductDatabase(args, sc, hierarchialRelation)
-  //  println("no hierarchical relations executeProductDatabase: done") 
-    
-      testDblpGraphData.executeDblpGraphData(args, sc, hierarchialRelation)
+     testDblpGraphData.executeDblpGraphData(args, sc, hierarchialRelation)
      println("executeDblpGraphData: done")
+    
      
   }
   
