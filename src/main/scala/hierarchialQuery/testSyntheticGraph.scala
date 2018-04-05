@@ -47,7 +47,7 @@ object testSyntheticGraph {
   //  main entries for synthetic graph test
   def executeSyntheticDatabase(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
       
-    /*
+      /*
       val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
       val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
         
@@ -59,18 +59,29 @@ object testSyntheticGraph {
       //executeGeneralQuerySyntheticDatabase(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath: String, hierarchialRelation)
        
       //test different top-k
-      val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
+       val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
       //executeGeneralQuerySyntheticDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
       
      // executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
-     
      */
-     // test different data graph
-     val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/dataGraphInfo"
-     val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput"
      
-     executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
+     // test different data graph
+    // val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/dataGraphInfo"
+    // val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput"
+     
+    // executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
 
+    
+    //test on google cloud platform
+     //Google storage filepath
+     val  inputEdgeListfilePath = "gs://fbw/synthetic-data/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
+     val inputNodeInfoFilePath = "gs://fbw/synthetic-data/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
+     //read edge list to graphX graph
+     val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+
+     val inputGeneralQueryGraph = "gs://fbw/synthetic-data/inputQueryGraph/generalQueryGraph"
+     executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+ 
         
   }
   
@@ -223,7 +234,7 @@ object testSyntheticGraph {
         outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
     }
     
-    val varingTokList = List(2, 5, 10)   //List(1)   //List(2, 5, 10)       
+    val varingTokList =  List(5)  //List(2, 5, 10)   //List(1)   //List(2, 5, 10)       
     
     for(topk <- varingTokList) {
         starQuery.TOPK = topk
