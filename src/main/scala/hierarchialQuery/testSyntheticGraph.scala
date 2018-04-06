@@ -44,8 +44,8 @@ object testSyntheticGraph {
     */
    
     //test on google cloud platform
-     val  inputEdgeListfilePath = "gs://querybucket/synthetic-data/testEdgeListFile02"
-     val inputNodeInfoFilePath = "gs://querybucket/synthetic-data/testNodeInfo02"
+     val  inputEdgeListfilePath = "gs://querybucket/syntheticData/testEdgeListFile02"
+     val inputNodeInfoFilePath = "gs://querybucket/syntheticData/testNodeInfo02"
      //read edge list to graphX graph
      val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
      val dstTypeId = 0                    //0 hierarchical node   or 1
@@ -59,8 +59,8 @@ object testSyntheticGraph {
     // val specificReadLst =  List((1L, 2)) //, (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
     //  val specificReadLst =  List((1L, 2), (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
 
-     val outputFilePath = "gs://querybucket/output/starOutputFilePath" + runTimeFileIndex
-     val runTimeoutputFilePath = "gs://querybucket/output/starQueryoutRuntime" + runTimeFileIndex
+     val outputFilePath = "gs://querybucket/syntheticData/output/starOutputFilePath" + runTimeFileIndex
+     val runTimeoutputFilePath = "gs://querybucket/syntheticData/output/starQueryoutRuntime" + runTimeFileIndex
      starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
 
     
