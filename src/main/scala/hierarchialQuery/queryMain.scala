@@ -30,11 +30,11 @@ object QueryMain {
     
     val hierarchialRelation = true // false // true  // false      // true
      
-    testSyntheticGraph.testTinyGraphData(args, sc, hierarchialRelation)
-     println("testSyntheticGraph: done")
+   // testSyntheticGraph.testTinyGraphData(args, sc, hierarchialRelation)
+   //  println("testSyntheticGraph: done")
    
-    // testSyntheticGraph.executeSyntheticDatabase(args, sc, hierarchialRelation)
-   //  println("executeSyntheticDatabase: done") 
+     testSyntheticGraph.executeSyntheticDatabase(args, sc, hierarchialRelation)
+     println("executeSyntheticDatabase: done") 
    
    // testCiscoGraphData.executeProductDatabase(args, sc, hierarchialRelation)
    //  println("executeProductDatabase: done") 
