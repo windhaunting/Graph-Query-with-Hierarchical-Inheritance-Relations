@@ -255,21 +255,21 @@ object testSyntheticGraph {
         runTimeOutputFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "queryRuntime"
         outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
     }
-    
+
     */
     
     
-    // for test on google cloud multiple nodes
+    //scalability test on google cloud multiple nodes
     var runTimeOutputFilePathOrigin = ""
     var outputResultFilePathOrigin = ""
     if (hierarchialRelation){
-        runTimeOutputFilePathOrigin = "gs://querybucket/syntheticData/output/queryRuntime"
-        outputResultFilePathOrigin = "gs://querybucket/syntheticData/output/runResult"
+        runTimeOutputFilePathOrigin = "gs:///querybucket/syntheticData/output/queryRuntime"
+        outputResultFilePathOrigin = "gs:///querybucket/syntheticData/output/runResult"
     }
     
-    val varingTokList =  List(5)  //List(2, 5, 10)   //List(1)   //List(2, 5, 10)       
+    val varyingTokList =  List(5)  //List(2, 5, 10)   //List(1)   //List(2, 5, 10)       
     
-    for(topk <- varingTokList) {
+    for(topk <- varyingTokList) {
         starQuery.TOPK = topk
         val nonStarQueryTOPK = starQuery.TOPK
         
