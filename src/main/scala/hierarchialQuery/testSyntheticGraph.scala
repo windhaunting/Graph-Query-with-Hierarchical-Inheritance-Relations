@@ -47,21 +47,21 @@ object testSyntheticGraph {
      val  inputEdgeListfilePath = "gs://fbw/synthetic-data/testEdgeListFile02"
      val inputNodeInfoFilePath = "gs://fbw/synthetic-data/testNodeInfo02"
      //read edge list to graphX graph
-     val hierGraphRdd = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
-      val dstTypeId = 0                    //0 hierarchical node   or 1
-    val topK = args(0).toInt
-    starQuery.TOPK = topK
+     val hierGraph = graphInputCommon.readEdgeListFile(sc, inputEdgeListfilePath, inputNodeInfoFilePath, "\t")
+     val dstTypeId = 0                    //0 hierarchical node   or 1
+     val topK = args(0).toInt
+     starQuery.TOPK = topK
     
-    val databaseType = 2              //synthetic graph database   2
-    val runTimeFileIndex = args(1)
+     val databaseType = 2              //synthetic graph database   2
+     val runTimeFileIndex = args(1)
     
-    val specificReadLst =  List((1L, 2), (2L, 2))               // List((648027L, 2), (636461L, 2))        
+     val specificReadLst =  List((1L, 2), (2L, 2))               // List((648027L, 2), (636461L, 2))        
     // val specificReadLst =  List((1L, 2)) //, (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
     //  val specificReadLst =  List((1L, 2), (2L, 2), (5L,2))               // List((648027L, 2), (636461L, 2))        
 
-    val outputFilePath = "gs://fbw/output/starOutputFilePath" + runTimeFileIndex
-    val runTimeoutputFilePath = "gs://fbw/output/starQueryoutRuntime" + runTimeFileIndex
-    starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
+     val outputFilePath = "gs://fbw/output/starOutputFilePath" + runTimeFileIndex
+     val runTimeoutputFilePath = "gs://fbw/output/starQueryoutRuntime" + runTimeFileIndex
+     starQuery.starQueryExeute(sc, hierGraph, specificReadLst, dstTypeId, databaseType, inputNodeInfoFilePath,  outputFilePath, runTimeoutputFilePath, hierarchialRelation)     //execute star query
 
     
   }
