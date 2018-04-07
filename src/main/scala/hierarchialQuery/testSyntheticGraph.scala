@@ -69,7 +69,7 @@ object testSyntheticGraph {
   //  main entries for synthetic graph test
   def executeSyntheticDatabase(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
       
-      
+      /*
       val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
       val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
         
@@ -92,10 +92,10 @@ object testSyntheticGraph {
     // val inputGeneralQueryGraphPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/inputGeneralQueryGraph/queryGraphInput"
      
     // executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
-
+    */
     
     //test on google cloud platform; different query size
-     /*
+     
      //Google storage filepath
      val  inputEdgeListfilePath = "gs://querybucket/syntheticData/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
      val inputNodeInfoFilePath = "gs://querybucket/syntheticData/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
@@ -104,7 +104,7 @@ object testSyntheticGraph {
 
      val inputGeneralQueryGraph = "gs://querybucket/syntheticData/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
      executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
-     */
+     
     
   }
   
