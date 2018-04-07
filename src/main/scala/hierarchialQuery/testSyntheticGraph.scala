@@ -69,7 +69,7 @@ object testSyntheticGraph {
   //  main entries for synthetic graph test
   def executeSyntheticDatabase(args: Array[String], sc: SparkContext, hierarchialRelation: Boolean) = {
       
-      /*
+      
       val inputEdgeListfilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
       val inputNodeInfoFilePath = "../../Data/syntheticGraph/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
         
@@ -84,8 +84,8 @@ object testSyntheticGraph {
        val inputGeneralQueryGraph = "../../Data/syntheticGraph/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
       //executeGeneralQuerySyntheticDatabaseDifferentTopK(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
       
-     // executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
-     */
+      executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
+    
      
      // test different data graph
     // val dataGraphPathPrefix = "../../../hierarchicalNetworkQuery/extractSubgraph/output/syntheticDataGraphExtractOut/dataGraphInfo"
@@ -94,7 +94,8 @@ object testSyntheticGraph {
     // executeGeneralQuerySyntheticDatabaseDifferentDataSize(args, sc, dataGraphPathPrefix, inputGeneralQueryGraphPrefix, hierarchialRelation)
 
     
-    //test on google cloud platform
+    //test on google cloud platform; different query size
+     /*
      //Google storage filepath
      val  inputEdgeListfilePath = "gs://querybucket/syntheticData/syntheticGraph_hierarchiRandom/syntheticGraphEdgeListInfo.tsv"
      val inputNodeInfoFilePath = "gs://querybucket/syntheticData/syntheticGraph_hierarchiRandom/syntheticGraphNodeInfo.tsv"
@@ -103,7 +104,8 @@ object testSyntheticGraph {
 
      val inputGeneralQueryGraph = "gs://querybucket/syntheticData/inputQueryGraph/generalQueryGraph/generateQuerygraphInput"
      executeGeneralQuerySyntheticDatabaseDifferentQuerySize(args, sc, hierGraphRdd, inputGeneralQueryGraph, inputNodeInfoFilePath, hierarchialRelation)
- 
+     */
+    
   }
   
   //../hierarchicalNetworkQuery/extractSubgraph/output/starQueryInput
@@ -244,6 +246,7 @@ object testSyntheticGraph {
     
     print ("main allquerySizeLsts： " + allquerySizeLsts.size + "\n")
     //for varing query graph size
+    
     /*
     var runTimeOutputFilePathOrigin = ""
     var outputResultFilePathOrigin = ""
@@ -256,7 +259,7 @@ object testSyntheticGraph {
         outputResultFilePathOrigin = "../output/syntheticData/nonStarQueryOutput/testWOHierarchiQueryOutput/" + "runResult"
     }
 
-    */
+     */
     
     
     //scalability test on google cloud multiple nodes
@@ -266,6 +269,8 @@ object testSyntheticGraph {
         runTimeOutputFilePathOrigin = "gs:///querybucket/syntheticData/output/queryRuntime"
         outputResultFilePathOrigin = "gs:///querybucket/syntheticData/output/runResult"
     }
+    
+   
     
     val varyingTokList =  List(5)  //List(2, 5, 10)   //List(1)   //List(2, 5, 10)       
     
