@@ -39,7 +39,7 @@ The graph query architecure:
 ![flow](https://github.com/windhaunting/graphQueryHierarchical/blob/master/distributed_graph_query_architecture.png)
 
 
-- [Results](#results)
+## Results
 
 We have greatly the query quality considering the hierachical relations while maintains the similar efficiency compared with the state-of-the-art method.
 
