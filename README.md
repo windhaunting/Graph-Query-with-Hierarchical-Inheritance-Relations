@@ -12,8 +12,13 @@ relations between entities and formulate the problem of graph query on heterogen
 
 ## Installation
 
+- Hadoop
+- Spark GraphX
 
 
+## Datasets
+
+- 
 
 Find answer in the knowledge graph with inheritance relations.
 
